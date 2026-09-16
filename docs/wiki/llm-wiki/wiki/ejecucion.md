@@ -35,8 +35,10 @@ HU objetivo: [[HU-001-registro-e-inicio-de-sesion-jwt]] (`Aprobada`).
 ## Punto de retoma (fin de clase 2026-09-16)
 
 1. **Preparar el equipo** (desde `citas-api/`):
+   - **Sincronizar primero:** puede haber trabajo hecho en otro equipo. `git -C citas-api checkout develop; git -C citas-api pull` y lo mismo en `citas-web`. En un equipo nuevo: clonar ambos repos desde github.com/jmunoz841.
    - Si no existe `%USERPROFILE%\.jdks\temurin-21`, instalar JDK 21 portable (Temurin).
-   - Si no existe `.env`, copiar `.env.example` a `.env` y generar contraseñas/secretos nuevos. Si el volumen `jmunoz-citas_mysql_data` ya existe, las contraseñas deben coincidir con las originales o hay que recrear el volumen.
+   - Si no existe `.env`, copiar `.env.example` a `.env` y generar contraseñas/secretos nuevos. Si el volumen `jmunoz-citas_mysql_data` ya existe, las contraseñas deben coincidir con las originales o hay que recrearlo (`docker compose down -v`).
+   - Estado al cerrar en el PC del laboratorio (2026-09-16): `.env`, contenedor y volumen de `jmunoz-citas` eliminados; JDK 21 portable conservado.
    - Abrir Docker Desktop → `docker compose up -d`.
    - Verificar: `$env:JAVA_HOME="$env:USERPROFILE\.jdks\temurin-21"; .\mvnw.cmd test`.
 2. **Terminar el paso 5:** comparar `docs/database/normalizacion-3fn/` contra `database/reference/` (raíz del workspace) y registrar diferencias/decisiones.
