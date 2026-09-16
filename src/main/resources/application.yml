@@ -1,0 +1,50 @@
+# Configuración por variables de entorno. En local se leen desde citas-api/.env
+# (copiar .env.example a .env). Nunca versionar valores reales.
+spring:
+  application:
+    name: citas-api
+  config:
+    import: optional:file:.env[.properties]
+  datasource:
+    # Zona horaria de almacenamiento: America/Bogota (decisión D-007)
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3308}/${DB_NAME:citas_fcv_training}?connectionTimeZone=America/Bogota&forceConnectionTimeZoneToSession=true&characterEncoding=utf8
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: America/Bogota
+  jackson:
+    time-zone: America/Bogota
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+server:
+  port: ${API_PORT:8081}
+  error:
+    include-stacktrace: never
+    include-message: never
+
+app:
+  security:
+    jwt:
+      access-secret: ${JWT_ACCESS_SECRET}
+      refresh-secret: ${JWT_REFRESH_SECRET}
+      access-minutes: ${JWT_ACCESS_MINUTES:15}
+      refresh-days: ${JWT_REFRESH_DAYS:7}
+    cors:
+      allowed-origin: ${FRONTEND_ORIGIN:http://localhost:5173}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never

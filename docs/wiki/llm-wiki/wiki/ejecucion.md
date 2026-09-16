@@ -1,0 +1,50 @@
+---
+tipo: ejecucion
+actualizado: 2026-09-16
+fuentes:
+  - raw/RESTRICCIONES_TECNICAS.md
+---
+
+# Ejecución
+
+Estado del avance por sesión. Evidencia mínima según `EVIDENCIAS_Y_TRAZABILIDAD.md` (raíz del workspace).
+
+## S2 — Especificar, inicializar y construir el primer incremento
+
+HU objetivo: [[HU-001-registro-e-inicio-de-sesion-jwt]] (`Aprobada`).
+
+| # | Actividad | Estado | Evidencia |
+|---|---|---|---|
+| 1 | Preparar repositorios | Hecho | `citas-api` 56fc6b9, `citas-web` 0efa66a; `main` y `develop` publicados en GitHub |
+| 2 | Especificación Scrum | Hecho | `docs/wiki/scrum/` — 8 épicas, 25 HU |
+| 3 | Definir alcance S2 | Hecho | HU-001 `Aprobada`; resto `Borrador` |
+| 4 | AGENTS raíz y wiki | Hecho | `AGENTS.md` raíz; `docs/wiki/llm-wiki/` inicializada |
+| 5 | Normalización 3FN delegada | Parcial | Diseño propio listo en `docs/database/normalizacion-3fn/` (23 tablas); falta comparar contra `database/reference/` |
+| 6 | Inicializar backend Spring Boot | Hecho | `pom.xml` (Boot 3.5.16, Java 21), Maven Wrapper 3.9.16, paquetes hexagonales, `HexagonalArchitectureTest`; `mvnw test` → 2 tests, BUILD SUCCESS |
+| 7 | MySQL + Flyway | Parcial | MySQL aislado `jmunoz-citas-mysql` operativo en 3308 (D-009); migración Flyway pendiente |
+| 8 | Vertical slice de autenticación | Pendiente | — |
+| 9 | Verificación backend (`mvn test`) | Pendiente | — |
+| 10 | `citas-api/AGENTS.md` | Pendiente | — |
+| 11 | Diseño Stitch login/registro | Pendiente | — |
+| 12 | Handoff AI Studio e importación | Pendiente | — |
+| 13 | Frontend ejecutable | Pendiente | — |
+| 14 | `citas-web/AGENTS.md` | Pendiente | — |
+| 15 | GOAL_01 sobre HU-001 | Pendiente | — |
+| 16 | Cierre: evidencia, wiki, README, commits `feat(s2): bootstrap specs auth and frontend baseline` | Pendiente | — |
+
+## Punto de retoma (fin de clase 2026-09-16)
+
+1. **Preparar el equipo** (desde `citas-api/`):
+   - Si no existe `%USERPROFILE%\.jdks\temurin-21`, instalar JDK 21 portable (Temurin).
+   - Si no existe `.env`, copiar `.env.example` a `.env` y generar contraseñas/secretos nuevos. Si el volumen `jmunoz-citas_mysql_data` ya existe, las contraseñas deben coincidir con las originales o hay que recrear el volumen.
+   - Abrir Docker Desktop → `docker compose up -d`.
+   - Verificar: `$env:JAVA_HOME="$env:USERPROFILE\.jdks\temurin-21"; .\mvnw.cmd test`.
+2. **Terminar el paso 5:** comparar `docs/database/normalizacion-3fn/` contra `database/reference/` (raíz del workspace) y registrar diferencias/decisiones.
+3. **Paso 7:** migración Flyway `V1` con `roles`, `document_types`, `users`, `user_roles`, `refresh_tokens` + seeds (ver README de normalización, sección "Subconjunto para la migración inicial de HU-001"); probarla contra `jmunoz-citas-mysql`.
+4. Continuar con los pasos 8 a 16 de la tabla.
+
+Recordatorios: no usar el compose raíz ni tocar recursos `fcv-citas-*` (otro grupo); API en 8081; HU-001 sigue `Aprobada` (pasar a `En desarrollo` al iniciar el paso 8).
+
+## Relacionadas
+
+[[arquitectura]] · [[decisiones]]
