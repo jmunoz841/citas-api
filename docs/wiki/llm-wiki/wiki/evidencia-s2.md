@@ -18,8 +18,9 @@ Branch: develop
 Commit hash: ver commit de cierre "feat(s2): bootstrap specs auth and frontend baseline" (historial completo en develop)
 HU abordadas: HU-001 Registro e inicio de sesión con sesión JWT — Completada
 Criterios completados: CA-01…CA-11 y DoD-01…DoD-07 en "Cumple" (matriz en la HU)
-Pruebas ejecutadas: mvnw test 2026-09-18 → 54 pruebas, 0 fallos (dominio 19, AuthServiceTest 9, JwtTokenProviderTest 6, AuthApiIntegrationTest 18 con Testcontainers MySQL 8.4 + Flyway, ArchUnit 2)
-Qué quedó pendiente: ejecución del ejercicio GOAL_01 con /goal (la HU ya está implementada: actuará como verificación); merge develop → main cuando el usuario lo decida
+Pruebas ejecutadas: mvnw test 2026-09-18 → 55 pruebas, 0 fallos (dominio 19, AuthServiceTest 10, JwtTokenProviderTest 6, AuthApiIntegrationTest 18 con Testcontainers MySQL 8.4 + Flyway, ArchUnit 2)
+GOAL_01: ejecutado con /goal (Claude Code); 6 condiciones verificadas; añadió prueba de refresh expirado (commit a5f583e)
+Qué quedó pendiente: merge develop → main cuando el usuario lo decida
 Evidencia adicional: Scrum (8 épicas, 25 HU), LLM Wiki, diseño 3FN propio + comparación con la referencia, contrato REST, AGENTS.md, MySQL aislado (docker-compose propio)
 ```
 

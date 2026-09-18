@@ -49,7 +49,7 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 
 ## 2026-09-18 — LEARN — Cierre de S2
 - HECHO: HU-001 validada y `Completada` (11 CA + 7 DoD en `Cumple`); `mvnw test` 54/54; commits de cierre en ambos repos.
-- PREGUNTA ABIERTA: ejecución del ejercicio GOAL_01 (pendiente del usuario).
+- HECHO: GOAL_01 ejecutado por el usuario con `/goal`; 6 condiciones verificadas; nueva prueba de refresh expirado; `mvnw test` 55/55 (commit `a5f583e`).
 - Páginas afectadas: [[ejecucion]], [[evidencia-s2]], [[index]]
 
 ## 2026-09-18 — INGEST — Un único .env por carpeta
