@@ -4,7 +4,7 @@
 **Motor:** MySQL 8.4 · InnoDB · utf8mb4
 **Modo:** diseño propio a partir de requisitos (no es la auditoría de un `db.sql` existente)
 **Fuentes:** `PRD.md`, `RESTRICCIONES_TECNICAS.md`, `database/REQUISITOS_NORMALIZACION_3FN.md`, HU-001…HU-025 (`docs/wiki/scrum/`), `docs/wiki/llm-wiki/wiki/decisiones.md`
-**Estado:** propuesta para revisión. El DDL **no se ha ejecutado**; queda pendiente validarlo en un MySQL 8.4 desechable.
+**Estado:** validado. El 2026-09-18 `schema.sql` se cargó sin errores en MySQL 8.4.11 (base desechable) y 9 pruebas de restricciones de HU-001 dieron el resultado esperado. Comparado con la referencia en [comparacion-referencia.md](comparacion-referencia.md) (decisiones D-012 y D-013). El subconjunto de HU-001 está en la migración `src/main/resources/db/migration/V1__identidad_hu001.sql`.
 **Independencia:** el diseño se hizo sin consultar el modelo de referencia del trainer. La comparación se hará después, por separado.
 
 ---

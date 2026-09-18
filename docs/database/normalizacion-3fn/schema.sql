@@ -95,7 +95,7 @@ CREATE TABLE users (
   document_number     VARCHAR(30)     NOT NULL,
   email               VARCHAR(254)    CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_ci NOT NULL,
   phone               VARCHAR(20)     NOT NULL,
-  password_hash       VARCHAR(100)    NOT NULL,  -- BCrypt (60) + posible prefijo {bcrypt}
+  password_hash       VARCHAR(255)    NOT NULL,  -- BCrypt (60) o Argon2 con prefijo {id} (D-012)
   is_active           BOOLEAN         NOT NULL DEFAULT TRUE,
   created_at          DATETIME(6)     NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   updated_at          DATETIME(6)     NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),

@@ -19,9 +19,9 @@ HU objetivo: [[HU-001-registro-e-inicio-de-sesion-jwt]] (`Aprobada`).
 | 2 | Especificación Scrum | Hecho | `docs/wiki/scrum/` — 8 épicas, 25 HU |
 | 3 | Definir alcance S2 | Hecho | HU-001 `Aprobada`; resto `Borrador` |
 | 4 | AGENTS raíz y wiki | Hecho | `AGENTS.md` raíz; `docs/wiki/llm-wiki/` inicializada |
-| 5 | Normalización 3FN delegada | Parcial | Diseño propio listo en `docs/database/normalizacion-3fn/` (23 tablas); falta comparar contra `database/reference/` |
+| 5 | Normalización 3FN delegada | Hecho | Diseño propio (23 tablas) en `docs/database/normalizacion-3fn/`; `schema.sql` cargado sin errores en MySQL 8.4.11 + 9 pruebas de restricciones de HU-001 OK; `comparacion-referencia.md`; decisiones D-012, D-013 |
 | 6 | Inicializar backend Spring Boot | Hecho | `pom.xml` (Boot 3.5.16, Java 21), Maven Wrapper 3.9.16, paquetes hexagonales, `HexagonalArchitectureTest`; `mvnw test` → 2 tests, BUILD SUCCESS |
-| 7 | MySQL + Flyway | Parcial | MySQL aislado `jmunoz-citas-mysql` operativo en 3308 (D-009); migración Flyway pendiente |
+| 7 | MySQL + Flyway | Hecho | `V1__identidad_hu001.sql` aplicada en `jmunoz-citas-mysql` (3308): `flyway_schema_history` v1 success; tablas roles, document_types, users, user_roles, refresh_tokens; seeds 3 roles + 6 tipos de documento; 0 usuarios; API arrancó en 8081 |
 | 8 | Vertical slice de autenticación | Pendiente | — |
 | 9 | Verificación backend (`mvn test`) | Pendiente | — |
 | 10 | `citas-api/AGENTS.md` | Pendiente | — |
@@ -41,9 +41,9 @@ HU objetivo: [[HU-001-registro-e-inicio-de-sesion-jwt]] (`Aprobada`).
    - Estado al cerrar en el PC del laboratorio (2026-09-16): `.env`, contenedor y volumen de `jmunoz-citas` eliminados; JDK 21 portable conservado.
    - Abrir Docker Desktop → `docker compose up -d`.
    - Verificar: `$env:JAVA_HOME="$env:USERPROFILE\.jdks\temurin-21"; .\mvnw.cmd test`.
-2. **Terminar el paso 5:** comparar `docs/database/normalizacion-3fn/` contra `database/reference/` (raíz del workspace) y registrar diferencias/decisiones.
-3. **Paso 7:** migración Flyway `V1` con `roles`, `document_types`, `users`, `user_roles`, `refresh_tokens` + seeds (ver README de normalización, sección "Subconjunto para la migración inicial de HU-001"); probarla contra `jmunoz-citas-mysql`.
-4. Continuar con los pasos 8 a 16 de la tabla.
+2. ~~Paso 5 (comparación con la referencia)~~ y ~~paso 7 (V1 Flyway)~~: hechos el 2026-09-18.
+3. **Paso 8:** vertical slice de autenticación de HU-001 (pasar HU-001 a `En desarrollo` al empezar).
+4. Continuar con los pasos 9 a 16 de la tabla.
 
 Recordatorios: no usar el compose raíz ni tocar recursos `fcv-citas-*` (otro grupo); API en 8081; HU-001 sigue `Aprobada` (pasar a `En desarrollo` al iniciar el paso 8).
 

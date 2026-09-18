@@ -31,3 +31,9 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 ## 2026-09-18 — INGEST — Repo privado de la raíz del workspace
 - Fuentes: `raw/2026-09-18-decisiones-repo-raiz.md`
 - Páginas afectadas: [[decisiones]] (D-011 reemplaza D-005), [[index]]
+
+## 2026-09-18 — INGEST — Comparación con la referencia y migración V1
+- Fuentes: `docs/database/normalizacion-3fn/comparacion-referencia.md`, `raw/2026-09-18-decisiones-comparacion-referencia.md`
+- HECHO: `schema.sql` propio cargado sin errores en MySQL 8.4.11 (23 tablas, 33 FK, 31 CHECK, 2 triggers) en base desechable; 9 pruebas de restricciones de HU-001 con el resultado esperado.
+- HECHO: `V1__identidad_hu001.sql` aplicada con Flyway; aviso de Flyway sobre soporte probado hasta MySQL 8.1.
+- Páginas afectadas: [[decisiones]] (D-012, D-013; Q-003 cerrada), [[ejecucion]], [[index]]

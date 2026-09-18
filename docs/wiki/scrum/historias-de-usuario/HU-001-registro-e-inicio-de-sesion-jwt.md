@@ -80,7 +80,7 @@ Se mantiene como una única HU compuesta por decisión explícita del plan S2: r
 
 ## Tareas de desarrollo
 
-- [ ] **T-01 — Esquema inicial de identidad**  
+- [x] **T-01 — Esquema inicial de identidad** (2026-09-18: `V1__identidad_hu001.sql` aplicada)  
   Dificultad: Medio  
   Descripción: migración Flyway con usuarios, roles, relación usuario-rol, refresh tokens y seed de roles fijos (`USER`, `PROFESSIONAL`, `ADMIN`); restricciones únicas de email y documento. Debe ser coherente con el diseño 3FN propio.
 - [ ] **T-02 — Modelo de dominio de usuario**  

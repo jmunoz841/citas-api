@@ -23,10 +23,11 @@ Punto de entrada de la memoria global. Convenciones: [SCHEMA](../schema/SCHEMA.m
 | `raw/2026-09-16-decisiones-normalizacion.md` | Zona horaria Bogotá, tipos de documento, primer ADMIN diferido |
 | `raw/2026-09-16-decisiones-entorno-aislado.md` | MySQL propio en 3308, aislado de otro grupo |
 | `raw/2026-09-18-decisiones-repo-raiz.md` | Raíz del workspace en repo privado |
+| `raw/2026-09-18-decisiones-comparacion-referencia.md` | password_hash 255 y estrategia contra doble reserva |
 
 ## Diseño de base de datos
 
-Modelo 3FN propio: `docs/database/normalizacion-3fn/README.md` (23 tablas, ERD, DF, DDL).
+Modelo 3FN propio: `docs/database/normalizacion-3fn/README.md` (23 tablas, ERD, DF, DDL) y su comparación con la referencia: `comparacion-referencia.md`. Migraciones de la app: `src/main/resources/db/migration/`.
 
 ## Especificación Scrum
 
