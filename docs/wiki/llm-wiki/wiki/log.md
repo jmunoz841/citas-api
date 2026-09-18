@@ -47,6 +47,10 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 - DECISIÓN (usuario, 2026-09-18): pruebas de integración con Testcontainers en lugar de la MySQL local.
 - Páginas afectadas: [[arquitectura]], [[ejecucion]]
 
+## 2026-09-18 — LEARN — AGENTS del frontend (paso 14)
+- HECHO: `citas-web/AGENTS.md` y `CLAUDE.md` creados; `AGENTS.md.template` retirado. PREGUNTA ABIERTA: herramienta de pruebas automatizadas del frontend (hoy solo typecheck/build).
+- Páginas afectadas: [[ejecucion]]
+
 ## 2026-09-18 — LEARN — Importación del frontend (pasos 12 y 13)
 - HECHO: export de AI Studio con buena estructura y accesibilidad; se retiraron dependencias no pedidas y se corrigieron tipos numéricos, rol `USER` en el mock, sesión cerrada por errores de red, resumen de errores que etiquetaba mal los 400 y no se limpiaba, estilos de error y tamaños fuera de `DESIGN.md`.
 - HECHO: E2E navegador→API con origen 5174; `mvn test` 54/54 tras cambiar CORS.

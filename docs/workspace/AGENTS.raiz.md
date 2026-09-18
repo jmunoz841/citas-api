@@ -23,7 +23,7 @@ FCV_Proyecto_Citas_v1/            # raíz: orquestación e insumos del trainer
 | Repo | Stack | Estado |
 |---|---|---|
 | `citas-api` | Java 21, Spring Boot 3.5.x, Maven, hexagonal, Spring Data JPA, Spring Security + JWT access/refresh, MySQL 8.4, Flyway | Inicializado; HU-001 (autenticación) implementada y probada |
-| `citas-web` | Node.js 24, TypeScript, React **o** Angular (según export de Stitch/AI Studio). Supuesto actual: React + Vite + TypeScript | Pendiente de importar |
+| `citas-web` | Node.js 24, React 19 + Vite 8 + TypeScript estricto + Tailwind 4 (importado de AI Studio), puerto 5174 | Login y registro (HU-001) integrados con `citas-api` |
 
 ## Lectura obligatoria antes de actuar
 
@@ -81,7 +81,7 @@ Agente orquestador cross-repo. Mantiene coherencia entre especificaciones, contr
 |---|---|
 | Infra | Desde `citas-api/`: `docker compose up -d`, `docker compose ps` (MySQL `jmunoz-citas-mysql` en `localhost:3308`) |
 | `citas-api` | Desde `citas-api/`: `$env:JAVA_HOME="$env:USERPROFILE\.jdks\temurin-21"; .\mvnw.cmd test` (requiere Docker Desktop abierto: Testcontainers levanta un MySQL 8.4 desechable) |
-| `citas-web` | build + typecheck + tests del framework elegido |
+| `citas-web` | Desde `citas-web/`: `npm run typecheck` y `npm run build` (sin pruebas automatizadas todavía) |
 
 No declarar una tarea terminada si las verificaciones aplicables fallan o no se ejecutaron; reportarlo explícitamente.
 
