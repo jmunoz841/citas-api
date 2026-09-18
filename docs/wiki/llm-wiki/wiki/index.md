@@ -29,6 +29,10 @@ Punto de entrada de la memoria global. Convenciones: [SCHEMA](../schema/SCHEMA.m
 
 Modelo 3FN propio: `docs/database/normalizacion-3fn/README.md` (23 tablas, ERD, DF, DDL) y su comparación con la referencia: `comparacion-referencia.md`. Migraciones de la app: `src/main/resources/db/migration/`.
 
+## Contratos REST
+
+- Autenticación (HU-001): `docs/contratos/autenticacion.md`.
+
 ## Especificación Scrum
 
 Índice Scrum: `docs/wiki/scrum/README.md` (8 épicas, 25 HU).

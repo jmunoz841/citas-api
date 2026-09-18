@@ -25,6 +25,11 @@ fuentes:
   - `application`: `port.in`, `port.out`, `service`; depende solo de `domain`.
   - `infrastructure/adapters`: `in.web` (REST), `out.persistence` (Spring Data JPA), `out.security` (JWT, BCrypt); `infrastructure/config`.
   - Reglas de dependencia verificadas por `HexagonalArchitectureTest` (ArchUnit 1.5.0).
+- Autenticación (HU-001), por capa:
+  - `domain.model.user` (`User`, `Email`, `IdentityDocument`, `DocumentType`, `Role`, `PasswordPolicy`), `domain.model.auth.RefreshToken`, `domain.exception`.
+  - `application.port.in` (registro, login, refresh, logout), `application.port.out` (usuarios, refresh tokens, hash, tokens), `application.service.AuthService` (con `@Transactional`; cableado en `infrastructure.config.ApplicationConfig`, sin anotaciones de componente).
+  - `infrastructure.adapters.out.persistence` (entidades JPA, lock pesimista al leer un refresh token), `infrastructure.adapters.out.security` (BCrypt, `JwtTokenProvider` HS256 con secretos y `typ` distintos, filtro JWT), `infrastructure.adapters.in.web` (`AuthController`, errores ProblemDetail), `infrastructure.config` (`SecurityConfig` stateless + CORS, `JwtProperties` exige secretos ≥ 32 bytes y distintos).
+  - Contrato: `docs/contratos/autenticacion.md`.
 - Dependencias: web, validation, data-jpa, mysql-connector-j, flyway-core + flyway-mysql, security, jjwt 0.13.0, actuator; test: spring-boot-starter-test, spring-security-test, archunit.
 - Configuración en `application.yml` solo por variables de entorno; en local importa `citas-api/.env` (`spring.config.import: optional:file:.env[.properties]`). `ddl-auto: validate`: el esquema lo gobierna Flyway.
 - Toolchain local: JDK Temurin 21 portable en `%USERPROFILE%\.jdks\temurin-21` (el Java global del equipo es 26). Ejecutar con `JAVA_HOME` apuntando a esa ruta.

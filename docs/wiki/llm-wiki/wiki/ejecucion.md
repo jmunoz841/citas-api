@@ -22,7 +22,7 @@ HU objetivo: [[HU-001-registro-e-inicio-de-sesion-jwt]] (`Aprobada`).
 | 5 | Normalización 3FN delegada | Hecho | Diseño propio (23 tablas) en `docs/database/normalizacion-3fn/`; `schema.sql` cargado sin errores en MySQL 8.4.11 + 9 pruebas de restricciones de HU-001 OK; `comparacion-referencia.md`; decisiones D-012, D-013 |
 | 6 | Inicializar backend Spring Boot | Hecho | `pom.xml` (Boot 3.5.16, Java 21), Maven Wrapper 3.9.16, paquetes hexagonales, `HexagonalArchitectureTest`; `mvnw test` → 2 tests, BUILD SUCCESS |
 | 7 | MySQL + Flyway | Hecho | `V1__identidad_hu001.sql` aplicada en `jmunoz-citas-mysql` (3308): `flyway_schema_history` v1 success; tablas roles, document_types, users, user_roles, refresh_tokens; seeds 3 roles + 6 tipos de documento; 0 usuarios; API arrancó en 8081 |
-| 8 | Vertical slice de autenticación | Pendiente | — |
+| 8 | Vertical slice de autenticación | Hecho | Registro, login, refresh con rotación, logout, `/api/auth/session`, errores ProblemDetail, CORS; humo manual 20/20 contra MySQL; contrato `docs/contratos/autenticacion.md`; HU-001 `En desarrollo` (T-01…T-07, T-09) |
 | 9 | Verificación backend (`mvn test`) | Pendiente | — |
 | 10 | `citas-api/AGENTS.md` | Pendiente | — |
 | 11 | Diseño Stitch login/registro | Pendiente | — |
@@ -42,8 +42,9 @@ HU objetivo: [[HU-001-registro-e-inicio-de-sesion-jwt]] (`Aprobada`).
    - Abrir Docker Desktop → `docker compose up -d`.
    - Verificar: `$env:JAVA_HOME="$env:USERPROFILE\.jdks\temurin-21"; .\mvnw.cmd test`.
 2. ~~Paso 5 (comparación con la referencia)~~ y ~~paso 7 (V1 Flyway)~~: hechos el 2026-09-18.
-3. **Paso 8:** vertical slice de autenticación de HU-001 (pasar HU-001 a `En desarrollo` al empezar).
-4. Continuar con los pasos 9 a 16 de la tabla.
+3. ~~Paso 8~~: hecho el 2026-09-18.
+4. **Paso 9:** pruebas automatizadas de backend (T-08) y `mvn test` en verde.
+5. Continuar con los pasos 10 a 16 de la tabla.
 
 Recordatorios: no usar el compose raíz ni tocar recursos `fcv-citas-*` (otro grupo); API en 8081; HU-001 sigue `Aprobada` (pasar a `En desarrollo` al iniciar el paso 8).
 

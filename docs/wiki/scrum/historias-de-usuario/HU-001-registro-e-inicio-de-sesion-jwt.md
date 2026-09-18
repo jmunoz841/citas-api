@@ -2,7 +2,7 @@
 id: HU-001
 tipo: historia-de-usuario
 titulo: "Registro e inicio de sesión con sesión JWT"
-estado: Aprobada
+estado: En desarrollo
 epica: "[[EP-001-identidad-y-acceso]]"
 esfuerzo: "Alto"
 sprint_sugerido: "Sprint 1"
@@ -83,28 +83,28 @@ Se mantiene como una única HU compuesta por decisión explícita del plan S2: r
 - [x] **T-01 — Esquema inicial de identidad** (2026-09-18: `V1__identidad_hu001.sql` aplicada)  
   Dificultad: Medio  
   Descripción: migración Flyway con usuarios, roles, relación usuario-rol, refresh tokens y seed de roles fijos (`USER`, `PROFESSIONAL`, `ADMIN`); restricciones únicas de email y documento. Debe ser coherente con el diseño 3FN propio.
-- [ ] **T-02 — Modelo de dominio de usuario**  
+- [x] **T-02 — Modelo de dominio de usuario**  
   Dificultad: Medio  
   Descripción: entidad/valores de dominio (usuario, email, documento, roles) y puertos de repositorio, sin dependencias de Spring.
-- [ ] **T-03 — Caso de uso de registro**  
+- [x] **T-03 — Caso de uso de registro**  
   Dificultad: Medio  
   Descripción: validación de datos, comprobación de unicidad, hash BCrypt y asignación del rol `USER`.
-- [ ] **T-04 — Caso de uso de login y emisión de tokens**  
+- [x] **T-04 — Caso de uso de login y emisión de tokens**  
   Dificultad: Alto  
   Descripción: autenticación por email/contraseña, generación de access token con roles y refresh token persistido de forma segura.
-- [ ] **T-05 — Refresh y logout**  
+- [x] **T-05 — Refresh y logout**  
   Dificultad: Alto  
   Descripción: validar refresh token (existencia, expiración, revocación, tipo), emitir nuevos tokens y revocar en logout.
-- [ ] **T-06 — Adaptadores REST y seguridad**  
+- [x] **T-06 — Adaptadores REST y seguridad**  
   Dificultad: Medio  
   Descripción: endpoints públicos de autenticación, filtro JWT, CORS explícito, rutas protegidas por defecto y manejo global de errores con formato uniforme.
-- [ ] **T-07 — Configuración por entorno**  
+- [x] **T-07 — Configuración por entorno**  
   Dificultad: Bajo  
   Descripción: conexión MySQL, secretos y duraciones JWT por variables de entorno; `.env.example` actualizado sin secretos reales.
 - [ ] **T-08 — Pruebas de backend**  
   Dificultad: Medio  
   Descripción: registro exitoso, email duplicado, documento duplicado, datos inválidos, login correcto, credenciales inválidas, refresh válido, refresh inválido/revocado y logout.
-- [ ] **T-09 — Contrato de autenticación documentado**  
+- [x] **T-09 — Contrato de autenticación documentado**  
   Dificultad: Bajo  
   Descripción: documentar requests, responses y códigos de error de autenticación para consumo de `citas-web`.
 
@@ -213,9 +213,12 @@ Se mantiene como una única HU compuesta por decisión explícita del plan S2: r
 
 - 2026-09-16 (S2) — HU creada en estado `Pendiente de aprobación`.
 - 2026-09-16 (S2) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz).
+- 2026-09-18 (S2) — HU `En desarrollo` (inicio del vertical slice de autenticación, confirmado por el usuario).
 
 ## Notas y decisiones
 
 - Decisión aprobada (2026-09-16): rotación del refresh token en cada refresh y almacenamiento del refresh token como hash en BD.
 - Decisión aprobada (2026-09-16): política de contraseña fija — mínimo 8 caracteres, al menos una letra y al menos un número.
-- Supuesto: tipos de documento como catálogo fijo o enumeración; se resolverá en la normalización 3FN propia.
+- Resuelto (D-008): tipos de documento como catálogo fijo `document_types` (CC, CE, TI, RC, PA, PPT).
+- Diseño implementado: el logout revoca el refresh token; el access token (15 min) sigue siendo válido hasta expirar y el cliente debe descartarlo. Contrato en `docs/contratos/autenticacion.md`.
+- 2026-09-18 — Prueba manual de humo contra MySQL real: 20 casos de CA-01 a CA-11 con el resultado esperado. No sustituye las pruebas automatizadas de T-08 (paso 9).

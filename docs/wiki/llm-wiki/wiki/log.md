@@ -37,3 +37,7 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 - HECHO: `schema.sql` propio cargado sin errores en MySQL 8.4.11 (23 tablas, 33 FK, 31 CHECK, 2 triggers) en base desechable; 9 pruebas de restricciones de HU-001 con el resultado esperado.
 - HECHO: `V1__identidad_hu001.sql` aplicada con Flyway; aviso de Flyway sobre soporte probado hasta MySQL 8.1.
 - Páginas afectadas: [[decisiones]] (D-012, D-013; Q-003 cerrada), [[ejecucion]], [[index]]
+
+## 2026-09-18 — LEARN — Vertical slice de autenticación (paso 8)
+- HECHO: API arranca con Flyway `validate` sobre V1; humo manual 20/20 (CA-01…CA-11) contra `jmunoz-citas-mysql`; contraseña guardada como BCrypt `$2a$10$`; refresh tokens como SHA-256 hex; rotación enlazada por `replaced_by_token_id`; 0 contraseñas/tokens en el log.
+- Páginas afectadas: [[arquitectura]], [[ejecucion]], [[index]]
