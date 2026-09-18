@@ -10,6 +10,7 @@ Punto de entrada de la memoria global. Convenciones: [SCHEMA](../schema/SCHEMA.m
 | [[arquitectura]] | arquitectura | Repos, stack, capas hexagonales, integración y entorno |
 | [[decisiones]] | decisiones | Decisiones aprobadas y preguntas abiertas |
 | [[ejecucion]] | ejecucion | Plan S2, estado de avance y evidencia por sesión |
+| [[evidencia-s2]] | ejecucion | Registro de evidencia S2 por repositorio (plantilla del curso) |
 
 ## Fuentes (`raw/`)
 

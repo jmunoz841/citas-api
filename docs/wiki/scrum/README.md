@@ -13,14 +13,14 @@ Aplicación web de agendamiento de citas (USER, PROFESSIONAL, ADMIN) en dos sede
 | Backend | Java 21, Spring Boot 3.5.x, Maven, Spring Data JPA, Spring Security + JWT, Flyway | Restricciones técnicas |
 | Base de datos | MySQL 8.4 | Restricciones técnicas |
 | Arquitectura | Hexagonal (`domain`, `application`, `infrastructure/adapters`) | Restricciones técnicas |
-| Frontend | React + Vite + TypeScript + Tailwind CSS (supuesto) | Pendiente de confirmar tras Stitch/AI Studio |
+| Frontend | React 19 + Vite 8 + TypeScript + Tailwind CSS 4 | Importado de AI Studio (D-015) |
 | Integración | REST JSON directo, sin BFF | Restricciones técnicas |
 
 ## Épicas
 
 | Épica | HU | Estado |
 |---|---|---|
-| [[EP-001-identidad-y-acceso]] | HU-001, HU-002 | Pendiente de aprobación |
+| [[EP-001-identidad-y-acceso]] | HU-001, HU-002 | En curso (HU-001 Completada) |
 | [[EP-002-perfil-y-afiliacion]] | HU-003, HU-004 | Borrador |
 | [[EP-003-catalogos]] | HU-005, HU-006, HU-007 | Borrador |
 | [[EP-004-gestion-de-profesionales]] | HU-008, HU-009 | Borrador |
@@ -82,8 +82,8 @@ Incremento: ciclo de vida completo de la cita y todas las pantallas obligatorias
 1. ~~Aprobación de HU-001~~ — Aprobada (2026-09-16).
 2. ~~Refresh token~~ — Rotación en cada refresh y almacenamiento como hash (aprobado).
 3. ~~Política de contraseña~~ — Mínimo 8 caracteres, al menos una letra y un número (aprobado).
-4. Representación de slots y estrategia contra doble reserva (se resuelve en la normalización 3FN propia).
-5. Framework frontend definitivo tras exportar desde Stitch/AI Studio.
+4. ~~Slots y doble reserva~~ — Resuelto en el diseño 3FN (D-013).
+5. ~~Framework frontend~~ — React + Vite + TypeScript (D-015).
 
 ## Trazabilidad PRD → HU
 

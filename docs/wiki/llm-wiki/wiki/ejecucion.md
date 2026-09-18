@@ -29,8 +29,8 @@ HU objetivo: [[HU-001-registro-e-inicio-de-sesion-jwt]] (`Aprobada`).
 | 12 | Handoff AI Studio e importación | Hecho | Prompt de handoff desde el diseño v2; export de AI Studio revisado e importado en `citas-web` sin restos de plantilla (Gemini, Express, dotenv, motion, lucide, metadata) |
 | 13 | Frontend ejecutable | Hecho | React 19 + Vite 8 + TS estricto + Tailwind 4; `npm run typecheck`/`build` en verde; puerto 5174; E2E contra `citas-api` 8081: CORS 5174 OK (5173 rechazado), registro/login/session/refresh/logout OK; capturas headless escritorio/tablet/móvil fieles a v2 |
 | 14 | `citas-web/AGENTS.md` | Hecho | Generado desde `PROMPT_AGENT_CITAS_WEB.md` con stack, estructura, mapeo de errores, tokens y verificación reales (+ `CLAUDE.md`); no existía versión previa (el historial solo tenía `AGENTS.md.template`) |
-| 15 | GOAL_01 sobre HU-001 | Pendiente | — |
-| 16 | Cierre: evidencia, wiki, README, commits `feat(s2): bootstrap specs auth and frontend baseline` | Pendiente | — |
+| 15 | GOAL_01 sobre HU-001 | Pendiente | La HU ya cumple las 6 condiciones del GOAL (actuará como verificación); lo lanza el usuario |
+| 16 | Cierre: evidencia, wiki, README, commits `feat(s2): bootstrap specs auth and frontend baseline` | Hecho | HU-001 `Completada` con matriz de evidencia (11 CA + 7 DoD); `mvnw test` 54/54; [[evidencia-s2]]; commits de cierre `bc79eaa` (api) y `ee952eb` (web) |
 
 ## Punto de retoma (fin de clase 2026-09-16)
 

@@ -47,6 +47,11 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 - DECISIÓN (usuario, 2026-09-18): pruebas de integración con Testcontainers en lugar de la MySQL local.
 - Páginas afectadas: [[arquitectura]], [[ejecucion]]
 
+## 2026-09-18 — LEARN — Cierre de S2
+- HECHO: HU-001 validada y `Completada` (11 CA + 7 DoD en `Cumple`); `mvnw test` 54/54; commits de cierre en ambos repos.
+- PREGUNTA ABIERTA: ejecución del ejercicio GOAL_01 (pendiente del usuario).
+- Páginas afectadas: [[ejecucion]], [[evidencia-s2]], [[index]]
+
 ## 2026-09-18 — INGEST — Un único .env por carpeta
 - DECISIÓN (instructor, vía usuario): solo `.env`, sin `.env.example`; local y no versionado (D-017).
 - HECHO: `.env` de raíz creado con los valores de `citas-api/.env`; `.env.example` eliminados de los tres repos; README, AGENTS, HU-001 (T-07/DoD), `preflight.ps1` y comentarios actualizados.
