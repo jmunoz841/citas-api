@@ -25,7 +25,7 @@ HU objetivo: [[HU-001-registro-e-inicio-de-sesion-jwt]] (`Aprobada`).
 | 8 | Vertical slice de autenticación | Hecho | Registro, login, refresh con rotación, logout, `/api/auth/session`, errores ProblemDetail, CORS; humo manual 20/20 contra MySQL; contrato `docs/contratos/autenticacion.md`; HU-001 `En desarrollo` (T-01…T-07, T-09) |
 | 9 | Verificación backend (`mvn test`) | Hecho | 54 pruebas / 0 fallos: dominio (19), `AuthServiceTest` (9), `JwtTokenProviderTest` (6), `AuthApiIntegrationTest` (18, Testcontainers MySQL 8.4 + Flyway), ArchUnit (2). Requiere Docker Desktop abierto |
 | 10 | `citas-api/AGENTS.md` | Hecho | `AGENTS.md` (+ `CLAUDE.md` que lo importa) generado desde `PROMPT_AGENT_CITAS_API.md` con la estructura, comandos y convenciones reales; sustituye a `AGENTS.md.template` |
-| 11 | Diseño Stitch login/registro | Pendiente | — |
+| 11 | Diseño Stitch login/registro | Hecho | "CitaClara", estilo señalética hospitalaria serena; v1 revisada (7 problemas) → v2 corregida y **aprobada** 2026-09-18; fuente de verdad `citas-web/docs/diseno/DESIGN.md` + `stitch-v2/`; registro en `APROBACION.md` |
 | 12 | Handoff AI Studio e importación | Pendiente | — |
 | 13 | Frontend ejecutable | Pendiente | — |
 | 14 | `citas-web/AGENTS.md` | Pendiente | — |
@@ -45,8 +45,9 @@ HU objetivo: [[HU-001-registro-e-inicio-de-sesion-jwt]] (`Aprobada`).
 3. ~~Paso 8~~: hecho el 2026-09-18.
 4. ~~Paso 9~~: hecho el 2026-09-18 (`mvn test` exige Docker Desktop abierto por Testcontainers).
 5. ~~Paso 10~~: hecho el 2026-09-18.
-6. **Paso 11:** diseño de login y registro con la skill `stitch-design-to-frontend` (requiere aprobación visual del usuario).
-7. Continuar con los pasos 12 a 16 de la tabla.
+6. ~~Paso 11~~: diseño v2 aprobado el 2026-09-18.
+7. **Paso 12:** handoff a Google AI Studio (React + Vite + TypeScript) e importación en `citas-web`.
+8. Continuar con los pasos 13 a 16 de la tabla.
 
 Recordatorios: no usar el compose raíz ni tocar recursos `fcv-citas-*` (otro grupo); API en 8081; HU-001 sigue `Aprobada` (pasar a `En desarrollo` al iniciar el paso 8).
 

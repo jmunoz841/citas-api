@@ -47,6 +47,11 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 - DECISIÓN (usuario, 2026-09-18): pruebas de integración con Testcontainers en lugar de la MySQL local.
 - Páginas afectadas: [[arquitectura]], [[ejecucion]]
 
+## 2026-09-18 — INGEST — Diseño aprobado de login y registro (paso 11)
+- Fuentes: `citas-web/docs/diseno/APROBACION.md`, `DESIGN.md`, `stitch-v1/`, `stitch-v2/`
+- DECISIÓN (usuario): v2 aprobada; Ley 1581 fuera de S2. PREGUNTA ABIERTA: consentimiento de datos como HU futura.
+- Páginas afectadas: [[decisiones]] (D-014), [[ejecucion]]
+
 ## 2026-09-18 — LEARN — AGENTS del backend (paso 10)
 - HECHO: `citas-api/AGENTS.md` generado desde el estado real del repo; `citas-api/CLAUDE.md` lo importa; `AGENTS.md.template` retirado.
 - Páginas afectadas: [[ejecucion]]

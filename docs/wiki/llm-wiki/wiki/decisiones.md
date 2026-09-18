@@ -25,6 +25,7 @@ Solo se registran como DECISIÓN los puntos aprobados explícitamente por el usu
 | D-011 | 2026-09-18 | La raíz del workspace se versiona en un repo **privado** `jmunoz841/FCV_Proyecto_Citas_v1` (reemplaza D-005). Incluye `database/reference/db.sql`. `citas-api/` y `citas-web/` quedan en su `.gitignore` y se clonan dentro. El remoto del trainer queda como `upstream` | Workspace | `raw/2026-09-18-decisiones-repo-raiz.md` |
 | D-012 | 2026-09-18 | `users.password_hash VARCHAR(255)` (BCrypt o Argon2) con CHECK ≥ 60 | HU-001 / V1 | `raw/2026-09-18-decisiones-comparacion-referencia.md` |
 | D-013 | 2026-09-18 | Doble reserva: slots materializados + `slot_reservations` con PK por slot; bloques sin solapamiento por UNIQUE `(professional_id, start_at)` | Modelo de datos | `raw/2026-09-18-decisiones-comparacion-referencia.md` |
+| D-014 | 2026-09-18 | Diseño de login/registro "CitaClara" v2 aprobado; fuente de verdad `citas-web/docs/diseno/DESIGN.md`. Consentimiento Ley 1581 fuera de S2 | Frontend | `citas-web/docs/diseno/APROBACION.md` |
 | D-007 | 2026-09-16 | Fechas/horas almacenadas en `America/Bogota` (JDBC, sesión MySQL, Hibernate y Jackson) | Global | `raw/2026-09-16-decisiones-normalizacion.md` |
 | D-008 | 2026-09-16 | Tipos de documento: CC, CE, TI, RC, PA, PPT | HU-001 | `raw/2026-09-16-decisiones-normalizacion.md` |
 
