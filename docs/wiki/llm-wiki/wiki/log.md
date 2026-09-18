@@ -46,3 +46,7 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 - HECHO: `mvn test` → 54 pruebas, 0 fallos, BUILD SUCCESS; integración contra `mysql:8.4` de Testcontainers (el contenedor se elimina al terminar; la BD local no cambia).
 - DECISIÓN (usuario, 2026-09-18): pruebas de integración con Testcontainers en lugar de la MySQL local.
 - Páginas afectadas: [[arquitectura]], [[ejecucion]]
+
+## 2026-09-18 — LEARN — AGENTS del backend (paso 10)
+- HECHO: `citas-api/AGENTS.md` generado desde el estado real del repo; `citas-api/CLAUDE.md` lo importa; `AGENTS.md.template` retirado.
+- Páginas afectadas: [[ejecucion]]

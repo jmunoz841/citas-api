@@ -24,7 +24,7 @@ HU objetivo: [[HU-001-registro-e-inicio-de-sesion-jwt]] (`Aprobada`).
 | 7 | MySQL + Flyway | Hecho | `V1__identidad_hu001.sql` aplicada en `jmunoz-citas-mysql` (3308): `flyway_schema_history` v1 success; tablas roles, document_types, users, user_roles, refresh_tokens; seeds 3 roles + 6 tipos de documento; 0 usuarios; API arrancó en 8081 |
 | 8 | Vertical slice de autenticación | Hecho | Registro, login, refresh con rotación, logout, `/api/auth/session`, errores ProblemDetail, CORS; humo manual 20/20 contra MySQL; contrato `docs/contratos/autenticacion.md`; HU-001 `En desarrollo` (T-01…T-07, T-09) |
 | 9 | Verificación backend (`mvn test`) | Hecho | 54 pruebas / 0 fallos: dominio (19), `AuthServiceTest` (9), `JwtTokenProviderTest` (6), `AuthApiIntegrationTest` (18, Testcontainers MySQL 8.4 + Flyway), ArchUnit (2). Requiere Docker Desktop abierto |
-| 10 | `citas-api/AGENTS.md` | Pendiente | — |
+| 10 | `citas-api/AGENTS.md` | Hecho | `AGENTS.md` (+ `CLAUDE.md` que lo importa) generado desde `PROMPT_AGENT_CITAS_API.md` con la estructura, comandos y convenciones reales; sustituye a `AGENTS.md.template` |
 | 11 | Diseño Stitch login/registro | Pendiente | — |
 | 12 | Handoff AI Studio e importación | Pendiente | — |
 | 13 | Frontend ejecutable | Pendiente | — |
@@ -44,8 +44,9 @@ HU objetivo: [[HU-001-registro-e-inicio-de-sesion-jwt]] (`Aprobada`).
 2. ~~Paso 5 (comparación con la referencia)~~ y ~~paso 7 (V1 Flyway)~~: hechos el 2026-09-18.
 3. ~~Paso 8~~: hecho el 2026-09-18.
 4. ~~Paso 9~~: hecho el 2026-09-18 (`mvn test` exige Docker Desktop abierto por Testcontainers).
-5. **Paso 10:** generar `citas-api/AGENTS.md` desde `prompts/agents/PROMPT_AGENT_CITAS_API.md`.
-6. Continuar con los pasos 11 a 16 de la tabla.
+5. ~~Paso 10~~: hecho el 2026-09-18.
+6. **Paso 11:** diseño de login y registro con la skill `stitch-design-to-frontend` (requiere aprobación visual del usuario).
+7. Continuar con los pasos 12 a 16 de la tabla.
 
 Recordatorios: no usar el compose raíz ni tocar recursos `fcv-citas-*` (otro grupo); API en 8081; HU-001 sigue `Aprobada` (pasar a `En desarrollo` al iniciar el paso 8).
 
