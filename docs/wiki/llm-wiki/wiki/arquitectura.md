@@ -41,8 +41,9 @@ fuentes:
 ## Frontend (`citas-web`)
 
 - Node.js 24 LTS + TypeScript.
-- React **o** Angular, según export de Stitch/Google AI Studio. **Supuesto actual:** React + Vite + TypeScript + Tailwind (pendiente de confirmar).
-- URL del backend por environment (`VITE_API_URL` o equivalente Angular).
+- **React 19 + Vite 8 + TypeScript estricto + Tailwind 4 + React Router 7** (importado de AI Studio, D-015). Puerto 5174.
+- `src/features/auth/{api,components,pages,session,validation}`; `VITE_AUTH_MODE=api|mock` selecciona cliente HTTP real o simulado.
+- URL del backend por environment (`VITE_API_URL=http://localhost:8081`). Access token en memoria; refresh token en sessionStorage con rotación.
 - Sin Express ni BFF.
 
 ## Seguridad transversal

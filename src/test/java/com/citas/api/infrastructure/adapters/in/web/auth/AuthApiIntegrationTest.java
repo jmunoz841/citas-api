@@ -288,10 +288,10 @@ class AuthApiIntegrationTest {
     @Test
     void corsPermiteSoloElOrigenDelFrontend() throws Exception {
         mvc.perform(options("/api/auth/login")
-                        .header(HttpHeaders.ORIGIN, "http://localhost:5173")
+                        .header(HttpHeaders.ORIGIN, "http://localhost:5174")
                         .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "POST"))
                 .andExpect(status().isOk())
-                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:5173"));
+                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:5174"));
 
         mvc.perform(options("/api/auth/login")
                         .header(HttpHeaders.ORIGIN, "http://evil.example")

@@ -26,6 +26,7 @@ Solo se registran como DECISIÓN los puntos aprobados explícitamente por el usu
 | D-012 | 2026-09-18 | `users.password_hash VARCHAR(255)` (BCrypt o Argon2) con CHECK ≥ 60 | HU-001 / V1 | `raw/2026-09-18-decisiones-comparacion-referencia.md` |
 | D-013 | 2026-09-18 | Doble reserva: slots materializados + `slot_reservations` con PK por slot; bloques sin solapamiento por UNIQUE `(professional_id, start_at)` | Modelo de datos | `raw/2026-09-18-decisiones-comparacion-referencia.md` |
 | D-014 | 2026-09-18 | Diseño de login/registro "CitaClara" v2 aprobado; fuente de verdad `citas-web/docs/diseno/DESIGN.md`. Consentimiento Ley 1581 fuera de S2 | Frontend | `citas-web/docs/diseno/APROBACION.md` |
+| D-015 | 2026-09-18 | Frontend React 19 + Vite + TypeScript estricto + Tailwind 4 en el puerto **5174** (5173 ocupado por otro grupo); `FRONTEND_ORIGIN` de `citas-api` pasa a `http://localhost:5174`. Tokens: access en memoria, refresh en sessionStorage | Frontend / CORS | Recomendación del plan S2 + importación del paso 13 |
 | D-007 | 2026-09-16 | Fechas/horas almacenadas en `America/Bogota` (JDBC, sesión MySQL, Hibernate y Jackson) | Global | `raw/2026-09-16-decisiones-normalizacion.md` |
 | D-008 | 2026-09-16 | Tipos de documento: CC, CE, TI, RC, PA, PPT | HU-001 | `raw/2026-09-16-decisiones-normalizacion.md` |
 

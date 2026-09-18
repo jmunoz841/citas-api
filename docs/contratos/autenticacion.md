@@ -2,7 +2,7 @@
 
 - **Base URL (local):** `http://localhost:8081` (`API_PORT`, D-010)
 - **Formato:** JSON UTF-8. Errores en `application/problem+json` (RFC 9457).
-- **CORS:** solo el origen `FRONTEND_ORIGIN` (por defecto `http://localhost:5173`); cabeceras `Authorization` y `Content-Type`.
+- **CORS:** solo el origen `FRONTEND_ORIGIN` (por defecto `http://localhost:5174`); cabeceras `Authorization` y `Content-Type`.
 - **Autenticación:** `Authorization: Bearer <accessToken>` en rutas protegidas.
 - **Implementación:** `infrastructure/adapters/in/web/auth/AuthController.java`.
 

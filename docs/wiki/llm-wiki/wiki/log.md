@@ -47,6 +47,12 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 - DECISIÓN (usuario, 2026-09-18): pruebas de integración con Testcontainers en lugar de la MySQL local.
 - Páginas afectadas: [[arquitectura]], [[ejecucion]]
 
+## 2026-09-18 — LEARN — Importación del frontend (pasos 12 y 13)
+- HECHO: export de AI Studio con buena estructura y accesibilidad; se retiraron dependencias no pedidas y se corrigieron tipos numéricos, rol `USER` en el mock, sesión cerrada por errores de red, resumen de errores que etiquetaba mal los 400 y no se limpiaba, estilos de error y tamaños fuera de `DESIGN.md`.
+- HECHO: E2E navegador→API con origen 5174; `mvn test` 54/54 tras cambiar CORS.
+- HECHO: Edge headless tiene ancho mínimo ~500px; para móvil se captura dentro de un iframe de 390px.
+- Páginas afectadas: [[decisiones]] (D-015), [[ejecucion]], [[arquitectura]]
+
 ## 2026-09-18 — INGEST — Diseño aprobado de login y registro (paso 11)
 - Fuentes: `citas-web/docs/diseno/APROBACION.md`, `DESIGN.md`, `stitch-v1/`, `stitch-v2/`
 - DECISIÓN (usuario): v2 aprobada; Ley 1581 fuera de S2. PREGUNTA ABIERTA: consentimiento de datos como HU futura.
