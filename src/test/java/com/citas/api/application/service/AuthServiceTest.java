@@ -21,6 +21,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.HashMap;
@@ -137,6 +138,18 @@ class AuthServiceTest {
                 .isInstanceOf(InvalidRefreshTokenException.class);
         assertThatThrownBy(() -> service.refresh("refresh-1-desconocido"))
                 .isInstanceOf(InvalidRefreshTokenException.class);
+    }
+
+    @Test
+    void ca10_refreshExpiradoEnBaseDeDatosSeRechazaSinEmitirTokens() {
+        service.register(command("ana@example.com", "1234"));
+        AuthTokens tokens = service.login(new LoginCommand("ana@example.com", "Segura123"));
+        AuthService eightDaysLater = new AuthService(users, refreshTokens, new FakeHasher(), new FakeTokens(),
+                Clock.offset(CLOCK, Duration.ofDays(8)));
+
+        assertThatThrownBy(() -> eightDaysLater.refresh(tokens.refreshToken()))
+                .isInstanceOf(InvalidRefreshTokenException.class);
+        assertThat(refreshTokens.byId).hasSize(1);
     }
 
     @Test
