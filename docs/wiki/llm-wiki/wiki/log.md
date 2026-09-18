@@ -47,6 +47,11 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 - DECISIÓN (usuario, 2026-09-18): pruebas de integración con Testcontainers en lugar de la MySQL local.
 - Páginas afectadas: [[arquitectura]], [[ejecucion]]
 
+## 2026-09-18 — INGEST — Panel de sedes plegable
+- DECISIÓN (usuario): riel delgado de 72px, cambio directo en código (D-016).
+- HECHO: typecheck/build en verde; capturas desplegado y plegado correctas; la preferencia persiste entre pantallas (`localStorage`).
+- Páginas afectadas: [[decisiones]]
+
 ## 2026-09-18 — LEARN — AGENTS del frontend (paso 14)
 - HECHO: `citas-web/AGENTS.md` y `CLAUDE.md` creados; `AGENTS.md.template` retirado. PREGUNTA ABIERTA: herramienta de pruebas automatizadas del frontend (hoy solo typecheck/build).
 - Páginas afectadas: [[ejecucion]]
