@@ -101,7 +101,7 @@ Se mantiene como una única HU compuesta por decisión explícita del plan S2: r
 - [x] **T-07 — Configuración por entorno**  
   Dificultad: Bajo  
   Descripción: conexión MySQL, secretos y duraciones JWT por variables de entorno; `.env.example` actualizado sin secretos reales.
-- [ ] **T-08 — Pruebas de backend**  
+- [x] **T-08 — Pruebas de backend** (2026-09-18: 54 pruebas, `mvn test` en verde)  
   Dificultad: Medio  
   Descripción: registro exitoso, email duplicado, documento duplicado, datos inválidos, login correcto, credenciales inválidas, refresh válido, refresh inválido/revocado y logout.
 - [x] **T-09 — Contrato de autenticación documentado**  
@@ -221,4 +221,5 @@ Se mantiene como una única HU compuesta por decisión explícita del plan S2: r
 - Decisión aprobada (2026-09-16): política de contraseña fija — mínimo 8 caracteres, al menos una letra y al menos un número.
 - Resuelto (D-008): tipos de documento como catálogo fijo `document_types` (CC, CE, TI, RC, PA, PPT).
 - Diseño implementado: el logout revoca el refresh token; el access token (15 min) sigue siendo válido hasta expirar y el cliente debe descartarlo. Contrato en `docs/contratos/autenticacion.md`.
-- 2026-09-18 — Prueba manual de humo contra MySQL real: 20 casos de CA-01 a CA-11 con el resultado esperado. No sustituye las pruebas automatizadas de T-08 (paso 9).
+- 2026-09-18 — Prueba manual de humo contra MySQL real: 20 casos de CA-01 a CA-11 con el resultado esperado.
+- 2026-09-18 — Pruebas automatizadas (T-08): `AuthApiIntegrationTest` cubre CA-01…CA-11 contra MySQL 8.4 desechable (Testcontainers) con Flyway V1; además pruebas unitarias de dominio, `AuthService` con puertos falsos y `JwtTokenProvider`. Total 54 pruebas, 0 fallos. La validación formal de CA/DoD se hará al cerrar la HU (GOAL_01).

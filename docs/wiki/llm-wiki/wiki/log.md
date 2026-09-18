@@ -41,3 +41,8 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 ## 2026-09-18 — LEARN — Vertical slice de autenticación (paso 8)
 - HECHO: API arranca con Flyway `validate` sobre V1; humo manual 20/20 (CA-01…CA-11) contra `jmunoz-citas-mysql`; contraseña guardada como BCrypt `$2a$10$`; refresh tokens como SHA-256 hex; rotación enlazada por `replaced_by_token_id`; 0 contraseñas/tokens en el log.
 - Páginas afectadas: [[arquitectura]], [[ejecucion]], [[index]]
+
+## 2026-09-18 — LEARN — Pruebas automatizadas de HU-001 (paso 9)
+- HECHO: `mvn test` → 54 pruebas, 0 fallos, BUILD SUCCESS; integración contra `mysql:8.4` de Testcontainers (el contenedor se elimina al terminar; la BD local no cambia).
+- DECISIÓN (usuario, 2026-09-18): pruebas de integración con Testcontainers en lugar de la MySQL local.
+- Páginas afectadas: [[arquitectura]], [[ejecucion]]
