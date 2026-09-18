@@ -33,7 +33,7 @@ Aplicación web de agendamiento de citas (USER, PROFESSIONAL, ADMIN) en dos sede
 
 ### Sprint 1 — Identidad base (S2)
 
-- [[HU-001-registro-e-inicio-de-sesion-jwt]] — Alto — **Aprobada**
+- [[HU-001-registro-e-inicio-de-sesion-jwt]] — Alto — **Completada**
 
 Incremento: backend inicializado con registro + login JWT funcional y verificado.
 

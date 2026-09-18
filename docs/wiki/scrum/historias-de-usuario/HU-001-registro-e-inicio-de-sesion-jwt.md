@@ -2,7 +2,7 @@
 id: HU-001
 tipo: historia-de-usuario
 titulo: "Registro e inicio de sesión con sesión JWT"
-estado: En desarrollo
+estado: Completada
 epica: "[[EP-001-identidad-y-acceso]]"
 esfuerzo: "Alto"
 sprint_sugerido: "Sprint 1"
@@ -178,42 +178,49 @@ Se mantiene como una única HU compuesta por decisión explícita del plan S2: r
 
 ## Definition of Done
 
-- [ ] Todos los criterios de aceptación CA-01 a CA-11 están validados con evidencia.
-- [ ] Proyecto Spring Boot 3.5.x / Java 21 / Maven con paquetes hexagonales (`domain`, `application`, `infrastructure/adapters`) observable en `citas-api`.
-- [ ] Migración Flyway de identidad presente y aplicada correctamente contra MySQL 8.4.
-- [ ] Pruebas de registro, login correcto, credenciales inválidas, email/documento duplicados y refresh inválido existen y `mvn test` termina en verde.
-- [ ] Ningún secreto real versionado; `README.md` documenta las variables necesarias del `.env` local.
-- [ ] No se registran contraseñas ni tokens en logs.
-- [ ] Contrato REST de autenticación documentado para `citas-web`.
-- [ ] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
+- [x] Todos los criterios de aceptación CA-01 a CA-11 están validados con evidencia.
+- [x] Proyecto Spring Boot 3.5.x / Java 21 / Maven con paquetes hexagonales (`domain`, `application`, `infrastructure/adapters`) observable en `citas-api`.
+- [x] Migración Flyway de identidad presente y aplicada correctamente contra MySQL 8.4.
+- [x] Pruebas de registro, login correcto, credenciales inválidas, email/documento duplicados y refresh inválido existen y `mvn test` termina en verde.
+- [x] Ningún secreto real versionado; `README.md` documenta las variables necesarias del `.env` local.
+- [x] No se registran contraseñas ni tokens en logs.
+- [x] Contrato REST de autenticación documentado para `citas-web`.
+- [x] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
 
 ## Evidencia de validación
 
 | Elemento | Resultado | Evidencia | Observación |
 |---|---|---|---|
-| CA-01 | Pendiente | — | — |
-| CA-02 | Pendiente | — | — |
-| CA-03 | Pendiente | — | — |
-| CA-04 | Pendiente | — | — |
-| CA-05 | Pendiente | — | — |
-| CA-06 | Pendiente | — | — |
-| CA-07 | Pendiente | — | — |
-| CA-08 | Pendiente | — | — |
-| CA-09 | Pendiente | — | — |
-| CA-10 | Pendiente | — | — |
-| CA-11 | Pendiente | — | — |
-| DoD-01 Arquitectura hexagonal | Pendiente | — | — |
-| DoD-02 Flyway | Pendiente | — | — |
-| DoD-03 `mvn test` | Pendiente | — | — |
-| DoD-04 Secretos | Pendiente | — | — |
-| DoD-05 Logs | Pendiente | — | — |
-| DoD-06 Contrato REST | Pendiente | — | — |
+Pruebas en `src/test/java/com/citas/api/`; `AuthApiIntegrationTest` = HTTP → casos de uso → JPA → MySQL 8.4 (Testcontainers) con Flyway V1.
+
+| Elemento | Resultado | Evidencia | Observación |
+|---|---|---|---|
+| CA-01 Registro exitoso | Cumple | `AuthApiIntegrationTest.ca01_registroExitosoCreaUserSinExponerLaContrasena`, `registroNoAceptaRolDesdeElCliente`; `AuthServiceTest.registraUserConHashYSinGuardarLaContrasena` | Rol siempre `USER`; la respuesta no incluye contraseña ni hash |
+| CA-02 Hash BCrypt | Cumple | `ca02_laContrasenaSeGuardaComoHashBCrypt`; `BCryptPasswordHasher`; CHECK `chk_users_password_hash_len` (V1) | Hash `$2a$10$`, 60 caracteres |
+| CA-03 Email duplicado | Cumple | `ca03_emailDuplicadoConOtrasMayusculasDevuelve409`; `uk_users_email` con collation `utf8mb4_0900_as_ci`; `UserPersistenceAdapter` traduce la violación concurrente | 409 `EMAIL_ALREADY_REGISTERED` |
+| CA-04 Documento duplicado | Cumple | `ca04_documentoDuplicadoAunqueTengaPuntosDevuelve409`; `uk_users_document`; `IdentityDocument` normaliza | 409 `DOCUMENT_ALREADY_REGISTERED` |
+| CA-05 Validación | Cumple | `ca05_camposInvalidosDevuelven400ConErroresPorCampo`, `ca05_contrasenaQueNoCumpleLaPoliticaDevuelve400`, `ca05_tipoDeDocumentoInexistenteDevuelve400`; `PasswordPolicyTest`, `UserValueObjectsTest` | 400 `VALIDATION_ERROR` con `errors[]` por campo |
+| CA-06 Login correcto | Cumple | `ca06_loginCorrectoEmiteAccessYRefreshDistintos`; `JwtTokenProviderTest.accessTokenLlevaUsuarioYRoles` | Access con roles; `expiresIn` 900 s, refresh 7 días |
+| CA-07 Credenciales inválidas | Cumple | `ca07_credencialesInvalidasDevuelvenElMismo401`; `AuthServiceTest.loginFallaIgualConEmailInexistenteOContrasenaIncorrecta` | Mismo `detail` para ambos casos; sin tokens |
+| CA-08 Acceso protegido | Cumple | `ca08_recursoProtegidoSoloConAccessTokenValido`; `JwtTokenProviderTest.accessYRefreshNoSonIntercambiables`, `tokenExpiradoSeRechaza`, `tokenAlteradoOBasuraSeRechaza` | Sin token, token inválido o refresh como access → 401 |
+| CA-09 Refresh con rotación | Cumple | `ca09_refreshRotaElTokenYRevocaElAnterior`; `AuthServiceTest.refreshRotaElTokenYElAnteriorNoSePuedeReusar` | El usado queda revocado y enlazado (`replaced_by_token_id`); reuso → 401 |
+| CA-10 Refresh inválido | Cumple | `ca10_refreshInvalidoDevuelve401SinEmitirTokens`; `AuthServiceTest.refreshRechazaAccessTokenYTokensDesconocidos` | Access como refresh, basura e inexistente → 401 `INVALID_REFRESH_TOKEN` |
+| CA-11 Logout | Cumple | `ca11_logoutRevocaElRefreshToken`; `AuthServiceTest.logoutRevocaYEsIdempotente` | 204 idempotente; refresh posterior → 401 |
+| DoD-01 Arquitectura hexagonal | Cumple | `HexagonalArchitectureTest` (ArchUnit, 2 reglas); paquetes `domain`, `application`, `infrastructure/adapters` | Dominio sin Spring/JPA |
+| DoD-02 Flyway | Cumple | `src/main/resources/db/migration/V1__identidad_hu001.sql`; `flyway_schema_history` v1 `success=1` en `jmunoz-citas-mysql` y en cada ejecución de Testcontainers | MySQL 8.4.11 |
+| DoD-03 `mvn test` | Cumple | `mvnw test` 2026-09-18: 54 pruebas, 0 fallos, BUILD SUCCESS | Requiere Docker Desktop |
+| DoD-04 Secretos | Cumple | `git ls-files` sin `.env`; `.gitignore`; variables en `README.md` (D-017); `JwtProperties` rechaza secretos débiles | Pruebas con secretos ficticios de `application-test.properties` |
+| DoD-05 Logs | Cumple | Humo manual 2026-09-18: 0 coincidencias de contraseñas o JWT en el log de la API; `toString` enmascarado en comandos, DTOs y tokens | Revisión estática + ejecución |
+| DoD-06 Contrato REST | Cumple | `docs/contratos/autenticacion.md`; consumido por `citas-web` (E2E 2026-09-18 con CORS 5174) | — |
+| DoD-07 Trazabilidad | Cumple | Esta HU, [[EP-001-identidad-y-acceso]], `docs/wiki/scrum/README.md`, wiki `ejecucion.md` | — |
 
 ## Historial de validación
 
 - 2026-09-16 (S2) — HU creada en estado `Pendiente de aprobación`.
 - 2026-09-16 (S2) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz).
 - 2026-09-18 (S2) — HU `En desarrollo` (inicio del vertical slice de autenticación, confirmado por el usuario).
+- 2026-09-18 (S2) — HU `En validación`: matriz de evidencia registrada (11 CA + 7 DoD en `Cumple`; `mvnw test` 54/54).
+- 2026-09-18 (S2) — HU `Completada`.
 - 2026-09-18 (S2) — DoD y T-07 ajustadas: el instructor indicó un único `.env` por carpeta (sin `.env.example`); las variables pasan a documentarse en `README.md` (D-017).
 
 ## Notas y decisiones

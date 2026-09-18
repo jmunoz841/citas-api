@@ -48,7 +48,7 @@ Base de identidad y autorización por rol sobre la que se construyen todas las d
 
 ## Historias de usuario
 
-- [[HU-001-registro-e-inicio-de-sesion-jwt]] — Sprint 1 — Aprobada
+- [[HU-001-registro-e-inicio-de-sesion-jwt]] — Sprint 1 — Completada
 - [[HU-002-recuperar-contrasena]] — Sprint 3 — Borrador
 
 ## Criterio de completitud de la épica
