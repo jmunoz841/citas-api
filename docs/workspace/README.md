@@ -1,8 +1,8 @@
-﻿# Respaldo de archivos del workspace raíz
+# Respaldo de archivos del workspace raíz
 
-La raíz del workspace es un clon de la plantilla del trainer y no se versiona (decisión D-005). Estas son copias de los archivos creados allí para no perderlos:
+Desde 2026-09-18 la raíz del workspace se versiona en el repo privado `github.com/jmunoz841/FCV_Proyecto_Citas_v1` (decisión D-011), que es la fuente principal de `AGENTS.md` y `CLAUDE.md`.
 
-- `AGENTS.raiz.md` → restaurar como `../AGENTS.md` en la raíz del workspace.
-- `CLAUDE.raiz.md` → restaurar como `../CLAUDE.md` en la raíz del workspace.
+Estas copias se conservan solo como respaldo:
 
-Si se edita el original en la raíz, volver a copiarlo aquí antes de hacer commit.
+- `AGENTS.raiz.md` → corresponde a `../AGENTS.md` en la raíz del workspace.
+- `CLAUDE.raiz.md` → corresponde a `../CLAUDE.md` en la raíz del workspace.

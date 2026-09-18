@@ -27,3 +27,7 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 - Fuentes: `raw/2026-09-16-decisiones-entorno-aislado.md`
 - HECHO: `jmunoz-citas-mysql` healthy; `SELECT VERSION(), @@time_zone` → 8.4.11, America/Bogota, utf8mb4, BD `citas_fcv_training`.
 - Páginas afectadas: [[decisiones]] (D-009 reemplaza D-006), [[arquitectura]], [[index]]
+
+## 2026-09-18 — INGEST — Repo privado de la raíz del workspace
+- Fuentes: `raw/2026-09-18-decisiones-repo-raiz.md`
+- Páginas afectadas: [[decisiones]] (D-011 reemplaza D-005), [[index]]

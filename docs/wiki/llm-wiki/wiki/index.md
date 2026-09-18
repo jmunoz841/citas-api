@@ -22,6 +22,7 @@ Punto de entrada de la memoria global. Convenciones: [SCHEMA](../schema/SCHEMA.m
 | `raw/2026-09-16-decisiones-workspace.md` | Raíz sin commits y puerto MySQL 3307 |
 | `raw/2026-09-16-decisiones-normalizacion.md` | Zona horaria Bogotá, tipos de documento, primer ADMIN diferido |
 | `raw/2026-09-16-decisiones-entorno-aislado.md` | MySQL propio en 3308, aislado de otro grupo |
+| `raw/2026-09-18-decisiones-repo-raiz.md` | Raíz del workspace en repo privado |
 
 ## Diseño de base de datos
 

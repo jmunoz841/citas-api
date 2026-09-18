@@ -18,10 +18,11 @@ Solo se registran como DECISIÓN los puntos aprobados explícitamente por el usu
 | D-002 | 2026-09-16 | HU-001 (registro + login JWT) es la única HU aprobada para S2 | Scrum | `raw/2026-09-16-decisiones-hu-001.md` |
 | D-003 | 2026-09-16 | Refresh token rotado en cada refresh y almacenado como hash en BD | HU-001 | `raw/2026-09-16-decisiones-hu-001.md` |
 | D-004 | 2026-09-16 | Contraseña: mínimo 8 caracteres, al menos una letra y un número | HU-001 | `raw/2026-09-16-decisiones-hu-001.md` |
-| D-005 | 2026-09-16 | La raíz del workspace es el clon de la plantilla del trainer: no se hacen commits en ella; `citas-api/` y `citas-web/` se ocultan localmente (`.git/info/exclude` + `skip-worktree`) | Workspace | `raw/2026-09-16-decisiones-workspace.md` |
+| D-005 | 2026-09-16 | ~~Reemplazada por D-011~~ La raíz del workspace es el clon de la plantilla del trainer: no se hacen commits en ella; `citas-api/` y `citas-web/` se ocultan localmente (`.git/info/exclude` + `skip-worktree`) | Workspace | `raw/2026-09-16-decisiones-workspace.md` |
 | D-006 | 2026-09-16 | ~~MySQL en `localhost:3307`~~ → reemplazada por D-009 | Entorno | `raw/2026-09-16-decisiones-workspace.md` |
 | D-009 | 2026-09-16 | MySQL propio y aislado: `citas-api/docker-compose.yml` (proyecto `jmunoz-citas`, contenedor `jmunoz-citas-mysql`, puerto host 3308). No usar el compose raíz (colisiona con otro grupo en el mismo equipo); `.env` raíz eliminado | Entorno | `raw/2026-09-16-decisiones-entorno-aislado.md` |
 | D-010 | 2026-09-16 | `citas-api` escucha en el puerto 8081 (`API_PORT`), porque 8080 lo ocupa el otro grupo | Entorno | `raw/2026-09-16-decisiones-entorno-aislado.md` |
+| D-011 | 2026-09-18 | La raíz del workspace se versiona en un repo **privado** `jmunoz841/FCV_Proyecto_Citas_v1` (reemplaza D-005). Incluye `database/reference/db.sql`. `citas-api/` y `citas-web/` quedan en su `.gitignore` y se clonan dentro. El remoto del trainer queda como `upstream` | Workspace | `raw/2026-09-18-decisiones-repo-raiz.md` |
 | D-007 | 2026-09-16 | Fechas/horas almacenadas en `America/Bogota` (JDBC, sesión MySQL, Hibernate y Jackson) | Global | `raw/2026-09-16-decisiones-normalizacion.md` |
 | D-008 | 2026-09-16 | Tipos de documento: CC, CE, TI, RC, PA, PPT | HU-001 | `raw/2026-09-16-decisiones-normalizacion.md` |
 
