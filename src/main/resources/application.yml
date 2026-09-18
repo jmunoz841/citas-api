@@ -1,5 +1,5 @@
 # Configuración por variables de entorno. En local se leen desde citas-api/.env
-# (copiar .env.example a .env). Nunca versionar valores reales.
+# (archivo local, no versionado; variables documentadas en README.md). Nunca versionar valores reales.
 spring:
   application:
     name: citas-api

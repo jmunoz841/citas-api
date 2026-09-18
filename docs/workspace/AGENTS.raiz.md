@@ -50,7 +50,7 @@ Agente orquestador cross-repo. Mantiene coherencia entre especificaciones, contr
 - Ramas: `main` = estable, `develop` = trabajo. Commits en `develop`; merge a `main` solo cuando el usuario lo decida. No reescribir historial (sin squash/rebase destructivo ni force push).
 - Mínimo un commit trazable por sesión S2–S6 en cada repo.
 - Datos 100 % sintéticos. No usar información real de FCV salvo la pública incluida en el PRD (sedes).
-- Nunca abrir, imprimir ni copiar el contenido de archivos `.env`. Solo `.env.example` con valores ficticios se versiona.
+- Nunca abrir, imprimir ni copiar el contenido de archivos `.env`. Cada carpeta (raíz, `citas-api`, `citas-web`) tiene un único `.env` local, ignorado por Git; no existen `.env.example` (indicación del instructor, D-017). Las variables se documentan en los README; nunca se versionan valores reales.
 - No registrar contraseñas ni tokens en logs, commits, wiki ni respuestas.
 - `database/reference/` es la solución del trainer: no leerla ni usarla hasta que exista el diseño 3FN propio; después solo para comparar.
 - Workflows n8n versionados como JSON en `citas-api/automations/n8n/`, sin credenciales embebidas.

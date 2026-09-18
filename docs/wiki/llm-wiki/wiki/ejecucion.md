@@ -37,7 +37,7 @@ HU objetivo: [[HU-001-registro-e-inicio-de-sesion-jwt]] (`Aprobada`).
 1. **Preparar el equipo** (desde `citas-api/`):
    - **Sincronizar primero:** puede haber trabajo hecho en otro equipo. `git -C citas-api checkout develop; git -C citas-api pull` y lo mismo en `citas-web`. En un equipo nuevo: clonar el repo privado `FCV_Proyecto_Citas_v1` y, dentro de él, `citas-api` y `citas-web` (instrucciones en el `README.md` de la raíz, sección "Trabajar desde otro PC"). Hacer `git pull` en los tres repos.
    - Si no existe `%USERPROFILE%\.jdks\temurin-21`, instalar JDK 21 portable (Temurin).
-   - Si no existe `.env`, copiar `.env.example` a `.env` y generar contraseñas/secretos nuevos. Si el volumen `jmunoz-citas_mysql_data` ya existe, las contraseñas deben coincidir con las originales o hay que recrearlo (`docker compose down -v`).
+   - Si no existe `.env`, crearlo con las variables de `README.md` (en `citas-api`, `citas-web` y la raíz) y secretos nuevos. Si el volumen `jmunoz-citas_mysql_data` ya existe, las contraseñas deben coincidir con las originales o hay que recrearlo (`docker compose down -v`).
    - Estado al cerrar en el PC del laboratorio (2026-09-16): `.env`, contenedor y volumen de `jmunoz-citas` eliminados; JDK 21 portable conservado.
    - Abrir Docker Desktop → `docker compose up -d`.
    - Verificar: `$env:JAVA_HOME="$env:USERPROFILE\.jdks\temurin-21"; .\mvnw.cmd test`.

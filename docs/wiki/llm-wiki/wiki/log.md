@@ -47,6 +47,11 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 - DECISIÓN (usuario, 2026-09-18): pruebas de integración con Testcontainers en lugar de la MySQL local.
 - Páginas afectadas: [[arquitectura]], [[ejecucion]]
 
+## 2026-09-18 — INGEST — Un único .env por carpeta
+- DECISIÓN (instructor, vía usuario): solo `.env`, sin `.env.example`; local y no versionado (D-017).
+- HECHO: `.env` de raíz creado con los valores de `citas-api/.env`; `.env.example` eliminados de los tres repos; README, AGENTS, HU-001 (T-07/DoD), `preflight.ps1` y comentarios actualizados.
+- Páginas afectadas: [[decisiones]], [[ejecucion]]
+
 ## 2026-09-18 — INGEST — Panel de sedes plegable
 - DECISIÓN (usuario): riel delgado de 72px, cambio directo en código (D-016).
 - HECHO: typecheck/build en verde; capturas desplegado y plegado correctas; la preferencia persiste entre pantallas (`localStorage`).

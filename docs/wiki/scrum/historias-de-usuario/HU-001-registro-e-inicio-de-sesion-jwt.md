@@ -100,7 +100,7 @@ Se mantiene como una única HU compuesta por decisión explícita del plan S2: r
   Descripción: endpoints públicos de autenticación, filtro JWT, CORS explícito, rutas protegidas por defecto y manejo global de errores con formato uniforme.
 - [x] **T-07 — Configuración por entorno**  
   Dificultad: Bajo  
-  Descripción: conexión MySQL, secretos y duraciones JWT por variables de entorno; `.env.example` actualizado sin secretos reales.
+  Descripción: conexión MySQL, secretos y duraciones JWT por variables de entorno en un `.env` local no versionado; variables documentadas en `README.md` (D-017).
 - [x] **T-08 — Pruebas de backend** (2026-09-18: 54 pruebas, `mvn test` en verde)  
   Dificultad: Medio  
   Descripción: registro exitoso, email duplicado, documento duplicado, datos inválidos, login correcto, credenciales inválidas, refresh válido, refresh inválido/revocado y logout.
@@ -182,7 +182,7 @@ Se mantiene como una única HU compuesta por decisión explícita del plan S2: r
 - [ ] Proyecto Spring Boot 3.5.x / Java 21 / Maven con paquetes hexagonales (`domain`, `application`, `infrastructure/adapters`) observable en `citas-api`.
 - [ ] Migración Flyway de identidad presente y aplicada correctamente contra MySQL 8.4.
 - [ ] Pruebas de registro, login correcto, credenciales inválidas, email/documento duplicados y refresh inválido existen y `mvn test` termina en verde.
-- [ ] Ningún secreto real versionado; `.env.example` documenta las variables necesarias.
+- [ ] Ningún secreto real versionado; `README.md` documenta las variables necesarias del `.env` local.
 - [ ] No se registran contraseñas ni tokens en logs.
 - [ ] Contrato REST de autenticación documentado para `citas-web`.
 - [ ] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
@@ -214,6 +214,7 @@ Se mantiene como una única HU compuesta por decisión explícita del plan S2: r
 - 2026-09-16 (S2) — HU creada en estado `Pendiente de aprobación`.
 - 2026-09-16 (S2) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz).
 - 2026-09-18 (S2) — HU `En desarrollo` (inicio del vertical slice de autenticación, confirmado por el usuario).
+- 2026-09-18 (S2) — DoD y T-07 ajustadas: el instructor indicó un único `.env` por carpeta (sin `.env.example`); las variables pasan a documentarse en `README.md` (D-017).
 
 ## Notas y decisiones
 

@@ -1,6 +1,6 @@
 # MySQL propio de citas-api (aislado de otros grupos que usen la plantilla en este equipo).
 # Uso desde citas-api/:  docker compose up -d
-# Lee variables de citas-api/.env (copiar .env.example a .env).
+# Lee variables de citas-api/.env (local, no versionado; variables en README.md).
 name: jmunoz-citas
 
 services:

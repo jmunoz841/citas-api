@@ -78,7 +78,7 @@ Reglas (verificadas por `HexagonalArchitectureTest`):
 
 ## Seguridad
 
-- Secretos solo por variables de entorno (`.env` local importado por `application.yml`; plantilla en `.env.example`). **Nunca abras, imprimas ni copies `.env`.**
+- Secretos solo por variables de entorno: `.env` local (único archivo de entorno, no versionado) importado por `application.yml`; las variables están documentadas en `README.md`. No existe `.env.example` (indicación del instructor, D-017). **Nunca abras, imprimas ni copies `.env`.**
 - `JwtProperties` impide arrancar con secretos de menos de 32 bytes o iguales entre access y refresh.
 - Access (15 min) y refresh (7 días) son JWT con secreto y `typ` distintos. El refresh se guarda solo como SHA-256 hex y se rota en cada uso (D-003).
 - Contraseñas: BCrypt; política en `PasswordPolicy` (D-004).
