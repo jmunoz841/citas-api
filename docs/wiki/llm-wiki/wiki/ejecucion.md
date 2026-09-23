@@ -43,7 +43,9 @@ HU objetivo: [[HU-001-registro-e-inicio-de-sesion-jwt]] (`Aprobada`).
 | 5 | Frontend sin mock | Hecho | Eliminado `mockAuthApi` y su *fallback* silencioso (servía una cuenta de demo con contraseña en el código si faltaba `VITE_API_URL`); cliente de catálogos y `useDocumentTypes`; el select de tipo de documento ya viene de la API; 15 pruebas Vitest |
 | 6 | HU-004 Afiliación opcional (GOAL del instructor) | Hecho | Migración `V3__afiliacion_hu004.sql` (eps, eps_plans, user_affiliations + seed sintético con un plan inactivo y una EPS inactiva); `GET /api/v1/catalogs/insurance-plans`; registro con `insurancePlanId` y `regimeCode` en pareja; sección "Afiliación (opcional)" en el registro de `citas-web`. `mvnw test` 78/78 y `npm test` 22/22. Flyway v3 `success=1` en MySQL real |
 
-Pendiente de S3: HU-006/008/009 (oferta administrable), HU-010 (disponibilidad), HU-012/013/014 (búsqueda y reserva, con el LOOP de doble reserva) y HU-015 (decisión administrativa).
+| 7 | HU-006, HU-008 y HU-009 Oferta administrable (backend) | Hecho | Migración `V4__oferta_administrable_hu006_hu008.sql` con los dos índices funcionales del diseño 3FN (una sola especialidad general; una sola primaria por profesional), semilla de `Medicina General` y **ADMIN inicial** (D-021). Endpoints `/api/v1/admin/**` con `hasRole('ADMIN')`; sin DELETE de especialidades. 17 pruebas de integración; `mvnw test` 95/95. Humo contra MySQL real: login del ADMIN sembrado, duración 45 rechazada, 401 sin token, Flyway v1–v4 `success=1`. Contrato `docs/contratos/administracion.md` |
+
+Pendiente de S3: las **vistas de ADMIN** en `citas-web` (HU-006 T-04, HU-008 T-03, HU-009 T-02), HU-010 (disponibilidad), HU-012/013/014 (búsqueda y reserva, con el LOOP de doble reserva) y HU-015 (decisión administrativa). HU-009 CA-02 (exclusión de la búsqueda) solo será verificable cuando exista HU-012.
 
 ## Punto de retoma (fin de clase 2026-09-16)
 
