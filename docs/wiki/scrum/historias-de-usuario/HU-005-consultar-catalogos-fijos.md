@@ -56,13 +56,13 @@ Implementa RF-05. Catálogos precargados por seed y de solo lectura: roles, esta
 
 ## Tareas de desarrollo
 
-- [ ] **T-01 — Seed de catálogos fijos**  
+- [x] **T-01 — Seed de catálogos fijos** (2026-09-23: `V2__catalogos_fijos_hu005.sql`)  
   Dificultad: Bajo  
   Descripción: migración Flyway con los valores del PRD.
-- [ ] **T-02 — Consulta de catálogos**  
+- [x] **T-02 — Consulta de catálogos** (2026-09-23: 6 endpoints bajo `/api/v1/catalogs`)  
   Dificultad: Bajo  
   Descripción: casos de uso y endpoints de lectura.
-- [ ] **T-03 — Pruebas**  
+- [x] **T-03 — Pruebas** (2026-09-23: 9 pruebas de integración)  
   Dificultad: Bajo  
   Descripción: presencia de valores sembrados e inexistencia de operaciones de escritura.
 
@@ -88,19 +88,22 @@ Implementa RF-05. Catálogos precargados por seed y de solo lectura: roles, esta
 
 ## Definition of Done
 
-- [ ] Todos los criterios de aceptación obligatorios están validados con evidencia.
-- [ ] Migración Flyway con seed presente.
-- [ ] Pruebas de backend en verde.
-- [ ] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
+- [x] Todos los criterios de aceptación obligatorios están validados con evidencia.
+- [x] Migración Flyway con seed presente.
+- [x] Pruebas de backend en verde.
+- [x] Contrato REST documentado en `docs/contratos/catalogos.md`.
+- [x] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
 
 ## Evidencia de validación
 
 | Elemento | Resultado | Evidencia | Observación |
 |---|---|---|---|
-| CA-01 | Pendiente | — | — |
-| CA-02 | Pendiente | — | — |
-| CA-03 | Pendiente | — | — |
-| DoD | Pendiente | — | — |
+| CA-01 Sedes | Cumple | `CatalogApiIntegrationTest.ca01_lasSedesSonExactamenteHicEIcvConSuDireccion` | Exactamente HIC e ICV con las direcciones del PRD |
+| CA-02 Estados y regímenes | Cumple | `ca02_regimenesDevuelveLosValoresSembrados`, `ca02_estadosDeCitaIncluyenSuMarcaDeTerminal`, `ca02_estadosDeReprogramacionDevuelveLosCuatroValores`, `ca02_rolesYTiposDeDocumentoVienenDeLaMigracionV1` | 2 regímenes, 6 estados de cita, 4 de reprogramación, 3 roles y 6 tipos de documento |
+| CA-03 Solo lectura | Cumple | `ca03_unUsuarioAutenticadoTampocoPuedeEscribirEnLosCatalogos` (405), `ca03_sinSesionLaEscrituraNiSiquieraLlegaAlControlador` (401) | No existe ningún manejador de escritura |
+| DoD Migración | Cumple | `V2__catalogos_fijos_hu005.sql`, aplicada por Flyway en cada ejecución de Testcontainers | 4 tablas nuevas + seeds |
+| DoD Pruebas | Cumple | `mvnw test` 2026-09-23: 64 pruebas, 0 fallos, BUILD SUCCESS | 9 nuevas en `CatalogApiIntegrationTest` |
+| DoD Contrato | Cumple | `docs/contratos/catalogos.md` | Falta el consumo desde `citas-web` |
 
 ## Historial de validación
 
@@ -108,6 +111,10 @@ Implementa RF-05. Catálogos precargados por seed y de solo lectura: roles, esta
 
 - 2026-09-23 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S3.
 
+- 2026-09-23 (S3) — Backend implementado y verificado: migración V2, 6 endpoints de lectura y 9 pruebas de integración. Falta el consumo desde `citas-web`.
+
 ## Notas y decisiones
 
-- Incógnita: valores exactos de regímenes (p. ej. contributivo/subsidiado) a confirmar en la normalización.
+- Los catálogos son **públicos**, sin autenticación: el formulario de registro necesita los tipos de documento y las sedes antes de que exista una sesión. CA-01 describe el caso de un usuario autenticado, que también puede leerlos; no se restringe el acceso anónimo a datos de referencia no sensibles.
+- Resuelto: los regímenes sembrados son `CONTRIBUTIVO` y `SUBSIDIADO` (supuesto S-02 del diseño 3FN). La pregunta Q-03 sobre regímenes especiales sigue abierta y no afecta a S3.
+- Los endpoints se agrupan bajo `/api/v1/catalogs` (D-018). En el mismo cambio, la autenticación pasó de `/api/auth/*` a `/api/v1/auth/*`.

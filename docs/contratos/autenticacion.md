@@ -1,5 +1,7 @@
 # Contrato REST — Autenticación (HU-001)
 
+> **Versionado (D-018, 2026-09-23):** todos los endpoints viven bajo `/api/v1/`. Las rutas anteriores `/api/auth/*` ya no existen.
+
 - **Base URL (local):** `http://localhost:8081` (`API_PORT`, D-010)
 - **Formato:** JSON UTF-8. Errores en `application/problem+json` (RFC 9457).
 - **CORS:** solo el origen `FRONTEND_ORIGIN` (por defecto `http://localhost:5174`); cabeceras `Authorization` y `Content-Type`.
@@ -10,14 +12,14 @@
 
 | Método | Ruta | Auth | Éxito |
 |---|---|---|---|
-| POST | `/api/auth/register` | Pública | `201` + usuario |
-| POST | `/api/auth/login` | Pública | `200` + tokens |
-| POST | `/api/auth/refresh` | Pública (requiere refresh token) | `200` + tokens nuevos |
-| POST | `/api/auth/logout` | Pública (requiere refresh token) | `204` sin cuerpo |
-| GET | `/api/auth/session` | Access token | `200` + datos de sesión |
+| POST | `/api/v1/auth/register` | Pública | `201` + usuario |
+| POST | `/api/v1/auth/login` | Pública | `200` + tokens |
+| POST | `/api/v1/auth/refresh` | Pública (requiere refresh token) | `200` + tokens nuevos |
+| POST | `/api/v1/auth/logout` | Pública (requiere refresh token) | `204` sin cuerpo |
+| GET | `/api/v1/auth/session` | Access token | `200` + datos de sesión |
 | GET | `/actuator/health` | Pública | `200` |
 
-### POST `/api/auth/register`
+### POST `/api/v1/auth/register`
 
 ```json
 {
@@ -54,7 +56,7 @@ Respuesta `201`:
 }
 ```
 
-### POST `/api/auth/login`
+### POST `/api/v1/auth/login`
 
 ```json
 { "email": "ana@example.com", "password": "Segura123" }
@@ -76,7 +78,7 @@ Respuesta `200` (también para `/refresh`):
 - Claims del access token: `sub` (id de usuario), `email`, `roles`, `typ=access`, `iss=citas-api`, `jti`, `iat`, `exp`.
 - El refresh token lleva `typ=refresh` y se firma con otro secreto; el servidor solo guarda su hash SHA-256.
 
-### POST `/api/auth/refresh`
+### POST `/api/v1/auth/refresh`
 
 ```json
 { "refreshToken": "<JWT>" }
@@ -84,7 +86,7 @@ Respuesta `200` (también para `/refresh`):
 
 Rotación: devuelve un par nuevo y revoca el refresh token recibido. Reutilizar un refresh token ya rotado o revocado → `401`.
 
-### POST `/api/auth/logout`
+### POST `/api/v1/auth/logout`
 
 ```json
 { "refreshToken": "<JWT>" }
@@ -92,7 +94,7 @@ Rotación: devuelve un par nuevo y revoca el refresh token recibido. Reutilizar 
 
 Revoca el refresh token. Idempotente: responde `204` aunque el token no exista o ya esté revocado. El access token emitido sigue siendo válido hasta su expiración (máx. `JWT_ACCESS_MINUTES`); el cliente debe descartarlo.
 
-### GET `/api/auth/session`
+### GET `/api/v1/auth/session`
 
 Respuesta `200`:
 
@@ -108,7 +110,7 @@ Respuesta `200`:
   "title": "Bad Request",
   "status": 400,
   "detail": "Datos inválidos",
-  "instance": "/api/auth/register",
+  "instance": "/api/v1/auth/register",
   "code": "VALIDATION_ERROR",
   "errors": [{ "field": "password", "message": "La contraseña debe contener al menos un número" }]
 }
