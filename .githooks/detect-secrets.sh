@@ -19,7 +19,11 @@ findings=0
 hard_patterns='BEGIN (RSA |OPENSSH |EC |DSA |ENCRYPTED )?PRIVATE KEY|AKIA[0-9A-Z]{16}|jdbc:[a-z]+://[^[:space:]"]*:[^[:space:]"/@]+@'
 
 # Nivel 2: exentos si la ruta coincide con la lista blanca.
-soft_patterns='(password|passwd|contrasena|secret|token|api[_-]?key|apikey)[[:space:]]*[:=][[:space:]]*["'"'"'][^"'"'"']{8,}["'"'"']|eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}'
+#
+# El valor entrecomillado debe medir 8 caracteres o mas y contener al menos un digito, o bien
+# medir 32 o mas. Sin esa condicion saltaban identificadores y etiquetas de interfaz como
+# password: 'input-password' o password: 'Contrasena', que no son credenciales.
+soft_patterns="(?i)(password|passwd|contrasena|secret|token|api[_-]?key|apikey)\s*[:=]\s*[\x27\"](?=[^\x27\"]*[0-9])[^\x27\"]{8,}[\x27\"]|(?i)(password|passwd|secret|token|api[_-]?key|apikey)\s*[:=]\s*[\x27\"][^\x27\"]{32,}[\x27\"]|eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}"
 
 report() {
   if [ "$findings" -eq 0 ]; then
@@ -72,7 +76,7 @@ EOF
     continue
   fi
 
-  hits=$(printf '%s\n' "$content" | grep -nEi "$soft_patterns" | head -3)
+  hits=$(printf '%s\n' "$content" | grep -nP "$soft_patterns" | head -3)
   if [ -n "$hits" ]; then
     while IFS= read -r hit; do
       report "$file:${hit%%:*} credencial o token en texto plano."
