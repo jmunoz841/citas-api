@@ -1,6 +1,7 @@
 package com.citas.api.infrastructure.config;
 
 import com.citas.api.application.port.out.AffiliationRepositoryPort;
+import com.citas.api.application.port.out.AvailabilityRepositoryPort;
 import com.citas.api.application.port.out.CatalogRepositoryPort;
 import com.citas.api.application.port.out.PasswordHasherPort;
 import com.citas.api.application.port.out.ProfessionalRepositoryPort;
@@ -9,6 +10,7 @@ import com.citas.api.application.port.out.SpecialtyRepositoryPort;
 import com.citas.api.application.port.out.TokenProviderPort;
 import com.citas.api.application.port.out.UserRepositoryPort;
 import com.citas.api.application.service.AuthService;
+import com.citas.api.application.service.AvailabilityService;
 import com.citas.api.application.service.CatalogService;
 import com.citas.api.application.service.ProfessionalService;
 import com.citas.api.application.service.SpecialtyService;
@@ -40,6 +42,12 @@ class ApplicationConfig {
     @Bean
     CatalogService catalogService(CatalogRepositoryPort catalogs, AffiliationRepositoryPort affiliations) {
         return new CatalogService(catalogs, affiliations);
+    }
+
+    @Bean
+    AvailabilityService availabilityService(AvailabilityRepositoryPort blocks,
+                                            ProfessionalRepositoryPort professionals, Clock clock) {
+        return new AvailabilityService(blocks, professionals, clock);
     }
 
     @Bean

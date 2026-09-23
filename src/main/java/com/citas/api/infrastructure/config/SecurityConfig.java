@@ -42,6 +42,9 @@ class SecurityConfig {
                         .requestMatchers("/error").permitAll()
                         // Administración de la oferta: solo ADMIN (HU-006 CA-03, HU-008 CA-05).
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        // Agenda propia: solo PROFESSIONAL. La pertenencia la comprueba el
+                        // caso de uso con el id del token (HU-010 CA-06).
+                        .requestMatchers("/api/v1/professional/**").hasRole("PROFESSIONAL")
                         .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(problemHandlers.authenticationEntryPoint())

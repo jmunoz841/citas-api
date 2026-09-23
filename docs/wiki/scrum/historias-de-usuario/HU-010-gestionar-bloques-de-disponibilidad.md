@@ -63,19 +63,19 @@ Implementa RF-08. Un día puede tener varios bloques (p. ej. 08:00–12:00 HIC y
 
 ## Tareas de desarrollo
 
-- [ ] **T-01 — Migración de bloques y slots**  
+- [x] **T-01 — Migración de bloques y slots**  
   Dificultad: Medio  
   Descripción: modelo de bloque por profesional/sede/fecha y representación de slots con índices para agenda.
-- [ ] **T-02 — Reglas de dominio de bloques**  
+- [x] **T-02 — Reglas de dominio de bloques**  
   Dificultad: Alto  
   Descripción: pasado, solapamiento, sede habilitada, alineación a 30 minutos.
-- [ ] **T-03 — Casos de uso CRUD de bloques**  
+- [x] **T-03 — Casos de uso CRUD de bloques**  
   Dificultad: Medio  
   Descripción: creación con slots, edición/eliminación condicionada.
 - [ ] **T-04 — Vista de calendario de bloques**  
   Dificultad: Alto  
   Descripción: según diseño aprobado.
-- [ ] **T-05 — Pruebas**  
+- [x] **T-05 — Pruebas**  
   Dificultad: Medio  
   Descripción: cada regla de negocio y ownership.
 
@@ -119,23 +119,31 @@ Implementa RF-08. Un día puede tener varios bloques (p. ej. 08:00–12:00 HIC y
 
 ## Definition of Done
 
-- [ ] Todos los criterios de aceptación obligatorios están validados con evidencia.
-- [ ] Migración Flyway presente con índices para consultas de agenda.
-- [ ] Pruebas de reglas de bloques en verde.
+- [x] Criterios CA-01, CA-02, CA-03, CA-04 y CA-06 validados con evidencia.
+- [ ] CA-05 (bloque con slots comprometidos) validado: depende de `slot_reservations`, que llega con HU-013.
+- [x] Migración Flyway presente con índices para consultas de agenda.
+- [x] Pruebas de reglas de bloques en verde.
 - [ ] Vista de bloques/calendario integrada en `citas-web`.
-- [ ] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
+- [x] Contrato REST documentado en `docs/contratos/disponibilidad.md`.
+- [x] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
 
 ## Evidencia de validación
 
 | Elemento | Resultado | Evidencia | Observación |
 |---|---|---|---|
-| CA-01 | Pendiente | — | — |
-| CA-02 | Pendiente | — | — |
-| CA-03 | Pendiente | — | — |
-| CA-04 | Pendiente | — | — |
-| CA-05 | Pendiente | — | — |
-| CA-06 | Pendiente | — | — |
-| DoD | Pendiente | — | — |
+| CA-01 Varios bloques en un día | Cumple | `AvailabilityApiIntegrationTest.ca01_dosBloquesEnUnDiaGeneranSusSlotsDe30Minutos` | 08:00–12:00 → 8 slots y 14:00–17:00 → 6; 14 filas en `availability_slots`, todas alineadas a :00 o :30 |
+| CA-02 Bloque en el pasado | Cumple | `ca02_unBloqueEnElPasadoSeRechaza` | 400 con `field: startTime`; la regla vive en la aplicación porque MySQL no admite `NOW()` en un CHECK |
+| CA-03 Solapamiento | Cumple | `ca03_unBloqueQueSeCruzaConOtroSeRechazaAunEnOtraSede`; `bloquesContiguosNoSeConsideranSolapados` | Rechaza 11:00–13:00 sobre 08:00–12:00, también en otra sede; 12:00–14:00 sí se acepta |
+| CA-04 Sede no asignada | Cumple | `ca04_unaSedeNoAsignadaSeRechaza` | 400 con `field: siteCode`; FK compuesta `fk_blocks_professional_site` como última defensa |
+| CA-05 Bloque con citas | **Pendiente** | — | Requiere `slot_reservations` (HU-013). El guardián está previsto en `AvailabilityService.requireNoCommittedSlots` |
+| CA-06 Ownership | Cumple | `ca06_nadiePuedeTocarLosBloquesDeOtroProfesional`; `unUsuarioSinRolProfesionalNoAccedeALaAgenda` | Bloque ajeno → 404 (no se revela que existe) y la fila sigue intacta; sin rol → 403; sin token → 401 |
+| Alineación y rango | Cumple | `lasHorasDebenCaerEnPuntoOYMedia`, `elFinDebeSerPosteriorAlInicio` | 08:15 y 12:45 rechazados |
+| Edición y borrado | Cumple | `editarUnBloqueRegeneraSusSlots`, `eliminarUnBloqueSeLlevaSusSlots` | Editar 08:00–12:00 → 09:00–10:30 deja 3 slots; borrar arrastra los slots por `ON DELETE CASCADE` |
+| Calendario propio | Cumple | `elCalendarioPropioSeFiltraPorDiaYSede` | Filtros `date` y `siteCode` |
+| Profesional inactivo | Cumple | `unProfesionalInactivoNoPuedePublicarAgenda` | 400 con `field: professional` |
+| DoD Migración | Cumple | `V5__disponibilidad_hu010.sql` | Índices `idx_blocks_professional_site` e `idx_blocks_site_start` |
+| DoD Pruebas | Cumple | `mvnw test` 2026-09-23: 108 pruebas, 0 fallos | 13 nuevas |
+| DoD Vista `citas-web` | **Pendiente** | — | Llega con la pasada de frontend |
 
 ## Historial de validación
 
@@ -143,7 +151,9 @@ Implementa RF-08. Un día puede tener varios bloques (p. ej. 08:00–12:00 HIC y
 
 - 2026-09-23 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S3.
 
+- 2026-09-23 (S3) — Backend implementado y verificado: migración V5, 4 endpoints y 13 pruebas de integración (`mvnw test` 108/108). Pendientes CA-05 (necesita HU-013) y la vista de calendario.
+
 ## Notas y decisiones
 
-- Decisión pendiente (normalización): materializar slots como filas o calcularlos desde el bloque.
+- Resuelto (D-013): los slots se materializan como filas al crear el bloque. Es lo que permite que la ocupación sea una fila con clave primaria por slot y que la doble reserva la impida la base.
 - CA-05 solo es verificable una vez existan reservas ([[HU-013-reservar-cita-general]]).

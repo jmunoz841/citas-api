@@ -45,7 +45,9 @@ HU objetivo: [[HU-001-registro-e-inicio-de-sesion-jwt]] (`Aprobada`).
 
 | 7 | HU-006, HU-008 y HU-009 Oferta administrable (backend) | Hecho | Migración `V4__oferta_administrable_hu006_hu008.sql` con los dos índices funcionales del diseño 3FN (una sola especialidad general; una sola primaria por profesional), semilla de `Medicina General` y **ADMIN inicial** (D-021). Endpoints `/api/v1/admin/**` con `hasRole('ADMIN')`; sin DELETE de especialidades. 17 pruebas de integración; `mvnw test` 95/95. Humo contra MySQL real: login del ADMIN sembrado, duración 45 rechazada, 401 sin token, Flyway v1–v4 `success=1`. Contrato `docs/contratos/administracion.md` |
 
-Pendiente de S3: las **vistas de ADMIN** en `citas-web` (HU-006 T-04, HU-008 T-03, HU-009 T-02), HU-010 (disponibilidad), HU-012/013/014 (búsqueda y reserva, con el LOOP de doble reserva) y HU-015 (decisión administrativa). HU-009 CA-02 (exclusión de la búsqueda) solo será verificable cuando exista HU-012.
+| 8 | HU-010 Disponibilidad (backend) | Hecho | Migración `V5__disponibilidad_hu010.sql`; slots materializados de 30 min; 4 endpoints bajo `/api/v1/professional/**` con `hasRole('PROFESSIONAL')` y pertenencia por token; 13 pruebas de integración; `mvnw test` 108/108. Contrato `docs/contratos/disponibilidad.md`. CA-05 pendiente hasta HU-013 |
+
+Pendiente de S3: las **vistas de ADMIN y de PROFESSIONAL** en `citas-web` (HU-006 T-04, HU-008 T-03, HU-009 T-02), HU-010 (disponibilidad), HU-012/013/014 (búsqueda y reserva, con el LOOP de doble reserva) y HU-015 (decisión administrativa). HU-009 CA-02 (exclusión de la búsqueda) solo será verificable cuando exista HU-012.
 
 ## Punto de retoma (fin de clase 2026-09-16)
 
