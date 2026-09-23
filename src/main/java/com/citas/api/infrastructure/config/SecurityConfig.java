@@ -40,6 +40,8 @@ class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/catalogs/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/actuator/health").permitAll()
                         .requestMatchers("/error").permitAll()
+                        // Administración de la oferta: solo ADMIN (HU-006 CA-03, HU-008 CA-05).
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(problemHandlers.authenticationEntryPoint())

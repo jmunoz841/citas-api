@@ -52,6 +52,17 @@ docker compose up -d          # MySQL propio en localhost:3308
 
 **No** uses el `docker-compose.yml` de la raíz del workspace: sus contenedores `fcv-citas-*` chocan con otro grupo que comparte el equipo.
 
+## Cuenta ADMIN de laboratorio
+
+La migración `V4` siembra un ADMIN inicial, porque sin él nadie podría crear el primer profesional (D-021):
+
+| Campo | Valor |
+|---|---|
+| Email | `admin@citas.local` |
+| Contraseña | `Admin.Lab2026` |
+
+Son credenciales **de laboratorio con datos sintéticos**, pensadas para que cualquiera pueda levantar el proyecto y reproducir las pruebas. La contraseña se guarda solo como hash BCrypt. **Antes de exponer la API fuera de tu máquina, cámbiala**: este repositorio es público y cualquiera puede leer este README.
+
 ## Hooks de calidad
 
 Los hooks viven en `.githooks/` y están versionados, pero Git no los activa solo. Una vez por clon:

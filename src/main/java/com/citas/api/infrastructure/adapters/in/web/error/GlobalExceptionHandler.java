@@ -2,10 +2,12 @@ package com.citas.api.infrastructure.adapters.in.web.error;
 
 import com.citas.api.domain.exception.DocumentAlreadyRegisteredException;
 import com.citas.api.domain.exception.DomainException;
+import com.citas.api.domain.exception.DuplicateValueException;
 import com.citas.api.domain.exception.EmailAlreadyRegisteredException;
 import com.citas.api.domain.exception.InvalidCredentialsException;
 import com.citas.api.domain.exception.InvalidFieldException;
 import com.citas.api.domain.exception.InvalidRefreshTokenException;
+import com.citas.api.domain.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -40,9 +42,15 @@ class GlobalExceptionHandler {
         return ApiProblems.validation(List.of(Map.of("field", e.getField(), "message", e.getMessage())));
     }
 
-    @ExceptionHandler({EmailAlreadyRegisteredException.class, DocumentAlreadyRegisteredException.class})
+    @ExceptionHandler({EmailAlreadyRegisteredException.class, DocumentAlreadyRegisteredException.class,
+            DuplicateValueException.class})
     ProblemDetail conflict(DomainException e) {
         return ApiProblems.of(HttpStatus.CONFLICT, e.getCode(), e.getMessage());
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    ProblemDetail domainNotFound(ResourceNotFoundException e) {
+        return ApiProblems.of(HttpStatus.NOT_FOUND, e.getCode(), e.getMessage());
     }
 
     @ExceptionHandler({InvalidCredentialsException.class, InvalidRefreshTokenException.class})

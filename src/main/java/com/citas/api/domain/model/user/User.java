@@ -49,6 +49,13 @@ public final class User {
                 EnumSet.of(Role.USER));
     }
 
+    /** Alta de un profesional por un ADMIN: rol PROFESSIONAL y cuenta activa (HU-008). */
+    public static User createProfessional(String firstNames, String lastNames, IdentityDocument document, Email email,
+                                          String phone, String passwordHash) {
+        return new User(null, firstNames, lastNames, document, email, phone, passwordHash, true,
+                EnumSet.of(Role.PROFESSIONAL));
+    }
+
     public static User restore(Long id, String firstNames, String lastNames, IdentityDocument document, Email email,
                                String phone, String passwordHash, boolean active, Set<Role> roles) {
         return new User(id, firstNames, lastNames, document, email, phone, passwordHash, active, roles);

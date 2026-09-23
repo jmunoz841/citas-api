@@ -66,16 +66,16 @@ Implementa RF-07 (creación y asignaciones). El profesional es un usuario con ro
 
 ## Tareas de desarrollo
 
-- [ ] **T-01 — Migración de profesionales y relaciones**  
+- [x] **T-01 — Migración de profesionales y relaciones**  
   Dificultad: Medio  
   Descripción: perfil profesional, puentes con especialidades (con marca primaria) y sedes.
-- [ ] **T-02 — Caso de uso crear/editar profesional**  
+- [x] **T-02 — Caso de uso crear/editar profesional**  
   Dificultad: Alto  
   Descripción: creación transaccional de usuario + perfil + asignaciones con validaciones.
 - [ ] **T-03 — Vista CRUD de profesionales**  
   Dificultad: Medio  
   Descripción: formularios de asignación de especialidades y sedes.
-- [ ] **T-04 — Pruebas**  
+- [x] **T-04 — Pruebas**  
   Dificultad: Medio  
   Descripción: sin especialidad primaria, varias primarias, sin sede, duplicados y autorización.
 
@@ -113,28 +113,36 @@ Implementa RF-07 (creación y asignaciones). El profesional es un usuario con ro
 
 ## Definition of Done
 
-- [ ] Todos los criterios de aceptación obligatorios están validados con evidencia.
-- [ ] Migración Flyway presente.
-- [ ] Pruebas de backend en verde.
+- [x] Todos los criterios de aceptación obligatorios están validados con evidencia.
+- [x] Migración Flyway presente.
+- [x] Pruebas de backend en verde.
 - [ ] Vista CRUD integrada en `citas-web`.
-- [ ] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
+- [x] Contrato REST documentado en `docs/contratos/administracion.md`.
+- [x] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
 
 ## Evidencia de validación
 
 | Elemento | Resultado | Evidencia | Observación |
 |---|---|---|---|
-| CA-01 | Pendiente | — | — |
-| CA-02 | Pendiente | — | — |
-| CA-03 | Pendiente | — | — |
-| CA-04 | Pendiente | — | — |
-| CA-05 | Pendiente | — | — |
-| DoD | Pendiente | — | — |
+| CA-01 Creación válida | Cumple | `AdminOfferApiIntegrationTest.ca01_elProfesionalCreadoPuedeIniciarSesionYConservaSusAsignaciones` | Rol `PROFESSIONAL` en BD; inicia sesión con su contraseña temporal; la respuesta no expone contraseña ni hash |
+| CA-02 Especialidad primaria | Cumple | `ca02_sinPrimariaOConVariasPrimariasSeRechaza` | 400 con `field: specialties`; índice `uk_prof_specialties_one_primary` como última defensa |
+| CA-03 Sede obligatoria | Cumple | `ca03_sinSedesSeRechaza` | 400 |
+| CA-04 Unicidad | Cumple | `ca04_codigoMatriculaEmailYDocumentoSonUnicos` | 409 con código distinto para cada caso |
+| CA-05 Autorización | Cumple | `ca05_unProfesionalNoPuedeAdministrarProfesionales` | Un PROFESSIONAL recibe 403 |
+| Especialidad inactiva | Cumple | `unaEspecialidadInactivaNoSePuedeAsignar` | 400 con `field: specialties` |
+| Sede inexistente | Cumple | `unaSedeInexistenteSeRechaza` | 400 con `field: siteCodes` |
+| Reasignación | Cumple | `reasignarEspecialidadesYSedesReemplazaLasAnteriores` | `PUT` reemplaza el conjunto completo; la primaria queda donde se indicó |
+| DoD Migración | Cumple | `V4__oferta_administrable_hu006_hu008.sql` | `professionals`, `professional_specialties`, `professional_sites` + ADMIN inicial (D-021) |
+| DoD Pruebas | Cumple | `mvnw test` 2026-09-23: 95 pruebas, 0 fallos | — |
+| DoD Vista `citas-web` | **Pendiente** | — | La vista CRUD de ADMIN llega en el siguiente incremento del frontend |
 
 ## Historial de validación
 
 - 2026-09-16 (S2) — HU creada en estado `Borrador`.
 
 - 2026-09-23 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S3.
+
+- 2026-09-23 (S3) — Backend implementado y verificado (`mvnw test` 95/95). Pendiente la vista de ADMIN en `citas-web`.
 
 ## Notas y decisiones
 

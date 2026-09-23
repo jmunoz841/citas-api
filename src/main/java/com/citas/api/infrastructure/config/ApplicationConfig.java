@@ -3,11 +3,15 @@ package com.citas.api.infrastructure.config;
 import com.citas.api.application.port.out.AffiliationRepositoryPort;
 import com.citas.api.application.port.out.CatalogRepositoryPort;
 import com.citas.api.application.port.out.PasswordHasherPort;
+import com.citas.api.application.port.out.ProfessionalRepositoryPort;
 import com.citas.api.application.port.out.RefreshTokenRepositoryPort;
+import com.citas.api.application.port.out.SpecialtyRepositoryPort;
 import com.citas.api.application.port.out.TokenProviderPort;
 import com.citas.api.application.port.out.UserRepositoryPort;
 import com.citas.api.application.service.AuthService;
 import com.citas.api.application.service.CatalogService;
+import com.citas.api.application.service.ProfessionalService;
+import com.citas.api.application.service.SpecialtyService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -36,5 +40,17 @@ class ApplicationConfig {
     @Bean
     CatalogService catalogService(CatalogRepositoryPort catalogs, AffiliationRepositoryPort affiliations) {
         return new CatalogService(catalogs, affiliations);
+    }
+
+    @Bean
+    SpecialtyService specialtyService(SpecialtyRepositoryPort specialties) {
+        return new SpecialtyService(specialties);
+    }
+
+    @Bean
+    ProfessionalService professionalService(UserRepositoryPort users, ProfessionalRepositoryPort professionals,
+                                            SpecialtyRepositoryPort specialties, CatalogRepositoryPort catalogs,
+                                            PasswordHasherPort passwordHasher) {
+        return new ProfessionalService(users, professionals, specialties, catalogs, passwordHasher);
     }
 }
