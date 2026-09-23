@@ -31,17 +31,17 @@ Implementa la segunda parte de RF-04. La afiliación referencia catálogos (plan
 
 ## Alcance
 
-- Campo opcional `insurancePlanId` en el registro de USER.
-- Validación de que el plan exista y esté activo.
-- Creación de la afiliación inicial mediante clave foránea cuando se envía un plan.
-- Registro sin plan: flujo idéntico al actual, sin afiliación.
+- Campos opcionales `insurancePlanId` y `regimeCode` en el registro de USER, que van **en pareja**: enviar uno sin el otro es un error de validación.
+- Validación de que el plan exista y esté activo, y de que el régimen exista.
+- Creación de la afiliación inicial mediante claves foráneas cuando se envían ambos.
+- Registro sin afiliación: flujo idéntico al actual.
 - Endpoint de lectura de planes activos para alimentar el selector del frontend.
 
 ## Fuera de alcance
 
 - CRUD administrativo de EPS y planes ([[HU-007-gestionar-eps-y-planes]]).
 - Pantalla de perfil y edición posterior de la afiliación ([[HU-003-consultar-y-actualizar-perfil]]).
-- Selección de régimen por el usuario en S3: se toma el régimen del plan sembrado.
+- Afiliaciones múltiples por usuario.
 - Validación contra sistemas reales de EPS.
 
 ## Reglas de negocio
@@ -93,9 +93,9 @@ Implementa la segunda parte de RF-04. La afiliación referencia catálogos (plan
 
 ### CA-02 — Registro con plan activo
 
-**Dado** un visitante que selecciona un plan activo  
+**Dado** un visitante que selecciona un plan activo y su régimen  
 **Cuando** envía el registro  
-**Entonces** la cuenta se crea y queda asociada a una afiliación que referencia ese plan por clave foránea
+**Entonces** la cuenta se crea y queda asociada a una afiliación que referencia ese plan y ese régimen por clave foránea
 
 ### CA-03 — Plan inexistente o inactivo
 
@@ -115,9 +115,15 @@ Implementa la segunda parte de RF-04. La afiliación referencia catálogos (plan
 **Cuando** el frontend solicita los planes  
 **Entonces** recibe únicamente los planes activos, cada uno con su EPS, sin requerir autenticación
 
+### CA-06 — Plan y régimen van en pareja
+
+**Dado** un registro que envía solo el plan o solo el régimen  
+**Cuando** se procesa la solicitud  
+**Entonces** se responde con un error de validación que señala el campo que falta, sin crear usuario ni afiliación
+
 ## Definition of Done
 
-- [ ] Criterios CA-01 a CA-05 validados con evidencia.
+- [ ] Criterios CA-01 a CA-06 validados con evidencia.
 - [ ] Migración Flyway de EPS, planes y afiliación presente y aplicada.
 - [ ] Pruebas de backend en verde (`mvnw test`).
 - [ ] Pruebas de frontend del selector en verde (`npm test`).
@@ -134,6 +140,7 @@ Implementa la segunda parte de RF-04. La afiliación referencia catálogos (plan
 | CA-03 | Pendiente | — | — |
 | CA-04 | Pendiente | — | — |
 | CA-05 | Pendiente | — | — |
+| CA-06 | Pendiente | — | — |
 | DoD | Pendiente | — | — |
 
 ## Historial de validación
@@ -141,9 +148,11 @@ Implementa la segunda parte de RF-04. La afiliación referencia catálogos (plan
 - 2026-09-16 (S2) — HU creada en estado `Borrador`.
 - 2026-09-23 (S3) — Alcance recortado a "afiliación opcional durante el registro" y movida a Sprint 2; se eliminan las dependencias hacia HU-003 y HU-007.
 - 2026-09-23 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S3.
+- 2026-09-23 (S3) — El PO decide que el registro pida `insurancePlanId` y `regimeCode` en pareja; se añade CA-06 y se corrige la nota errónea sobre el régimen.
 
 ## Notas y decisiones
 
 - Resuelto: el diseño 3FN admite varias afiliaciones por usuario (`uk_user_affiliations_combo`), pero en S3 el registro solo crea la primera. La gestión de afiliaciones múltiples o vigentes se define en HU-003.
 - La EPS se deriva de `plan_id`; el diseño 3FN evita por estructura que un plan quede asociado a otra EPS.
-- El régimen se toma del plan sembrado. Permitir que el usuario elija régimen queda para HU-003.
+- **Régimen (decisión del PO, 2026-09-23):** `user_affiliations.regime_code` es obligatorio y el plan **no** lo determina —en Colombia el régimen depende de la situación del afiliado, no del plan, y una misma EPS opera en ambos—. Por eso el registro pide `insurancePlanId` y `regimeCode` juntos. Se descartó fijar `CONTRIBUTIVO` por defecto (guardaría un dato que el usuario nunca confirmó) y mover el régimen a `eps_plans` (modelaría mal la realidad y se apartaría del diseño 3FN aprobado).
+- Una nota anterior de esta HU afirmaba que el régimen se tomaba del plan; era incorrecta y queda corregida aquí.

@@ -29,12 +29,18 @@
   "documentNumber": "1234567",
   "email": "ana@example.com",
   "phone": "3001234567",
-  "password": "Segura123"
+  "password": "Segura123",
+  "insurancePlanId": 1,
+  "regimeCode": "CONTRIBUTIVO"
 }
 ```
 
 Reglas:
 - `documentType`: `CC`, `CE`, `TI`, `RC`, `PA`, `PPT`.
+- `insurancePlanId` y `regimeCode` (HU-004) son **opcionales y van en pareja**: si se envía uno sin el otro, la respuesta es `400` con el campo que falta. Cuando llegan ambos se crea la afiliación inicial del usuario.
+- `insurancePlanId`: identificador de `GET /api/v1/catalogs/insurance-plans`. Debe ser un plan seleccionable (activo y de una EPS activa); si no lo es, `400` con `field: insurancePlanId`.
+- `regimeCode`: código de `GET /api/v1/catalogs/regimes`. El régimen es un dato del afiliado, no del plan, por eso se pide aparte.
+- Un fallo de afiliación **no crea el usuario**: la validación ocurre antes y la transacción se deshace.
 - `documentNumber`: se normaliza (sin puntos, guiones ni espacios, en mayúsculas); 3–30 letras o dígitos.
 - `email`: se normaliza a minúsculas; único sin distinguir mayúsculas.
 - `phone`: 7–20 caracteres entre dígitos y `+ ( ) -` o espacio.

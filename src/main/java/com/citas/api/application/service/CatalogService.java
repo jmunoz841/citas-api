@@ -1,7 +1,9 @@
 package com.citas.api.application.service;
 
 import com.citas.api.application.port.in.ConsultCatalogsUseCase;
+import com.citas.api.application.port.out.AffiliationRepositoryPort;
 import com.citas.api.application.port.out.CatalogRepositoryPort;
+import com.citas.api.domain.model.affiliation.InsurancePlan;
 import com.citas.api.domain.model.catalog.CatalogEntry;
 import com.citas.api.domain.model.catalog.Site;
 import com.citas.api.domain.model.catalog.StatusEntry;
@@ -16,9 +18,11 @@ import java.util.List;
 public class CatalogService implements ConsultCatalogsUseCase {
 
     private final CatalogRepositoryPort catalogs;
+    private final AffiliationRepositoryPort affiliations;
 
-    public CatalogService(CatalogRepositoryPort catalogs) {
+    public CatalogService(CatalogRepositoryPort catalogs, AffiliationRepositoryPort affiliations) {
         this.catalogs = catalogs;
+        this.affiliations = affiliations;
     }
 
     @Override
@@ -55,5 +59,11 @@ public class CatalogService implements ConsultCatalogsUseCase {
     @Transactional(readOnly = true)
     public List<StatusEntry> rescheduleStatuses() {
         return catalogs.findRescheduleStatuses();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<InsurancePlan> insurancePlans() {
+        return affiliations.findSelectablePlans();
     }
 }

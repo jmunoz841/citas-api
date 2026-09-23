@@ -26,7 +26,10 @@ final class AuthDtos {
             @NotBlank @Email @Size(max = 254) String email,
             @NotBlank @Pattern(regexp = "^[0-9+()\\- ]{7,20}$", message = "debe tener entre 7 y 20 dígitos o símbolos + ( ) -")
             String phone,
-            @NotBlank String password) {
+            @NotBlank String password,
+            // Afiliación opcional (HU-004): si llega una, deben llegar las dos.
+            Long insurancePlanId,
+            @Size(max = 20) String regimeCode) {
 
         @Override
         public String toString() {

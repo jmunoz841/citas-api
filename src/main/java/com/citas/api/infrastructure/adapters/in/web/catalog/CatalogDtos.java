@@ -1,5 +1,6 @@
 package com.citas.api.infrastructure.adapters.in.web.catalog;
 
+import com.citas.api.domain.model.affiliation.InsurancePlan;
 import com.citas.api.domain.model.catalog.CatalogEntry;
 import com.citas.api.domain.model.catalog.Site;
 import com.citas.api.domain.model.catalog.StatusEntry;
@@ -26,6 +27,13 @@ final class CatalogDtos {
 
         static StatusResponse from(StatusEntry entry) {
             return new StatusResponse(entry.code(), entry.name(), entry.terminal());
+        }
+    }
+
+    record InsurancePlanResponse(Long id, String name, Long epsId, String epsName) {
+
+        static InsurancePlanResponse from(InsurancePlan plan) {
+            return new InsurancePlanResponse(plan.id(), plan.name(), plan.epsId(), plan.epsName());
         }
     }
 

@@ -3,6 +3,7 @@ package com.citas.api.application.service;
 import com.citas.api.application.port.in.AuthTokens;
 import com.citas.api.application.port.in.LoginUseCase.LoginCommand;
 import com.citas.api.application.port.in.RegisterUserUseCase.RegisterUserCommand;
+import com.citas.api.application.port.out.AffiliationRepositoryPort;
 import com.citas.api.application.port.out.PasswordHasherPort;
 import com.citas.api.application.port.out.RefreshTokenRepositoryPort;
 import com.citas.api.application.port.out.TokenProviderPort;
@@ -12,6 +13,8 @@ import com.citas.api.domain.exception.EmailAlreadyRegisteredException;
 import com.citas.api.domain.exception.InvalidCredentialsException;
 import com.citas.api.domain.exception.InvalidFieldException;
 import com.citas.api.domain.exception.InvalidRefreshTokenException;
+import com.citas.api.domain.model.affiliation.Affiliation;
+import com.citas.api.domain.model.affiliation.InsurancePlan;
 import com.citas.api.domain.model.auth.RefreshToken;
 import com.citas.api.domain.model.user.Email;
 import com.citas.api.domain.model.user.IdentityDocument;
@@ -24,7 +27,9 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
@@ -37,21 +42,31 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  */
 class AuthServiceTest {
 
+    private static final Long PLAN_ACTIVO = 1L;
+    private static final Long PLAN_NO_SELECCIONABLE = 99L;
     private static final Clock CLOCK = Clock.fixed(Instant.parse("2026-09-18T15:00:00Z"), ZoneId.of("America/Bogota"));
 
     private InMemoryUsers users;
     private InMemoryRefreshTokens refreshTokens;
+    private InMemoryAffiliations affiliations;
     private AuthService service;
 
     @BeforeEach
     void setUp() {
         users = new InMemoryUsers();
         refreshTokens = new InMemoryRefreshTokens();
-        service = new AuthService(users, refreshTokens, new FakeHasher(), new FakeTokens(), CLOCK);
+        affiliations = new InMemoryAffiliations();
+        service = new AuthService(users, refreshTokens, affiliations, new FakeHasher(), new FakeTokens(), CLOCK);
     }
 
     private static RegisterUserCommand command(String email, String documentNumber) {
         return new RegisterUserCommand("Ana", "Prueba", "CC", documentNumber, email, "3001234567", "Segura123");
+    }
+
+    private static RegisterUserCommand conAfiliacion(String email, String documentNumber, Long planId,
+                                                     String regimeCode) {
+        return new RegisterUserCommand("Ana", "Prueba", "CC", documentNumber, email, "3001234567", "Segura123",
+                planId, regimeCode);
     }
 
     @Test
@@ -144,8 +159,8 @@ class AuthServiceTest {
     void ca10_refreshExpiradoEnBaseDeDatosSeRechazaSinEmitirTokens() {
         service.register(command("ana@example.com", "1234"));
         AuthTokens tokens = service.login(new LoginCommand("ana@example.com", "Segura123"));
-        AuthService eightDaysLater = new AuthService(users, refreshTokens, new FakeHasher(), new FakeTokens(),
-                Clock.offset(CLOCK, Duration.ofDays(8)));
+        AuthService eightDaysLater = new AuthService(users, refreshTokens, affiliations, new FakeHasher(),
+                new FakeTokens(), Clock.offset(CLOCK, Duration.ofDays(8)));
 
         assertThatThrownBy(() -> eightDaysLater.refresh(tokens.refreshToken()))
                 .isInstanceOf(InvalidRefreshTokenException.class);
@@ -163,6 +178,57 @@ class AuthServiceTest {
 
         assertThatThrownBy(() -> service.refresh(tokens.refreshToken()))
                 .isInstanceOf(InvalidRefreshTokenException.class);
+    }
+
+    // ---------- HU-004: afiliación opcional ----------
+
+    @Test
+    void ca01_registroSinAfiliacionNoCreaNingunaFila() {
+        service.register(command("ana@example.com", "1234"));
+
+        assertThat(affiliations.saved).isEmpty();
+    }
+
+    @Test
+    void ca02_registroConPlanYRegimenCreaLaAfiliacionDelUsuarioNuevo() {
+        User user = service.register(conAfiliacion("ana@example.com", "1234", PLAN_ACTIVO, "CONTRIBUTIVO"));
+
+        assertThat(affiliations.saved).singleElement().satisfies(a -> {
+            assertThat(a.userId()).isEqualTo(user.getId());
+            assertThat(a.planId()).isEqualTo(PLAN_ACTIVO);
+            assertThat(a.regimeCode()).isEqualTo("CONTRIBUTIVO");
+        });
+    }
+
+    @Test
+    void ca03_unPlanNoSeleccionableRechazaElRegistroSinCrearUsuario() {
+        assertThatThrownBy(() -> service.register(conAfiliacion("ana@example.com", "1234", PLAN_NO_SELECCIONABLE,
+                "CONTRIBUTIVO")))
+                .isInstanceOf(InvalidFieldException.class)
+                .extracting(e -> ((InvalidFieldException) e).getField()).isEqualTo("insurancePlanId");
+        assertThat(users.byId).isEmpty();
+        assertThat(affiliations.saved).isEmpty();
+    }
+
+    @Test
+    void ca03_unRegimenInexistenteRechazaElRegistroSinCrearUsuario() {
+        assertThatThrownBy(() -> service.register(conAfiliacion("ana@example.com", "1234", PLAN_ACTIVO, "INVENTADO")))
+                .isInstanceOf(InvalidFieldException.class)
+                .extracting(e -> ((InvalidFieldException) e).getField()).isEqualTo("regimeCode");
+        assertThat(users.byId).isEmpty();
+    }
+
+    @Test
+    void ca06_planSinRegimenYRegimenSinPlanSenalanElCampoQueFalta() {
+        assertThatThrownBy(() -> service.register(conAfiliacion("ana@example.com", "1234", PLAN_ACTIVO, null)))
+                .isInstanceOf(InvalidFieldException.class)
+                .extracting(e -> ((InvalidFieldException) e).getField()).isEqualTo("regimeCode");
+
+        assertThatThrownBy(() -> service.register(conAfiliacion("otra@example.com", "5678", null, "CONTRIBUTIVO")))
+                .isInstanceOf(InvalidFieldException.class)
+                .extracting(e -> ((InvalidFieldException) e).getField()).isEqualTo("insurancePlanId");
+
+        assertThat(users.byId).isEmpty();
     }
 
     // ---------- Puertos falsos ----------
@@ -223,6 +289,34 @@ class AuthServiceTest {
             return byId.values().stream().filter(t -> t.getTokenHash().equals(tokenHash)).findFirst()
                     .map(t -> RefreshToken.restore(t.getId(), t.getUserId(), t.getTokenHash(), t.getIssuedAt(),
                             t.getExpiresAt(), t.getRevokedAt(), t.getReplacedByTokenId()));
+        }
+    }
+
+    /** Solo el plan {@link #PLAN_ACTIVO} es seleccionable, y solo existen los regímenes reales. */
+    private static final class InMemoryAffiliations implements AffiliationRepositoryPort {
+        final List<Affiliation> saved = new ArrayList<>();
+
+        @Override
+        public List<InsurancePlan> findSelectablePlans() {
+            return List.of(new InsurancePlan(PLAN_ACTIVO, "Plan Básico", 1L, "EPS Salud Sintética"));
+        }
+
+        @Override
+        public Optional<InsurancePlan> findSelectablePlanById(Long planId) {
+            return findSelectablePlans().stream().filter(p -> p.id().equals(planId)).findFirst();
+        }
+
+        @Override
+        public boolean regimeExists(String regimeCode) {
+            return "CONTRIBUTIVO".equals(regimeCode) || "SUBSIDIADO".equals(regimeCode);
+        }
+
+        @Override
+        public Affiliation save(Affiliation affiliation) {
+            Affiliation persisted = new Affiliation((long) (saved.size() + 1), affiliation.userId(),
+                    affiliation.planId(), affiliation.regimeCode());
+            saved.add(persisted);
+            return persisted;
         }
     }
 

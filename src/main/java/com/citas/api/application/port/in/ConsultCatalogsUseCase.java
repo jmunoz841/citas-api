@@ -1,5 +1,6 @@
 package com.citas.api.application.port.in;
 
+import com.citas.api.domain.model.affiliation.InsurancePlan;
 import com.citas.api.domain.model.catalog.CatalogEntry;
 import com.citas.api.domain.model.catalog.Site;
 import com.citas.api.domain.model.catalog.StatusEntry;
@@ -22,4 +23,7 @@ public interface ConsultCatalogsUseCase {
     List<StatusEntry> appointmentStatuses();
 
     List<StatusEntry> rescheduleStatuses();
+
+    /** Planes de EPS seleccionables: plan activo y EPS activa (HU-004). */
+    List<InsurancePlan> insurancePlans();
 }

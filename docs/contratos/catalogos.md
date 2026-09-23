@@ -14,6 +14,7 @@
 | GET | `/api/v1/catalogs/sites` | Sedes de atención (HIC, ICV) |
 | GET | `/api/v1/catalogs/document-types` | Tipos de documento (CC, CE, TI, RC, PA, PPT) |
 | GET | `/api/v1/catalogs/regimes` | Regímenes de afiliación |
+| GET | `/api/v1/catalogs/insurance-plans` | Planes de EPS seleccionables (HU-004) |
 | GET | `/api/v1/catalogs/roles` | Roles del sistema |
 | GET | `/api/v1/catalogs/appointment-statuses` | Estados del ciclo de vida de una cita |
 | GET | `/api/v1/catalogs/reschedule-statuses` | Estados de una solicitud de reprogramación |
@@ -53,6 +54,20 @@ Todas responden `200` con la misma envoltura: un objeto con la clave `items`, pa
   ]
 }
 ```
+
+### Planes de EPS
+
+Solo aparecen los planes **seleccionables**: el plan debe estar activo **y** su EPS también. Un plan vigente de una EPS dada de baja no se ofrece. El identificador es numérico, no un código.
+
+```json
+{
+  "items": [
+    { "id": 1, "name": "Plan Básico", "epsId": 1, "epsName": "EPS Salud Sintética" }
+  ]
+}
+```
+
+Los datos son sintéticos: ninguna EPS real de Colombia. Su CRUD administrativo llega con HU-007.
 
 ### Estados
 

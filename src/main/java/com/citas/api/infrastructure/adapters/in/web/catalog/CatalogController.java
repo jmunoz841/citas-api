@@ -2,6 +2,7 @@ package com.citas.api.infrastructure.adapters.in.web.catalog;
 
 import com.citas.api.application.port.in.ConsultCatalogsUseCase;
 import com.citas.api.infrastructure.adapters.in.web.catalog.CatalogDtos.CatalogEntryResponse;
+import com.citas.api.infrastructure.adapters.in.web.catalog.CatalogDtos.InsurancePlanResponse;
 import com.citas.api.infrastructure.adapters.in.web.catalog.CatalogDtos.ItemsResponse;
 import com.citas.api.infrastructure.adapters.in.web.catalog.CatalogDtos.SiteResponse;
 import com.citas.api.infrastructure.adapters.in.web.catalog.CatalogDtos.StatusResponse;
@@ -39,6 +40,12 @@ class CatalogController {
     @GetMapping("/regimes")
     ItemsResponse<CatalogEntryResponse> regimes() {
         return ItemsResponse.of(catalogs.regimes(), CatalogEntryResponse::from);
+    }
+
+    /** Planes seleccionables para la afiliación opcional del registro (HU-004). */
+    @GetMapping("/insurance-plans")
+    ItemsResponse<InsurancePlanResponse> insurancePlans() {
+        return ItemsResponse.of(catalogs.insurancePlans(), InsurancePlanResponse::from);
     }
 
     @GetMapping("/roles")

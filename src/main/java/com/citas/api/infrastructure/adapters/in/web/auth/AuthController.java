@@ -48,7 +48,7 @@ class AuthController {
     UserResponse register(@Valid @RequestBody RegisterRequest request) {
         User user = registerUser.register(new RegisterUserCommand(request.firstNames(), request.lastNames(),
                 request.documentType(), request.documentNumber(), request.email(), request.phone(),
-                request.password()));
+                request.password(), request.insurancePlanId(), request.regimeCode()));
         return UserResponse.from(user);
     }
 
