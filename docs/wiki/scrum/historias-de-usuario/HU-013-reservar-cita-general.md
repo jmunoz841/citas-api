@@ -2,7 +2,7 @@
 id: HU-013
 tipo: historia-de-usuario
 titulo: "Reservar cita general"
-estado: Borrador
+estado: Aprobada
 epica: "[[EP-006-reserva-de-citas]]"
 esfuerzo: "Alto"
 sprint_sugerido: "Sprint 2"
@@ -121,6 +121,8 @@ Implementa RF-11 y RN-02. Primera HU que crea citas; establece el mecanismo de r
 ## Historial de validación
 
 - 2026-09-16 (S2) — HU creada en estado `Borrador`.
+
+- 2026-09-23 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S3.
 
 ## Notas y decisiones
 

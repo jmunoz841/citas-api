@@ -2,7 +2,7 @@
 id: HU-006
 tipo: historia-de-usuario
 titulo: "Gestionar especialidades"
-estado: Borrador
+estado: Aprobada
 epica: "[[EP-003-catalogos]]"
 esfuerzo: "Medio"
 sprint_sugerido: "Sprint 2"
@@ -124,6 +124,8 @@ Implementa RF-06 (especialidades) y RF-09. Cada especialidad define una duració
 ## Historial de validación
 
 - 2026-09-16 (S2) — HU creada en estado `Borrador`.
+
+- 2026-09-23 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S3.
 
 ## Notas y decisiones
 

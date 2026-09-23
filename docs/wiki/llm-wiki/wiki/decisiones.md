@@ -31,10 +31,15 @@ Solo se registran como DECISIÓN los puntos aprobados explícitamente por el usu
 | D-017 | 2026-09-18 | Por indicación del instructor, cada carpeta (raíz, `citas-api`, `citas-web`) tiene un único `.env` con los valores reales de trabajo; se eliminan los `.env.example`. Los `.env` siguen en `.gitignore` (repos públicos) y las variables se documentan en los README. Prevalece sobre la regla "cada repo debe contener `.env.example`" de `RESTRICCIONES_TECNICAS.md`; se mantiene "nunca subir secretos" | Workspace | Indicación del instructor transmitida por el usuario |
 | D-007 | 2026-09-16 | Fechas/horas almacenadas en `America/Bogota` (JDBC, sesión MySQL, Hibernate y Jackson) | Global | `raw/2026-09-16-decisiones-normalizacion.md` |
 | D-008 | 2026-09-16 | Tipos de documento: CC, CE, TI, RC, PA, PPT | HU-001 | `raw/2026-09-16-decisiones-normalizacion.md` |
+| D-018 | 2026-09-23 | Versionado de API en la ruta: todos los endpoints bajo `/api/v1/...`, incluida la autenticación ya entregada (`/api/auth/*` → `/api/v1/auth/*`). Obliga a actualizar el contrato, `SecurityConfig`, las pruebas de HU-001 y el cliente REST de `citas-web` | Contrato REST | `raw/2026-09-23-decisiones-s3.md` |
+| D-019 | 2026-09-23 | La afiliación EPS es **opcional** y se captura en el registro (HU-004 recortada). No interviene en búsqueda, disponibilidad, aprobación ni reserva; HU-013 guarda la afiliación vigente o `null`. Se elimina la dependencia HU-004 → HU-003/HU-007 | HU-004, HU-013 | `raw/2026-09-23-decisiones-s3.md` |
+| D-020 | 2026-09-23 | Alcance de S3: HU-004, HU-005, HU-006, HU-008, HU-009, HU-010, HU-012, HU-013, HU-014, HU-015 aprobadas. Se conserva la numeración propia de HU frente a la del documento del instructor | Scrum | `raw/2026-09-23-decisiones-s3.md` |
+| D-021 | 2026-09-23 | El primer ADMIN se crea como seed sintético en la migración de HU-008 (hash BCrypt, contraseña temporal documentada en `README.md`). Se descarta el endpoint de bootstrap. Resuelve la pregunta abierta "Primer ADMIN" | HU-008 | `raw/2026-09-23-decisiones-s3.md` |
+| D-022 | 2026-09-23 | HU-002 (recuperar contraseña) **no** se marca `Completada`: no está implementada y permanece en S4. La HU-002 del documento del instructor pertenece a otra numeración | Scrum | `raw/2026-09-23-decisiones-s3.md` |
 
 ## Preguntas abiertas
 
-- **Primer ADMIN.** Diferida a HU-008 (sin usuarios en la migración de HU-001).
+- ~~**Primer ADMIN.** Diferida a HU-008~~ → resuelta por D-021 (seed sintético en la migración de HU-008).
 - **Preguntas del modelo 3FN** Q-01, Q-02, Q-03, Q-05, Q-06, Q-07, Q-10 a Q-13: ver `docs/database/normalizacion-3fn/README.md`; se resuelven al aprobar sus HU.
 - ~~Q-003 — Representación de slots y doble reserva~~ → resuelta por D-013.
 - **Comparación con la referencia** C-02, C-03 (→ HU-004) y C-04 (→ HU-013).

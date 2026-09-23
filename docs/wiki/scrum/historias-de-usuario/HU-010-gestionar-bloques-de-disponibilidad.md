@@ -2,7 +2,7 @@
 id: HU-010
 tipo: historia-de-usuario
 titulo: "Gestionar bloques de disponibilidad"
-estado: Borrador
+estado: Aprobada
 epica: "[[EP-005-agenda-del-profesional]]"
 esfuerzo: "Alto"
 sprint_sugerido: "Sprint 2"
@@ -140,6 +140,8 @@ Implementa RF-08. Un día puede tener varios bloques (p. ej. 08:00–12:00 HIC y
 ## Historial de validación
 
 - 2026-09-16 (S2) — HU creada en estado `Borrador`.
+
+- 2026-09-23 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S3.
 
 ## Notas y decisiones
 
