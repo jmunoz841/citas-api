@@ -67,19 +67,19 @@ Implementa la segunda parte de RF-04. La afiliación referencia catálogos (plan
 
 ## Tareas de desarrollo
 
-- [ ] **T-01 — Migración de EPS, planes y afiliación**  
+- [x] **T-01 — Migración de EPS, planes y afiliación**  
   Dificultad: Medio  
   Descripción: `eps`, `eps_plans` y `user_affiliations` según el diseño 3FN, con seed sintético de EPS y planes activos.
-- [ ] **T-02 — Endpoint de planes activos**  
+- [x] **T-02 — Endpoint de planes activos**  
   Dificultad: Bajo  
   Descripción: lectura pública de planes activos con su EPS, para el selector del registro.
-- [ ] **T-03 — Registro con afiliación opcional**  
+- [x] **T-03 — Registro con afiliación opcional**  
   Dificultad: Medio  
   Descripción: `insurancePlanId` opcional en el comando de registro; validación de existencia y estado activo; creación de la afiliación en la misma transacción.
-- [ ] **T-04 — Selector en el registro**  
+- [x] **T-04 — Selector en el registro**  
   Dificultad: Medio  
   Descripción: campo opcional en el formulario de `citas-web`, alimentado por la API, con la opción de no elegir plan.
-- [ ] **T-05 — Pruebas**  
+- [x] **T-05 — Pruebas**  
   Dificultad: Medio  
   Descripción: registro sin plan, registro con plan activo, plan inexistente, plan inactivo; y pruebas de frontend del selector.
 
@@ -123,25 +123,29 @@ Implementa la segunda parte de RF-04. La afiliación referencia catálogos (plan
 
 ## Definition of Done
 
-- [ ] Criterios CA-01 a CA-06 validados con evidencia.
-- [ ] Migración Flyway de EPS, planes y afiliación presente y aplicada.
-- [ ] Pruebas de backend en verde (`mvnw test`).
-- [ ] Pruebas de frontend del selector en verde (`npm test`).
-- [ ] Contrato REST del registro actualizado en `docs/contratos/`.
-- [ ] Selector integrado en el registro de `citas-web`.
-- [ ] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
+- [x] Criterios CA-01 a CA-06 validados con evidencia.
+- [x] Migración Flyway de EPS, planes y afiliación presente y aplicada.
+- [x] Pruebas de backend en verde (`mvnw test`): 78/78.
+- [x] Pruebas de frontend del selector en verde (`npm test`): 22/22.
+- [x] Contrato REST del registro actualizado en `docs/contratos/`.
+- [x] Selector integrado en el registro de `citas-web`.
+- [x] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
 
 ## Evidencia de validación
 
 | Elemento | Resultado | Evidencia | Observación |
 |---|---|---|---|
-| CA-01 | Pendiente | — | — |
-| CA-02 | Pendiente | — | — |
-| CA-03 | Pendiente | — | — |
-| CA-04 | Pendiente | — | — |
-| CA-05 | Pendiente | — | — |
-| CA-06 | Pendiente | — | — |
-| DoD | Pendiente | — | — |
+| CA-01 Registro sin plan | Cumple | `RegisterAffiliationApiIntegrationTest.ca01_registroSinAfiliacionCreaLaCuentaYNingunaAfiliacion`; `AuthServiceTest.ca01_registroSinAfiliacionNoCreaNingunaFila`; `RegisterPage.affiliation.test.tsx` "permite registrarse sin elegir plan" | El cuerpo enviado no incluye los campos de afiliación |
+| CA-02 Registro con plan activo | Cumple | `ca02_registroConPlanYRegimenCreaLaAfiliacionPorClaveForanea` (lee `user_affiliations` en BD); `AuthServiceTest.ca02_...`; prueba de frontend "envia plan y regimen" | La fila referencia plan y régimen por FK |
+| CA-03 Plan inexistente o inactivo | Cumple | `ca03_unPlanInexistenteDevuelve400YNoCreaUsuario`, `ca03_unPlanInactivoNoEsSeleccionable`, `ca03_unPlanDeUnaEpsInactivaTampocoEsSeleccionable`, `ca03_unRegimenInexistenteDevuelve400` | 400 `VALIDATION_ERROR` con el campo; el usuario no se crea |
+| CA-04 La EPS no se duplica | Cumple | `ca04_laAfiliacionNoGuardaNombresDeEpsNiDePlan` | `user_affiliations` solo tiene `user_id`, `plan_id`, `regime_code` y marcas de tiempo |
+| CA-05 Catálogo de planes | Cumple | `ca05_elCatalogoSoloOfreceLosPlanesSeleccionables`; humo manual 2026-09-23: 4 de 6 planes sembrados | Excluye el plan inactivo y el de EPS inactiva; sin autenticación |
+| CA-06 Plan y régimen en pareja | Cumple | `ca06_soloElPlanOSoloElRegimenDevuelve400SenalandoElCampoQueFalta`; `AuthServiceTest.ca06_...`; prueba de frontend "exige el regimen si se eligio plan" | El cliente refleja la regla y no llega a llamar a la API |
+| DoD Migración | Cumple | `V3__afiliacion_hu004.sql`; `flyway_schema_history` v3 `success=1` en `jmunoz-citas-mysql` | Seed sintético con un plan inactivo y una EPS inactiva a propósito |
+| DoD Pruebas backend | Cumple | `mvnw test` 2026-09-23: 78 pruebas, 0 fallos | 9 de integración + 5 unitarias nuevas |
+| DoD Pruebas frontend | Cumple | `npm test` 2026-09-23: 22 pruebas, 0 fallos | 7 nuevas del formulario de registro |
+| DoD Contrato | Cumple | `docs/contratos/autenticacion.md` (registro) y `docs/contratos/catalogos.md` (planes) | — |
+| DoD Selector en `citas-web` | Cumple | Sección "Afiliación (opcional)" en `RegisterPage.tsx` | Régimen deshabilitado hasta elegir plan; si el catálogo falla, la sección no se ofrece |
 
 ## Historial de validación
 
@@ -149,6 +153,7 @@ Implementa la segunda parte de RF-04. La afiliación referencia catálogos (plan
 - 2026-09-23 (S3) — Alcance recortado a "afiliación opcional durante el registro" y movida a Sprint 2; se eliminan las dependencias hacia HU-003 y HU-007.
 - 2026-09-23 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S3.
 - 2026-09-23 (S3) — El PO decide que el registro pida `insurancePlanId` y `regimeCode` en pareja; se añade CA-06 y se corrige la nota errónea sobre el régimen.
+- 2026-09-23 (S3) — HU implementada y verificada de punta a punta: migración V3, endpoint de planes, registro con afiliación opcional, selector en `citas-web`. `mvnw test` 78/78 y `npm test` 22/22.
 
 ## Notas y decisiones
 

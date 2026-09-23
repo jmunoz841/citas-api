@@ -40,9 +40,10 @@ HU objetivo: [[HU-001-registro-e-inicio-de-sesion-jwt]] (`Aprobada`).
 | 2 | Puertas de calidad | Hecho | `.githooks/pre-commit` versionado en ambos repos (D-024): detector de secretos en dos niveles siempre, más `mvnw test` (backend) o lint/pruebas/build (frontend). Vitest + Testing Library + oxlint en `citas-web` (D-023). **Demo FAIL/PASS real:** commit con `apiKey` falsa bloqueado; commit legítimo aceptado (`7eecf11`) |
 | 3 | HU-005 Catálogos fijos | Hecho | Migración `V2__catalogos_fijos_hu005.sql` (regimes, sites, appointment_statuses, reschedule_statuses + seeds del PRD); 6 endpoints GET públicos bajo `/api/v1/catalogs`; 9 pruebas de integración (CA-01…CA-03); `mvnw test` 64/64. Contrato `docs/contratos/catalogos.md`. Verificado contra MySQL real: `flyway_schema_history` v1 y v2 con `success=1` |
 | 4 | Versionado de API (D-018) | Hecho | `/api/auth/*` → `/api/v1/auth/*` en controlador, `SecurityConfig`, pruebas, contrato y cliente del frontend |
+| 6 | HU-004 Afiliación opcional (GOAL del instructor) | Hecho | Migración `V3__afiliacion_hu004.sql` (eps, eps_plans, user_affiliations + seed sintético con un plan inactivo y una EPS inactiva); `GET /api/v1/catalogs/insurance-plans`; registro con `insurancePlanId` y `regimeCode` en pareja; sección "Afiliación (opcional)" en el registro de `citas-web`. `mvnw test` 78/78 y `npm test` 22/22. Flyway v3 `success=1` en MySQL real |
 | 5 | Frontend sin mock | Hecho | Eliminado `mockAuthApi` y su *fallback* silencioso (servía una cuenta de demo con contraseña en el código si faltaba `VITE_API_URL`); cliente de catálogos y `useDocumentTypes`; el select de tipo de documento ya viene de la API; 15 pruebas Vitest |
 
-Pendiente de S3: HU-004 (afiliación opcional, GOAL del instructor), HU-006/008/009 (oferta administrable), HU-010 (disponibilidad), HU-012/013/014 (búsqueda y reserva, con el LOOP de doble reserva) y HU-015 (decisión administrativa).
+Pendiente de S3: HU-006/008/009 (oferta administrable), HU-010 (disponibilidad), HU-012/013/014 (búsqueda y reserva, con el LOOP de doble reserva) y HU-015 (decisión administrativa).
 
 ## Punto de retoma (fin de clase 2026-09-16)
 
