@@ -1,6 +1,6 @@
 ---
 tipo: ejecucion
-actualizado: 2026-09-16
+actualizado: 2026-09-23
 fuentes:
   - raw/RESTRICCIONES_TECNICAS.md
 ---
@@ -47,25 +47,57 @@ HU objetivo: [[HU-001-registro-e-inicio-de-sesion-jwt]] (`Aprobada`).
 
 Pendiente de S3: las **vistas de ADMIN y de PROFESSIONAL** en `citas-web` (HU-006 T-04, HU-008 T-03, HU-009 T-02, HU-010 T-04), HU-012/013/014 (búsqueda y reserva, con el LOOP de doble reserva) y HU-015 (decisión administrativa). HU-009 CA-02 (exclusión de la búsqueda) y HU-010 CA-05 (bloque con slots comprometidos) solo serán verificables con HU-012 y HU-013.
 
-## Punto de retoma (fin de clase 2026-09-16)
+## Punto de retoma (fin de clase 2026-09-23)
 
-1. **Preparar el equipo** (desde `citas-api/`):
-   - **Sincronizar primero:** puede haber trabajo hecho en otro equipo. `git -C citas-api checkout develop; git -C citas-api pull` y lo mismo en `citas-web`. En un equipo nuevo: clonar el repo privado `FCV_Proyecto_Citas_v1` y, dentro de él, `citas-api` y `citas-web` (instrucciones en el `README.md` de la raíz, sección "Trabajar desde otro PC"). Hacer `git pull` en los tres repos.
-   - Si no existe `%USERPROFILE%\.jdks\temurin-21`, instalar JDK 21 portable (Temurin).
-   - Si no existe `.env`, crearlo con las variables de `README.md` (en `citas-api`, `citas-web` y la raíz) y secretos nuevos. Si el volumen `jmunoz-citas_mysql_data` ya existe, las contraseñas deben coincidir con las originales o hay que recrearlo (`docker compose down -v`).
-   - Estado al cerrar en el PC del laboratorio (2026-09-16): `.env`, contenedor y volumen de `jmunoz-citas` eliminados; JDK 21 portable conservado.
-   - Abrir Docker Desktop → `docker compose up -d`.
-   - Verificar: `$env:JAVA_HOME="$env:USERPROFILE\.jdks\temurin-21"; .\mvnw.cmd test`.
-2. ~~Paso 5 (comparación con la referencia)~~ y ~~paso 7 (V1 Flyway)~~: hechos el 2026-09-18.
-3. ~~Paso 8~~: hecho el 2026-09-18.
-4. ~~Paso 9~~: hecho el 2026-09-18 (`mvn test` exige Docker Desktop abierto por Testcontainers).
-5. ~~Paso 10~~: hecho el 2026-09-18.
-6. ~~Paso 11~~: diseño v2 aprobado el 2026-09-18.
-7. ~~Pasos 12 y 13~~: frontend importado y ejecutable (2026-09-18).
-8. ~~Paso 14~~: `citas-web/AGENTS.md` creado (2026-09-18).
-9. ~~Pasos 15 y 16~~: **S2 cerrada** (2026-09-18). Siguiente: S3 según `GUIA_SESIONES_S2_S6.md` (aprobar las HU del Sprint 2 antes de desarrollar; decidir herramienta de pruebas del frontend; opcional: merge `develop` → `main`).
+### 0. Publicar en GitHub — bloqueante, primero que todo
 
-Recordatorios: no usar el compose raíz ni tocar recursos `fcv-citas-*` (otro grupo); API en 8081; HU-001 sigue `Aprobada` (pasar a `En desarrollo` al iniciar el paso 8).
+Nada de S2 ni de S3 está publicado. En este equipo el Administrador de credenciales de Windows guarda el token de **otra cuenta** (`christtobar-land`), que no tiene permiso sobre `jmunoz841/*`: el push falla con `403`. Los commits sí están firmados correctamente como `Juan Munoz <jmunoz841@unab.edu.co>`; el problema es solo la credencial de red.
+
+Ya quedó configurado en los tres repos, en `.git/config` local (no global, para no romper la sesión del otro estudiante):
+
+```text
+credential.https://github.com.username = jmunoz841
+```
+
+Con eso Git pide una credencial nueva bajo la clave `jmunoz841@github.com` en vez de reutilizar la ajena. Falta autenticarse una vez, desde una terminal propia (abre navegador o pide token):
+
+```powershell
+cd "...\FCV_Proyecto_Citas_v1\citas-api"
+git push origin develop
+git push origin main
+git push origin s2
+cd ..\citas-web
+git push origin develop; git push origin main; git push origin s2
+```
+
+Si pide contraseña en vez de abrir el navegador, generar un **Personal Access Token** en GitHub (`Settings → Developer settings → Tokens`) con permiso `repo` y pegarlo como contraseña. Nunca escribir el token en la URL del remoto ni en un archivo versionado.
+
+Pendiente de publicar: `citas-api` 13 commits en `develop`, 17 en `main`, tag `s2`; `citas-web` 4 commits en `develop`, 7 en `main`, tag `s2`. El repo raíz ya está sincronizado.
+
+### 1. Preparar el equipo
+
+Igual que en el punto de retoma anterior: `git pull` en los tres repos, JDK 21 portable en `%USERPROFILE%\.jdks\temurin-21`, `.env` en raíz, `citas-api` y `citas-web`, Docker Desktop abierto y `docker compose up -d` desde `citas-api/` (proyecto `jmunoz-citas`, MySQL en 3308). Verificar con `$env:JAVA_HOME="$env:USERPROFILE\.jdks\temurin-21"; .\mvnw.cmd test` → deben pasar 108 pruebas.
+
+### 2. Lo que falta de S3
+
+| Orden | Trabajo | Alcance | Desbloquea |
+|---|---|---|---|
+| 1 | [[HU-012-consultar-disponibilidad]], [[HU-013-reservar-cita-general]], [[HU-014-solicitar-cita-especializada]] | Migración `V6`: `appointments`, `slot_reservations`, `appointment_status_history`. Búsqueda de disponibilidad, reserva general `APPROVED` y solicitud especializada `REQUESTED` | El **LOOP de doble reserva** del instructor: dos reservas sobre el mismo slot → una `201`, otra `409`, garantizado por clave primaria en la base |
+| 2 | [[HU-015-resolver-cita-especializada]] | Decisión del ADMIN con motivo obligatorio y liberación de slots al rechazar | Cierra el flujo de cita especializada |
+| 3 | Pasada de frontend | Vistas de ADMIN (especialidades, profesionales, asignaciones, solicitudes pendientes), vista de PROFESSIONAL (calendario de bloques) y modal de reserva en 4 pasos para USER | Tareas [[HU-006-gestionar-especialidades]] T-04, [[HU-008-crear-profesional]] T-03, [[HU-009-activar-desactivar-profesional]] T-02, [[HU-010-gestionar-bloques-de-disponibilidad]] T-04 |
+| 4 | Evidencia de cierre de S3 | Matriz por CA y DoD, demo Red→Green del hook, trazabilidad final | Entregable de la sesión |
+
+### 3. Criterios diferidos a propósito
+
+Dos criterios quedaron en `Pendiente` con la razón escrita en su HU; no son deuda olvidada, esperan a que exista la tabla que los hace verificables:
+
+- [[HU-009-activar-desactivar-profesional]] CA-02 — un profesional inactivo no aparece en la búsqueda. Necesita HU-012.
+- [[HU-010-gestionar-bloques-de-disponibilidad]] CA-05 — no se edita ni elimina un bloque con slots comprometidos. Necesita `slot_reservations` de HU-013. El guardián ya existe vacío y documentado en `AvailabilityService.requireNoCommittedSlots`.
+
+### 4. Estado al cerrar
+
+Backend de S3 completo hasta disponibilidad: migraciones `V1`–`V5` aplicadas, 108 pruebas en verde, contratos documentados en `docs/contratos/`. El frontend solo tiene login y registro con afiliación opcional (22 pruebas). Diez HU en estado `Aprobada`.
+
 
 ## Relacionadas
 

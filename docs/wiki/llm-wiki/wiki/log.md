@@ -80,3 +80,23 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 ## 2026-09-18 — LEARN — AGENTS del backend (paso 10)
 - HECHO: `citas-api/AGENTS.md` generado desde el estado real del repo; `citas-api/CLAUDE.md` lo importa; `AGENTS.md.template` retirado.
 - Páginas afectadas: [[ejecucion]]
+
+## 2026-09-23 — INGEST — Apertura de S3 y decisiones
+- Fuentes: `raw/2026-09-23-decisiones-s3.md`, brief de S3 del instructor
+- DECISIÓN (usuario): diez HU pasan a `Aprobada`; HU-004 recortada a afiliación **opcional**; API versionada bajo `/api/v1` (D-018); ADMIN inicial por semilla de migración (D-021); backend completo antes de la pasada de frontend.
+- Páginas afectadas: [[decisiones]] (D-018 a D-024), [[ejecucion]]
+
+## 2026-09-23 — LEARN — Núcleo administrable de S3 (HU-004, 005, 006, 008, 009, 010)
+- HECHO: migraciones `V2`–`V5`; `mvnw test` 108/108; `npm test` 22/22; Flyway `v1`–`v5` con `success=1` contra MySQL real.
+- HECHO: el `mockAuthApi` del frontend tenía un *fallback* silencioso que servía una cuenta de demo con contraseña en el código si faltaba `VITE_API_URL`; se eliminó y ahora `apiBaseUrl()` falla en arranque.
+- HECHO: los slots se materializan como filas al crear el bloque (D-013). Es lo que permitirá que la doble reserva la impida la clave primaria de la base, no la aplicación.
+- HECHO: `uk_slots_professional_start` impide bloques solapados aunque sean de sedes distintas, porque al estar todo alineado a `:00`/`:30` dos bloques que se cruzan comparten al menos un inicio de slot.
+- HECHO: un bloque ajeno responde `404` y no `403`; un `403` confirmaría que ese bloque existe.
+- PREGUNTA ABIERTA: ninguna. CA diferidos con razón escrita: [[HU-009-activar-desactivar-profesional]] CA-02 (necesita HU-012) y [[HU-010-gestionar-bloques-de-disponibilidad]] CA-05 (necesita `slot_reservations` de HU-013).
+- Páginas afectadas: [[ejecucion]], [[arquitectura]]
+
+## 2026-09-23 — LEARN — Credenciales de GitHub en el equipo compartido
+- HECHO: el push a `jmunoz841/*` fallaba con `403` porque el Administrador de credenciales de Windows guarda el token de otra cuenta (`christtobar-land`). La autoría de los commits siempre fue correcta; solo fallaba la credencial de red.
+- DECISIÓN: se fija `credential.https://github.com.username = jmunoz841` en el `.git/config` **local** de los tres repos, no en el global, para no invalidar la sesión del otro estudiante del equipo compartido.
+- PREGUNTA ABIERTA: falta autenticarse una vez y publicar S2 y S3.
+- Páginas afectadas: [[ejecucion]]
