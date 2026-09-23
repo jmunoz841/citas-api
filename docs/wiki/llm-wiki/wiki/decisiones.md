@@ -35,6 +35,8 @@ Solo se registran como DECISIÓN los puntos aprobados explícitamente por el usu
 | D-019 | 2026-09-23 | La afiliación EPS es **opcional** y se captura en el registro (HU-004 recortada). No interviene en búsqueda, disponibilidad, aprobación ni reserva; HU-013 guarda la afiliación vigente o `null`. Se elimina la dependencia HU-004 → HU-003/HU-007 | HU-004, HU-013 | `raw/2026-09-23-decisiones-s3.md` |
 | D-020 | 2026-09-23 | Alcance de S3: HU-004, HU-005, HU-006, HU-008, HU-009, HU-010, HU-012, HU-013, HU-014, HU-015 aprobadas. Se conserva la numeración propia de HU frente a la del documento del instructor | Scrum | `raw/2026-09-23-decisiones-s3.md` |
 | D-021 | 2026-09-23 | El primer ADMIN se crea como seed sintético en la migración de HU-008 (hash BCrypt, contraseña temporal documentada en `README.md`). Se descarta el endpoint de bootstrap. Resuelve la pregunta abierta "Primer ADMIN" | HU-008 | `raw/2026-09-23-decisiones-s3.md` |
+| D-023 | 2026-09-23 | Instrumental de calidad del frontend: Vitest + jsdom + Testing Library para pruebas y **oxlint** como linter (`typescript-eslint` aún no admite TypeScript 7). Resuelve la pregunta abierta sobre herramienta de pruebas de `citas-web` | Frontend | `raw/2026-09-23-decisiones-s3.md` |
+| D-024 | 2026-09-23 | Hooks `pre-commit` versionados en `.githooks/` de ambos repos, activados con `git config core.hooksPath .githooks`: detector de secretos en dos niveles siempre, más pruebas Maven (backend) o lint/pruebas/build (frontend) cuando el commit toca código | Calidad | `raw/2026-09-23-decisiones-s3.md` |
 | D-022 | 2026-09-23 | HU-002 (recuperar contraseña) **no** se marca `Completada`: no está implementada y permanece en S4. La HU-002 del documento del instructor pertenece a otra numeración | Scrum | `raw/2026-09-23-decisiones-s3.md` |
 
 ## Preguntas abiertas
@@ -44,7 +46,7 @@ Solo se registran como DECISIÓN los puntos aprobados explícitamente por el usu
 - ~~Q-003 — Representación de slots y doble reserva~~ → resuelta por D-013.
 - **Comparación con la referencia** C-02, C-03 (→ HU-004) y C-04 (→ HU-013).
 - **Riesgo:** Flyway (versión gestionada por Spring Boot 3.5.16) avisa que su soporte probado de MySQL llega a 8.1; la V1 se aplicó sin errores en 8.4.11. Revisar si aparece algún fallo en migraciones futuras.
-- **Q-004 — Framework frontend.** Supuesto React + Vite + TypeScript hasta el export de Stitch/AI Studio.
+- ~~**Q-004 — Framework frontend.**~~ → resuelta por D-015 (React + Vite + TypeScript). Herramienta de pruebas resuelta por D-023 (Vitest + oxlint).
 
 ## Relacionadas
 

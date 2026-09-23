@@ -51,3 +51,18 @@ docker compose up -d          # MySQL propio en localhost:3308
 ```
 
 **No** uses el `docker-compose.yml` de la raíz del workspace: sus contenedores `fcv-citas-*` chocan con otro grupo que comparte el equipo.
+
+## Hooks de calidad
+
+Los hooks viven en `.githooks/` y están versionados, pero Git no los activa solo. Una vez por clon:
+
+```powershell
+git config core.hooksPath .githooks
+```
+
+`pre-commit` hace dos cosas:
+
+1. **Detector de secretos** sobre los archivos preparados, en cada commit. Bloquea siempre los archivos `.env`, las claves privadas y las credenciales de nube o de conexión. Los patrones más genéricos (asignaciones de contraseñas y JWT) admiten exenciones por ruta en `.githooks/secrets-allowlist.txt`, donde cada entrada explica por qué ese contenido es ficticio.
+2. **`mvnw test`**, solo si el commit toca `src/` o `pom.xml`. Requiere Docker Desktop porque las pruebas de integración levantan MySQL con Testcontainers. Un commit de documentación no paga ese coste.
+
+Si necesitas saltártelo en una emergencia, `git commit --no-verify`, y deja constancia del motivo.
