@@ -53,12 +53,12 @@ MVP completo con transiciones explícitas, verificables y auditadas.
 
 ## Historias de usuario
 
-- [[HU-016-consultar-mis-citas]] — Sprint 3 — Borrador
-- [[HU-017-cancelar-cita]] — Sprint 3 — Borrador
+- [[HU-016-consultar-mis-citas]] — Sprint 3 — Aprobada
+- [[HU-017-cancelar-cita]] — Sprint 3 — Aprobada
 - [[HU-018-solicitar-reprogramacion]] — Sprint 3 — Borrador
 - [[HU-019-resolver-reprogramacion]] — Sprint 3 — Borrador
-- [[HU-020-cerrar-atencion]] — Sprint 3 — Borrador
-- [[HU-021-historial-de-estados]] — Sprint 3 — Borrador
+- [[HU-020-cerrar-atencion]] — Sprint 3 — Aprobada
+- [[HU-021-historial-de-estados]] — Sprint 3 — Aprobada
 
 ## Criterio de completitud de la épica
 

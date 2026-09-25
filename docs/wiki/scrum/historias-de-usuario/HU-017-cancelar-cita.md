@@ -2,7 +2,7 @@
 id: HU-017
 tipo: historia-de-usuario
 titulo: "Cancelar cita"
-estado: Borrador
+estado: Aprobada
 epica: "[[EP-007-ciclo-de-vida-de-citas]]"
 esfuerzo: "Medio"
 sprint_sugerido: "Sprint 3"
@@ -110,6 +110,8 @@ Implementa RF-14.
 
 - 2026-09-16 (S2) — HU creada en estado `Borrador`.
 
+- 2026-09-25 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S4 (bloque "Ciclo de la cita", D-031).
+
 ## Notas y decisiones
 
-- Supuesto a confirmar: cancelar una cita con reprogramación `PENDING` cancela también la solicitud.
+- Resuelto (D-033): cancelar una cita con reprogramación `PENDING` cancela también la solicitud y libera su retención.

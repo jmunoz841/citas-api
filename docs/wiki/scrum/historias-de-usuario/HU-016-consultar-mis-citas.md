@@ -2,7 +2,7 @@
 id: HU-016
 tipo: historia-de-usuario
 titulo: "Consultar mis citas"
-estado: Borrador
+estado: Aprobada
 epica: "[[EP-007-ciclo-de-vida-de-citas]]"
 esfuerzo: "Medio"
 sprint_sugerido: "Sprint 3"
@@ -113,6 +113,8 @@ Implementa RF-13. Incluye listado y detalle.
 ## Historial de validación
 
 - 2026-09-16 (S2) — HU creada en estado `Borrador`.
+
+- 2026-09-25 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S4 (bloque "Ciclo de la cita", D-031).
 
 ## Notas y decisiones
 

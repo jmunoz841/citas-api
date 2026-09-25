@@ -29,6 +29,7 @@ Punto de entrada de la memoria global. Convenciones: [SCHEMA](../schema/SCHEMA.m
 | `raw/2026-09-25-decisiones-reserva.md` | Plan de HU-012/013/014: V6, doble reserva por PK, historial sin triggers, LOOP por HTTP |
 | `raw/2026-09-25-aprobacion-diseno-s3.md` | Aprobación del diseño Stitch v4 de las áreas autenticadas de S3 |
 | `raw/2026-09-25-decisiones-abiertas-s3.md` | Endpoint único de reserva, 409 por asignación en uso, citas de profesional desactivado, sin expiración |
+| `raw/2026-09-25-alcance-s4.md` | Alcance de S4 (ciclo de la cita) y supuestos de HU-002, reprogramación y profesional |
 
 ## Diseño de base de datos
 

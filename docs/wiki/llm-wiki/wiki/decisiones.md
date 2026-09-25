@@ -46,6 +46,10 @@ Solo se registran como DECISIÓN los puntos aprobados explícitamente por el usu
 | D-028 | 2026-09-25 | Quitar a un profesional una especialidad con citas, o una sede con bloques o citas, responde `409 ASSIGNMENT_IN_USE` y no cambia nada | HU-008 | `raw/2026-09-25-decisiones-abiertas-s3.md` |
 | D-029 | 2026-09-25 | Desactivar un profesional conserva sus citas; cancelarlas queda para S4 | HU-009 | `raw/2026-09-25-decisiones-abiertas-s3.md` |
 | D-030 | 2026-09-25 | Las citas `REQUESTED` no expiran en S3; se evaluará en S4 o S5 | HU-014, HU-015 | `raw/2026-09-25-decisiones-abiertas-s3.md` |
+| D-031 | 2026-09-25 | Alcance de S4: HU-016, HU-017, HU-011, HU-020 y HU-021 aprobadas (ciclo de la cita). Reprogramación, cuenta y EPS/planes siguen en `Borrador` | Scrum | `raw/2026-09-25-alcance-s4.md` |
+| D-032 | 2026-09-25 | El token de recuperación de contraseña (HU-002) dura 30 minutos | HU-002 | `raw/2026-09-25-alcance-s4.md` |
+| D-033 | 2026-09-25 | Reprogramación: una `PENDING` por cita; cancelar la cita cancela la solicitud; si llega la hora original con la solicitud `PENDING`, se cancela y libera su retención | HU-017, HU-018, HU-019 | `raw/2026-09-25-alcance-s4.md` |
+| D-034 | 2026-09-25 | Una cita se cierra desde su hora de inicio; el PROFESSIONAL ve el historial de sus propias citas | HU-020, HU-021 | `raw/2026-09-25-alcance-s4.md` |
 
 ## Preguntas abiertas
 

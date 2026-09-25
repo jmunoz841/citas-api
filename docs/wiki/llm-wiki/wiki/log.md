@@ -151,3 +151,8 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 - DECISIÓN (usuario): "aprobado". Las 10 HU de S3 (HU-004, 005, 006, 008, 009, 010, 012, 013, 014, 015) pasan a `Completada`; merge `develop` → `main` y etiqueta `s3` en `citas-api` y `citas-web`.
 - PREGUNTA ABIERTA: ninguna de producto. Falta el push (credencial de GitHub).
 - Páginas afectadas: [[evidencia-s3]], [[ejecucion]]
+
+## 2026-09-25 — INGEST — Alcance de S4
+- Fuentes: `raw/2026-09-25-alcance-s4.md`
+- DECISIÓN (usuario): D-031 alcance de S4 (HU-016, 017, 011, 020, 021 `Aprobada`); D-032 token de recuperación de 30 min; D-033 reglas de reprogramación; D-034 cierre desde la hora de inicio e historial visible para el profesional.
+- Páginas afectadas: [[decisiones]], [[ejecucion]]

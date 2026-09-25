@@ -53,9 +53,9 @@ HU objetivo: [[HU-001-registro-e-inicio-de-sesion-jwt]] (`Aprobada`).
 | 15 | Decisiones abiertas | Hecho | D-027 a D-030 confirmadas; D-028 implementada (`409 ASSIGNMENT_IN_USE`), `citas-api` `1076f6d` |
 | 16 | Evidencia de cierre | Hecho | [[evidencia-s3]]: matriz de las 10 HU (43 CA y DoD en `Cumple`), épicas sincronizadas con el estado real de las 25 HU, demo del hook en ambos repos (secreto ficticio bloqueado, prueba en rojo bloqueada, corregida permitida: `citas-web` `6e8d9aa`, `citas-api` `a321231`). `mvnw clean test` 153/153; `npm test` 96/96 |
 
-S3 cerrada el 2026-09-25: 10 HU `Completada`, merge a `main` y etiqueta `s3` en ambos repos. Pendiente solo el push (punto 4).
+S3 cerrada el 2026-09-25: 10 HU `Completada`, merge a `main` y etiqueta `s3` en ambos repos, todo publicado en GitHub (`develop`, `main` y `s3`).
 
-## Punto de retoma (actualizado 2026-09-25)
+## Punto de retoma (fin de clase 2026-09-25)
 
 ### 1. Preparar el equipo
 
@@ -65,17 +65,33 @@ Verificar con `$env:JAVA_HOME="$env:USERPROFILE\.jdks\temurin-21"; .\mvnw.cmd cl
 
 **Usar `clean test`, no solo `test`.** En este equipo los archivos quedan con horas de modificación incoherentes: el editor los guarda unas 5 horas "en el futuro" y otras herramientas con la hora real. La compilación incremental de Maven puede entonces tomar una fuente por más antigua que su `.class` y ejecutar código viejo. El mismo desfase de reloj provoca a veces que MySQL de Testcontainers presente un certificado TLS "todavía no válido" (`CertificateNotYetValidException`): varias clases de integración fallan al arrancar el contexto. Se resuelve relanzando.
 
-### 2. GitHub
+### 2. GitHub (cada clase)
 
-Credencial local `credential.https://github.com.username = jmunoz841` configurada en los tres repos (no global). Hay que autenticarse una vez por clase desde una terminal propia; hasta entonces el repo raíz (privado) no admite `pull` ni `push`.
+Al cerrar la clase se borra la credencial propia y la config local, para no dejar la cuenta utilizable en el equipo compartido. Para volver a publicar:
 
-### 3. Lo que falta de S3
+1. `git config credential.https://github.com.username jmunoz841` en el `.git/config` **local** de los tres repos (nunca global: la credencial `git:https://github.com` es de otro estudiante).
+2. Lanzar el push con los diálogos habilitados solo para ese comando: `$env:GCM_INTERACTIVE='always'; $env:GIT_TERMINAL_PROMPT='1'; git push ...`. Git Credential Manager abre su ventana y el usuario inicia sesión como `jmunoz841`. Las herramientas del agente traen `GCM_INTERACTIVE=never` y sin esto el push falla con "Cannot prompt".
+3. Al terminar: `cmdkey /delete:git:https://jmunoz841@github.com` y `git config --unset credential.https://github.com.username` en los tres repos.
 
-Nada de desarrollo ni de evidencia: ver [[evidencia-s3]].
+### 3. S4 — qué sigue
 
-### 4. Pendiente del Product Owner
+Alcance aprobado (D-031): bloque "Ciclo de la cita". Orden sugerido por dependencias:
 
-- Push: autenticarse con la cuenta `jmunoz841` (credencial local ya configurada).
+| Orden | HU | Qué pide |
+|---|---|---|
+| 1 | [[HU-016-consultar-mis-citas]] | Listado de citas del USER con filtros por estado y fecha; motivo de rechazo visible; ownership |
+| 2 | [[HU-017-cancelar-cita]] | Cancelar una cita futura no finalizada; libera los slots (DELETE en `slot_reservations`) e historial |
+| 3 | [[HU-011-consultar-agenda-del-profesional]] | Citas aprobadas del profesional por día o semana y sede |
+| 4 | [[HU-020-cerrar-atencion]] | Marcar `COMPLETED` / `NO_SHOW` desde la hora de inicio (D-034) |
+| 5 | [[HU-021-historial-de-estados]] | Consultar el historial (ADMIN, USER dueño y PROFESSIONAL de sus citas, D-034); inmutabilidad |
+
+La guía de S4 pide además ciclos Builder/Verifier con log por iteración y los LOOP 01 a 03 (`GUIA_SESIONES_S2_S6.md`). Siguen en `Borrador`: reprogramación (HU-018, HU-019, HU-022; reglas ya decididas en D-033), cuenta (HU-002, token de 30 min por D-032; HU-003) y EPS y planes (HU-007).
+
+Deuda técnica menor: en la primera carga en frío los íconos de Material Symbols se ven como texto unos segundos; conviene alojar la fuente en `citas-web` en vez de cargarla de Google Fonts.
+
+### 4. Datos de prueba locales
+
+La base local tiene datos sintéticos de S3 (4 especialidades, 3 profesionales, 3 pacientes y citas). Las cuentas ficticias son `@citaclara.test` (su contraseña de laboratorio no se registra en la wiki); el ADMIN es el documentado en `README.md`. El script que los cargó no está versionado.
 
 
 ## Relacionadas

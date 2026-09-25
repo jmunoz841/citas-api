@@ -118,4 +118,4 @@ Implementa la resolución de RF-15.
 
 ## Notas y decisiones
 
-- Incógnita: qué ocurre si la cita original llega a su fecha con la reprogramación aún `PENDING`.
+- Resuelto (D-033): si llega la hora de la cita original con la reprogramación aún `PENDING`, la solicitud se cancela y libera su retención.

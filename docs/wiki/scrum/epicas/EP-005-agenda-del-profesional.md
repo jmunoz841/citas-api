@@ -47,7 +47,7 @@ Oferta de horarios reservables y visibilidad de la atención programada.
 ## Historias de usuario
 
 - [[HU-010-gestionar-bloques-de-disponibilidad]] — Sprint 2 — Completada
-- [[HU-011-consultar-agenda-del-profesional]] — Sprint 3 — Borrador
+- [[HU-011-consultar-agenda-del-profesional]] — Sprint 3 — Aprobada
 
 ## Criterio de completitud de la épica
 

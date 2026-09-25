@@ -2,7 +2,7 @@
 id: HU-011
 tipo: historia-de-usuario
 titulo: "Consultar agenda del profesional"
-estado: Borrador
+estado: Aprobada
 epica: "[[EP-005-agenda-del-profesional]]"
 esfuerzo: "Medio"
 sprint_sugerido: "Sprint 3"
@@ -107,6 +107,8 @@ Implementa RF-16. Incluye el dashboard PROFESSIONAL y la vista de agenda.
 ## Historial de validación
 
 - 2026-09-16 (S2) — HU creada en estado `Borrador`.
+
+- 2026-09-25 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S4 (bloque "Ciclo de la cita", D-031).
 
 ## Notas y decisiones
 

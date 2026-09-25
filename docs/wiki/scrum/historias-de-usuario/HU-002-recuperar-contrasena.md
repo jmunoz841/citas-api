@@ -125,4 +125,4 @@ Implementa RF-03. El envío real de correo es opcional; en desarrollo el token p
 
 ## Notas y decisiones
 
-- Incógnita: duración de vigencia del token (a definir al aprobar).
+- Resuelto (D-032): el token de recuperación dura 30 minutos, es de un solo uso y se guarda como hash.

@@ -125,4 +125,4 @@ Implementa la solicitud de RF-15. La reprogramación conserva profesional y espe
 
 ## Notas y decisiones
 
-- Supuesto a confirmar: máximo una reprogramación `PENDING` por cita.
+- Resuelto (D-033): máximo una reprogramación `PENDING` por cita.
