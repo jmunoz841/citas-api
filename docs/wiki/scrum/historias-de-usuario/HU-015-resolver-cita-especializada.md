@@ -2,7 +2,7 @@
 id: HU-015
 tipo: historia-de-usuario
 titulo: "Aprobar o rechazar cita especializada"
-estado: Aprobada
+estado: Completada
 epica: "[[EP-006-reserva-de-citas]]"
 esfuerzo: "Medio"
 sprint_sugerido: "Sprint 2"
@@ -136,6 +136,8 @@ Implementa la resolución de RF-12. Incluye un listado básico de solicitudes `R
 - 2026-09-25 (S3) — Backend implementado con pruebas primero (Red → Green) y verificado (`mvnw clean test` 149/149). Pendiente el dashboard ADMIN.
 
 - 2026-09-25 (S3) — Vista integrada en `citas-web` (`citas-web` `576db18`) según el diseño aprobado en Stitch v4. Estado de la HU sin cambios.
+
+- 2026-09-25 (S3) — HU `Completada` con confirmación explícita del Product Owner (Juan Muñoz): todos los CA y la DoD en `Cumple` con evidencia. Resumen en [[evidencia-s3]].
 
 ## Notas y decisiones
 

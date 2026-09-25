@@ -50,10 +50,10 @@ Flujo central del producto: de la disponibilidad a una cita confirmada o solicit
 
 ## Historias de usuario
 
-- [[HU-012-consultar-disponibilidad]] — Sprint 2 — Aprobada
-- [[HU-013-reservar-cita-general]] — Sprint 2 — Aprobada
-- [[HU-014-solicitar-cita-especializada]] — Sprint 2 — Aprobada
-- [[HU-015-resolver-cita-especializada]] — Sprint 2 — Aprobada
+- [[HU-012-consultar-disponibilidad]] — Sprint 2 — Completada
+- [[HU-013-reservar-cita-general]] — Sprint 2 — Completada
+- [[HU-014-solicitar-cita-especializada]] — Sprint 2 — Completada
+- [[HU-015-resolver-cita-especializada]] — Sprint 2 — Completada
 - [[HU-022-bandeja-administrativa]] — Sprint 3 — Borrador
 
 ## Criterio de completitud de la épica

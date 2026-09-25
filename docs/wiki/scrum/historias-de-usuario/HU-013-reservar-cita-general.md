@@ -2,7 +2,7 @@
 id: HU-013
 tipo: historia-de-usuario
 titulo: "Reservar cita general"
-estado: Aprobada
+estado: Completada
 epica: "[[EP-006-reserva-de-citas]]"
 esfuerzo: "Alto"
 sprint_sugerido: "Sprint 2"
@@ -132,6 +132,8 @@ Implementa RF-11 y RN-02. Primera HU que crea citas; establece el mecanismo de r
 - 2026-09-25 (S3) — Backend implementado y verificado: migración V6, `POST /api/v1/appointments`, LOOP de doble reserva en verde (`mvnw test` 136/136). Pendiente la vista de solicitud.
 
 - 2026-09-25 (S3) — Vista integrada en `citas-web` (`citas-web` `576db18`) según el diseño aprobado en Stitch v4. Estado de la HU sin cambios.
+
+- 2026-09-25 (S3) — HU `Completada` con confirmación explícita del Product Owner (Juan Muñoz): todos los CA y la DoD en `Cumple` con evidencia. Resumen en [[evidencia-s3]].
 
 ## Notas y decisiones
 

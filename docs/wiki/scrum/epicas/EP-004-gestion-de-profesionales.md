@@ -47,8 +47,8 @@ Profesionales habilitados para publicar agenda y recibir citas.
 
 ## Historias de usuario
 
-- [[HU-008-crear-profesional]] — Sprint 2 — Aprobada
-- [[HU-009-activar-desactivar-profesional]] — Sprint 2 — Aprobada
+- [[HU-008-crear-profesional]] — Sprint 2 — Completada
+- [[HU-009-activar-desactivar-profesional]] — Sprint 2 — Completada
 
 ## Criterio de completitud de la épica
 

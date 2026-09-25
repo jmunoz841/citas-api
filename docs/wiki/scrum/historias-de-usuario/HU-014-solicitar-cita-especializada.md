@@ -2,7 +2,7 @@
 id: HU-014
 tipo: historia-de-usuario
 titulo: "Solicitar cita especializada"
-estado: Aprobada
+estado: Completada
 epica: "[[EP-006-reserva-de-citas]]"
 esfuerzo: "Medio"
 sprint_sugerido: "Sprint 2"
@@ -116,6 +116,8 @@ Implementa la parte de solicitud de RF-12. Reutiliza el mecanismo de reserva de 
 - 2026-09-25 (S3) — Backend implementado y verificado sobre el mismo `POST /api/v1/appointments` de HU-013: la especialidad decide el estado inicial (`mvnw test` 136/136). Pendiente el flujo en la vista.
 
 - 2026-09-25 (S3) — Vista integrada en `citas-web` (`citas-web` `576db18`) según el diseño aprobado en Stitch v4. Estado de la HU sin cambios.
+
+- 2026-09-25 (S3) — HU `Completada` con confirmación explícita del Product Owner (Juan Muñoz): todos los CA y la DoD en `Cumple` con evidencia. Resumen en [[evidencia-s3]].
 
 ## Notas y decisiones
 

@@ -2,7 +2,7 @@
 id: HU-008
 tipo: historia-de-usuario
 titulo: "Crear profesional con especialidades y sedes"
-estado: Aprobada
+estado: Completada
 epica: "[[EP-004-gestion-de-profesionales]]"
 esfuerzo: "Alto"
 sprint_sugerido: "Sprint 2"
@@ -145,6 +145,8 @@ Implementa RF-07 (creación y asignaciones). El profesional es un usuario con ro
 - 2026-09-23 (S3) — Backend implementado y verificado (`mvnw test` 95/95). Pendiente la vista de ADMIN en `citas-web`.
 
 - 2026-09-25 (S3) — Vista integrada en `citas-web` (`citas-web` `576db18`) según el diseño aprobado en Stitch v4. Estado de la HU sin cambios.
+
+- 2026-09-25 (S3) — HU `Completada` con confirmación explícita del Product Owner (Juan Muñoz): todos los CA y la DoD en `Cumple` con evidencia. Resumen en [[evidencia-s3]].
 
 ## Notas y decisiones
 

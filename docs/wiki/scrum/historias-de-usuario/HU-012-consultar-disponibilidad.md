@@ -2,7 +2,7 @@
 id: HU-012
 tipo: historia-de-usuario
 titulo: "Consultar disponibilidad"
-estado: Aprobada
+estado: Completada
 epica: "[[EP-006-reserva-de-citas]]"
 esfuerzo: "Alto"
 sprint_sugerido: "Sprint 2"
@@ -129,6 +129,8 @@ Implementa RF-10 y aplica RF-09. Solo se muestran horarios que puedan completar 
 - 2026-09-25 (S3) — Backend implementado y verificado: `GET /api/v1/availability`, `SlotPlanner` en el dominio, `mvnw test` 136/136. Pendiente la vista de búsqueda.
 
 - 2026-09-25 (S3) — Vista integrada en `citas-web` (`citas-web` `576db18`) según el diseño aprobado en Stitch v4. Estado de la HU sin cambios.
+
+- 2026-09-25 (S3) — HU `Completada` con confirmación explícita del Product Owner (Juan Muñoz): todos los CA y la DoD en `Cumple` con evidencia. Resumen en [[evidencia-s3]].
 
 ## Notas y decisiones
 

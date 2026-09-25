@@ -2,7 +2,7 @@
 id: HU-005
 tipo: historia-de-usuario
 titulo: "Consultar catálogos fijos"
-estado: Aprobada
+estado: Completada
 epica: "[[EP-003-catalogos]]"
 esfuerzo: "Bajo"
 sprint_sugerido: "Sprint 2"
@@ -112,6 +112,8 @@ Implementa RF-05. Catálogos precargados por seed y de solo lectura: roles, esta
 - 2026-09-23 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S3.
 
 - 2026-09-23 (S3) — Backend implementado y verificado: migración V2, 6 endpoints de lectura y 9 pruebas de integración. Falta el consumo desde `citas-web`.
+
+- 2026-09-25 (S3) — HU `Completada` con confirmación explícita del Product Owner (Juan Muñoz): todos los CA y la DoD en `Cumple` con evidencia. Resumen en [[evidencia-s3]].
 
 ## Notas y decisiones
 

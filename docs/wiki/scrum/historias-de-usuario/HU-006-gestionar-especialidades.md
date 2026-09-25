@@ -2,7 +2,7 @@
 id: HU-006
 tipo: historia-de-usuario
 titulo: "Gestionar especialidades"
-estado: Aprobada
+estado: Completada
 epica: "[[EP-003-catalogos]]"
 esfuerzo: "Medio"
 sprint_sugerido: "Sprint 2"
@@ -135,6 +135,8 @@ Implementa RF-06 (especialidades) y RF-09. Cada especialidad define una duració
 - 2026-09-23 (S3) — Backend implementado y verificado (`mvnw test` 95/95). Pendiente la vista de ADMIN en `citas-web`.
 
 - 2026-09-25 (S3) — Vista integrada en `citas-web` (`citas-web` `576db18`) según el diseño aprobado en Stitch v4. Estado de la HU sin cambios.
+
+- 2026-09-25 (S3) — HU `Completada` con confirmación explícita del Product Owner (Juan Muñoz): todos los CA y la DoD en `Cumple` con evidencia. Resumen en [[evidencia-s3]].
 
 ## Notas y decisiones
 

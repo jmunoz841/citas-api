@@ -2,7 +2,7 @@
 id: HU-004
 tipo: historia-de-usuario
 titulo: "Registrar afiliación EPS"
-estado: Aprobada
+estado: Completada
 epica: "[[EP-002-perfil-y-afiliacion]]"
 esfuerzo: "Medio"
 sprint_sugerido: "Sprint 2"
@@ -154,6 +154,8 @@ Implementa la segunda parte de RF-04. La afiliación referencia catálogos (plan
 - 2026-09-23 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S3.
 - 2026-09-23 (S3) — El PO decide que el registro pida `insurancePlanId` y `regimeCode` en pareja; se añade CA-06 y se corrige la nota errónea sobre el régimen.
 - 2026-09-23 (S3) — HU implementada y verificada de punta a punta: migración V3, endpoint de planes, registro con afiliación opcional, selector en `citas-web`. `mvnw test` 78/78 y `npm test` 22/22.
+
+- 2026-09-25 (S3) — HU `Completada` con confirmación explícita del Product Owner (Juan Muñoz): todos los CA y la DoD en `Cumple` con evidencia. Resumen en [[evidencia-s3]].
 
 ## Notas y decisiones
 

@@ -53,7 +53,7 @@ HU objetivo: [[HU-001-registro-e-inicio-de-sesion-jwt]] (`Aprobada`).
 | 15 | Decisiones abiertas | Hecho | D-027 a D-030 confirmadas; D-028 implementada (`409 ASSIGNMENT_IN_USE`), `citas-api` `1076f6d` |
 | 16 | Evidencia de cierre | Hecho | [[evidencia-s3]]: matriz de las 10 HU (43 CA y DoD en `Cumple`), épicas sincronizadas con el estado real de las 25 HU, demo del hook en ambos repos (secreto ficticio bloqueado, prueba en rojo bloqueada, corregida permitida: `citas-web` `6e8d9aa`, `citas-api` `a321231`). `mvnw clean test` 153/153; `npm test` 96/96 |
 
-Pendiente de S3: solo decisiones del Product Owner (ver punto 4).
+S3 cerrada el 2026-09-25: 10 HU `Completada`, merge a `main` y etiqueta `s3` en ambos repos. Pendiente solo el push (punto 4).
 
 ## Punto de retoma (actualizado 2026-09-25)
 
@@ -73,10 +73,8 @@ Credencial local `credential.https://github.com.username = jmunoz841` configurad
 
 Nada de desarrollo ni de evidencia: ver [[evidencia-s3]].
 
-### 4. Decisiones del Product Owner pendientes
+### 4. Pendiente del Product Owner
 
-- Pasar a `Completada` las 10 HU de S3 (todas con CA y DoD en `Cumple`).
-- Merge `develop` → `main` y etiqueta `s3` en ambos repos.
 - Push: autenticarse con la cuenta `jmunoz841` (credencial local ya configurada).
 
 

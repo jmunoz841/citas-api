@@ -146,3 +146,8 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 - HECHO: las épicas listaban todas las HU como `Borrador`; se sincronizaron con el estado real de cada HU.
 - HECHO: demo del hook en ambos repos: secreto ficticio bloqueado, prueba en rojo bloqueada y corregida permitida (`citas-web` `6e8d9aa`, `citas-api` `a321231`). El hook de `citas-api` usa `mvnw -q` y no imprime resumen en verde.
 - Páginas afectadas: [[evidencia-s3]], [[ejecucion]], [[index]]
+
+## 2026-09-25 — INGEST — Cierre de S3
+- DECISIÓN (usuario): "aprobado". Las 10 HU de S3 (HU-004, 005, 006, 008, 009, 010, 012, 013, 014, 015) pasan a `Completada`; merge `develop` → `main` y etiqueta `s3` en `citas-api` y `citas-web`.
+- PREGUNTA ABIERTA: ninguna de producto. Falta el push (credencial de GitHub).
+- Páginas afectadas: [[evidencia-s3]], [[ejecucion]]

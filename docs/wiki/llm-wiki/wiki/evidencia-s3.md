@@ -17,10 +17,10 @@ Sesión: S3
 Repo: github.com/jmunoz841/citas-api
 Branch: develop
 Commit hash: a321231 (último de S3; historial completo desde 5718bd5)
-HU abordadas: HU-004, HU-005, HU-006, HU-008, HU-009, HU-010, HU-012, HU-013, HU-014, HU-015 (todas Aprobada)
+HU abordadas: HU-004, HU-005, HU-006, HU-008, HU-009, HU-010, HU-012, HU-013, HU-014, HU-015 (todas Completada)
 Criterios completados: 43 CA y la DoD completa de las 10 HU en "Cumple" (matriz en cada HU)
 Pruebas ejecutadas: mvnw clean test 2026-09-25 → 153 pruebas, 0 fallos (dominio, aplicación, integración con Testcontainers MySQL 8.4 + Flyway V1–V6, ArchUnit)
-Qué quedó pendiente: confirmación del Product Owner para pasar las HU a Completada; merge develop → main y etiqueta s3 cuando el usuario lo decida; push (credencial de GitHub)
+Qué quedó pendiente: push (credencial de GitHub)
 Evidencia adicional: migraciones V2–V6, contratos en docs/contratos/, LOOP de doble reserva (PK de slot_reservations), decisiones D-018 a D-030, hook pre-commit (D-024)
 ```
 
@@ -34,7 +34,7 @@ Commit hash: 6e8d9aa (último de S3; historial completo desde 7eecf11)
 HU abordadas: vistas de HU-004, HU-005, HU-006, HU-008, HU-009, HU-010, HU-012, HU-013, HU-014, HU-015
 Criterios completados: diseño Stitch v4 aprobado (D-026) e implementado con las 5 correcciones obligatorias; frontend sin mocks contra citas-api
 Pruebas ejecutadas: npm run lint, npm test (96 pruebas), npm run typecheck y npm run build en verde; capturas autenticadas contra la API real (1440, 1280 y 390 px)
-Qué quedó pendiente: merge develop → main y etiqueta s3 cuando el usuario lo decida; push
+Qué quedó pendiente: push (credencial de GitHub)
 Evidencia adicional: docs/diseno/stitch-v3, stitch-v4, APROBACION.md, DESIGN.md § Áreas autenticadas
 ```
 
@@ -53,7 +53,7 @@ Evidencia adicional: docs/diseno/stitch-v3, stitch-v4, APROBACION.md, DESIGN.md 
 | [[HU-014-solicitar-cita-especializada]] | Solicitar cita especializada | 3 | Cumple | Cumple | `BookingApiIntegrationTest.hu014_…`, `PatientHomePage.test.tsx` |
 | [[HU-015-resolver-cita-especializada]] | Aprobar o rechazar cita especializada | 5 | Cumple | Cumple | `AdminAppointmentApiIntegrationTest`, `AppointmentTest`, `RequestsPage.test.tsx` |
 
-Ningún elemento quedó en `No cumple` ni `No verificable`. Por la regla del proyecto, el paso a `Completada` espera la confirmación explícita del Product Owner.
+Ningún elemento quedó en `No cumple` ni `No verificable`. El Product Owner confirmó el cierre el 2026-09-25: las 10 HU están `Completada`, y `develop` se integró en `main` con la etiqueta `s3` en ambos repos.
 
 ## Verificación obligatoria de S3 (`GUIA_SESIONES_S2_S6.md`)
 
