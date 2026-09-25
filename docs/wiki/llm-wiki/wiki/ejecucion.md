@@ -50,8 +50,10 @@ HU objetivo: [[HU-001-registro-e-inicio-de-sesion-jwt]] (`Aprobada`).
 | 12 | Diseño de las áreas autenticadas (Stitch) | Hecho | v3 revisada (fondo azulado, contenido inventado, tablas cortadas) → v4 **aprobada** por el Product Owner (D-026) con 5 correcciones de implementación. `citas-web` `08c65c4`: `docs/diseno/APROBACION.md` y `DESIGN.md` § Áreas autenticadas |
 | 13 | Contrato para las vistas (backend) | Hecho | `GET /api/v1/auth/session` añade `firstNames`/`lastNames` y nuevo `GET /api/v1/professional/me` (estado, especialidad principal, sedes). Aditivos, prueba primero; `citas-api` `6813dc8`, `mvnw clean test` 151/151 |
 | 14 | Pasada de frontend de S3 | Hecho | `citas-web` `fa704a4` (sesión por rol, cliente con refresh, estructura común) y `576db18` (Solicitudes, Especialidades, Profesionales, Mi agenda, Inicio y modal de reserva). 95 pruebas Vitest, lint y build en verde. Verificado contra la API real con datos sintéticos y capturas autenticadas (Edge por CDP) frente a Stitch v4; las 5 correcciones obligatorias aplicadas (acciones visibles a 1280 px, badge real, sin textos inventados, subtítulo de rechazo) |
+| 15 | Decisiones abiertas | Hecho | D-027 a D-030 confirmadas; D-028 implementada (`409 ASSIGNMENT_IN_USE`), `citas-api` `1076f6d` |
+| 16 | Evidencia de cierre | Hecho | [[evidencia-s3]]: matriz de las 10 HU (43 CA y DoD en `Cumple`), épicas sincronizadas con el estado real de las 25 HU, demo del hook en ambos repos (secreto ficticio bloqueado, prueba en rojo bloqueada, corregida permitida: `citas-web` `6e8d9aa`, `citas-api` `a321231`). `mvnw clean test` 153/153; `npm test` 96/96 |
 
-Pendiente de S3: la evidencia de cierre (matriz por CA y DoD, trazabilidad de épicas, demo Red→Green del hook). Las preguntas abiertas de S3 quedaron resueltas (D-027 a D-030).
+Pendiente de S3: solo decisiones del Product Owner (ver punto 4).
 
 ## Punto de retoma (actualizado 2026-09-25)
 
@@ -59,7 +61,7 @@ Pendiente de S3: la evidencia de cierre (matriz por CA y DoD, trazabilidad de é
 
 `git pull` en los tres repos, JDK 21 portable en `%USERPROFILE%\.jdks\temurin-21`, `.env` en raíz, `citas-api` y `citas-web`. Docker Desktop está instalado **por usuario** en `%LOCALAPPDATA%\Programs\DockerDesktop\Docker Desktop.exe`, no en `Program Files`. Luego `docker compose up -d` desde `citas-api/` (MySQL en 3308).
 
-Verificar con `$env:JAVA_HOME="$env:USERPROFILE\.jdks\temurin-21"; .\mvnw.cmd clean test` → deben pasar **152** pruebas; en `citas-web`, `npm run lint`, `npm test` (95), `npm run typecheck` y `npm run build`.
+Verificar con `$env:JAVA_HOME="$env:USERPROFILE\.jdks\temurin-21"; .\mvnw.cmd clean test` → deben pasar **153** pruebas; en `citas-web`, `npm run lint`, `npm test` (96), `npm run typecheck` y `npm run build`.
 
 **Usar `clean test`, no solo `test`.** En este equipo los archivos quedan con horas de modificación incoherentes: el editor los guarda unas 5 horas "en el futuro" y otras herramientas con la hora real. La compilación incremental de Maven puede entonces tomar una fuente por más antigua que su `.class` y ejecutar código viejo. El mismo desfase de reloj provoca a veces que MySQL de Testcontainers presente un certificado TLS "todavía no válido" (`CertificateNotYetValidException`): varias clases de integración fallan al arrancar el contexto. Se resuelve relanzando.
 
@@ -69,13 +71,13 @@ Credencial local `credential.https://github.com.username = jmunoz841` configurad
 
 ### 3. Lo que falta de S3
 
-| Orden | Trabajo | Alcance |
-|---|---|---|
-| 1 | Evidencia de cierre de S3 | Matriz por CA y DoD, demo Red→Green del hook, trazabilidad de las épicas (siguen listando las HU como `Borrador`), con la skill `scrum-spec-orchestrator` |
+Nada de desarrollo ni de evidencia: ver [[evidencia-s3]].
 
 ### 4. Decisiones del Product Owner pendientes
 
-Ninguna de producto: las preguntas abiertas de S3 quedaron resueltas (D-027 a D-030 en [[decisiones]]). Quedan por confirmar al cierre el paso de las HU a `Completada` y el merge `develop` → `main` con la etiqueta `s3`.
+- Pasar a `Completada` las 10 HU de S3 (todas con CA y DoD en `Cumple`).
+- Merge `develop` → `main` y etiqueta `s3` en ambos repos.
+- Push: autenticarse con la cuenta `jmunoz841` (credencial local ya configurada).
 
 
 ## Relacionadas

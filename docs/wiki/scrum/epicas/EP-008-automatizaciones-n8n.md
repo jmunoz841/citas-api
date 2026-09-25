@@ -50,7 +50,7 @@ Comunicación proactiva con usuarios y visibilidad operativa para ADMIN.
 
 - [[HU-023-recordatorios-de-citas]] — Sprint 4 — Borrador
 - [[HU-024-notificacion-cambio-de-estado]] — Sprint 5 — Borrador
-- [[HU-025-resumen-operativo-diario]] — Sprint 5 — Borrador (opcional)
+- [[HU-025-resumen-operativo-diario]] — Sprint 5 — Borrador
 
 ## Criterio de completitud de la épica
 

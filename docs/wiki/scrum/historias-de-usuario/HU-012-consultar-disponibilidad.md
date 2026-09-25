@@ -104,7 +104,7 @@ Implementa RF-10 y aplica RF-09. Solo se muestran horarios que puedan completar 
 - [x] Todos los criterios de aceptación obligatorios están validados con evidencia.
 - [x] Pruebas de reglas de slots 30/60 en verde.
 - [x] Vista de búsqueda integrada en `citas-web`.
-- [ ] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
+- [x] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/` (EP-006 sincronizada el 2026-09-25).
 
 ## Evidencia de validación
 

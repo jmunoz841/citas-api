@@ -94,7 +94,7 @@ Implementa la parte de solicitud de RF-12. Reutiliza el mecanismo de reserva de 
 - [x] Todos los criterios de aceptación obligatorios están validados con evidencia.
 - [x] Pruebas de backend en verde.
 - [x] Flujo especializado integrado en `citas-web`.
-- [ ] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
+- [x] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/` (EP-006 sincronizada el 2026-09-25).
 
 ## Evidencia de validación
 

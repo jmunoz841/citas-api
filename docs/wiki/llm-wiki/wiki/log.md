@@ -140,3 +140,9 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 - DECISIÓN (usuario): D-027 endpoint único de reserva; D-028 `409 ASSIGNMENT_IN_USE` al quitar una asignación en uso; D-029 desactivar conserva las citas; D-030 sin expiración de solicitudes en S3.
 - HECHO: D-028 implementada con la prueba primero (Red: 500 → Green: 409); `mvnw clean test` 152/152.
 - Páginas afectadas: [[decisiones]], [[ejecucion]]
+
+## 2026-09-25 — LEARN — Evidencia de cierre de S3
+- HECHO: las 10 HU de S3 tienen sus 43 CA y su DoD en `Cumple`; ninguna en `No cumple` ni `No verificable`. Siguen `Aprobada` hasta que el Product Owner confirme el cierre.
+- HECHO: las épicas listaban todas las HU como `Borrador`; se sincronizaron con el estado real de cada HU.
+- HECHO: demo del hook en ambos repos: secreto ficticio bloqueado, prueba en rojo bloqueada y corregida permitida (`citas-web` `6e8d9aa`, `citas-api` `a321231`). El hook de `citas-api` usa `mvnw -q` y no imprime resumen en verde.
+- Páginas afectadas: [[evidencia-s3]], [[ejecucion]], [[index]]

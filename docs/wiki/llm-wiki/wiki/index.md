@@ -11,6 +11,7 @@ Punto de entrada de la memoria global. Convenciones: [SCHEMA](../schema/SCHEMA.m
 | [[decisiones]] | decisiones | Decisiones aprobadas y preguntas abiertas |
 | [[ejecucion]] | ejecucion | Plan S2, estado de avance y evidencia por sesión |
 | [[evidencia-s2]] | ejecucion | Registro de evidencia S2 por repositorio (plantilla del curso) |
+| [[evidencia-s3]] | ejecucion | Registro de evidencia S3: plantilla por repo, matriz resumida de las 10 HU y demo del hook FAIL/PASS |
 
 ## Fuentes (`raw/`)
 

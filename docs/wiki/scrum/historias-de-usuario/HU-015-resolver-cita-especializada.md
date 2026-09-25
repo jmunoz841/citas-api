@@ -110,7 +110,7 @@ Implementa la resolución de RF-12. Incluye un listado básico de solicitudes `R
 - [x] Todos los criterios de aceptación obligatorios están validados con evidencia.
 - [x] Pruebas de transiciones y autorización en verde.
 - [x] Dashboard ADMIN y vista de aprobación integrados en `citas-web`.
-- [ ] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
+- [x] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/` (EP-006 sincronizada el 2026-09-25).
 
 ## Evidencia de validación
 

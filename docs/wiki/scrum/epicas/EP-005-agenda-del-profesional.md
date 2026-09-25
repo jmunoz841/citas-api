@@ -46,7 +46,7 @@ Oferta de horarios reservables y visibilidad de la atención programada.
 
 ## Historias de usuario
 
-- [[HU-010-gestionar-bloques-de-disponibilidad]] — Sprint 2 — Borrador
+- [[HU-010-gestionar-bloques-de-disponibilidad]] — Sprint 2 — Aprobada
 - [[HU-011-consultar-agenda-del-profesional]] — Sprint 3 — Borrador
 
 ## Criterio de completitud de la épica
@@ -56,4 +56,4 @@ Oferta de horarios reservables y visibilidad de la atención programada.
 
 ## Riesgos e incógnitas
 
-- Representación de slots (materializados vs calculados) pendiente de normalización.
+- ~~Representación de slots (materializados vs calculados)~~ → resuelta por D-013: slots materializados de 30 minutos.

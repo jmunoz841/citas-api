@@ -106,7 +106,7 @@ Implementa RF-11 y RN-02. Primera HU que crea citas; establece el mecanismo de r
 - [x] Migración Flyway presente.
 - [x] Prueba de doble reserva en verde.
 - [x] Vista de solicitud integrada en `citas-web`.
-- [ ] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
+- [x] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/` (EP-006 sincronizada el 2026-09-25).
 
 ## Evidencia de validación
 
