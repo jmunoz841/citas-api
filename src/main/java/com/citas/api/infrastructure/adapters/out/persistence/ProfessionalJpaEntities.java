@@ -115,6 +115,7 @@ class ProfessionalSpecialtyJpaEntity {
     Long getProfessionalId() { return professionalId; }
     Long getSpecialtyId() { return specialtyId; }
     boolean isPrimary() { return primary; }
+    void setPrimary(boolean primary) { this.primary = primary; }
     boolean isActive() { return active; }
 }
 

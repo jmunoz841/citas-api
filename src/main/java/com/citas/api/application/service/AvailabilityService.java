@@ -3,6 +3,7 @@ package com.citas.api.application.service;
 import com.citas.api.application.port.in.ManageAvailabilityUseCase;
 import com.citas.api.application.port.out.AvailabilityRepositoryPort;
 import com.citas.api.application.port.out.ProfessionalRepositoryPort;
+import com.citas.api.domain.exception.BusinessConflictException;
 import com.citas.api.domain.exception.InvalidFieldException;
 import com.citas.api.domain.exception.ResourceNotFoundException;
 import com.citas.api.domain.model.agenda.AvailabilityBlock;
@@ -112,11 +113,13 @@ public class AvailabilityService implements ManageAvailabilityUseCase {
     }
 
     /**
-     * CA-05: un bloque con slots comprometidos no se toca. La comprobación efectiva llega con
-     * HU-013, cuando exista {@code slot_reservations}; hasta entonces la clave foránea
-     * RESTRICT desde esa tabla será la última defensa.
+     * CA-05: un bloque con slots reservados o retenidos no se edita ni se elimina, porque
+     * regenerar o borrar sus slots dejaría citas sin horario. Si una reserva se cuela entre esta
+     * comprobación y el borrado, la FK RESTRICT {@code fk_sr_slot} lo impide en la base.
      */
     private void requireNoCommittedSlots(AvailabilityBlock block) {
-        // Sin reservas todavía: no hay nada que comprobar en este incremento.
+        if (blocks.hasOccupiedSlots(block.getId())) {
+            throw BusinessConflictException.blockHasAppointments();
+        }
     }
 }

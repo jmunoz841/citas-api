@@ -45,6 +45,10 @@ class SecurityConfig {
                         // Agenda propia: solo PROFESSIONAL. La pertenencia la comprueba el
                         // caso de uso con el id del token (HU-010 CA-06).
                         .requestMatchers("/api/v1/professional/**").hasRole("PROFESSIONAL")
+                        // Búsqueda y reserva de citas: solo USER. El paciente sale siempre del
+                        // access token (HU-012, HU-013, HU-014).
+                        .requestMatchers("/api/v1/availability", "/api/v1/availability/**",
+                                "/api/v1/appointments", "/api/v1/appointments/**").hasRole("USER")
                         .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(problemHandlers.authenticationEntryPoint())

@@ -1,6 +1,7 @@
 package com.citas.api.infrastructure.adapters.out.persistence;
 
 import com.citas.api.application.port.out.AvailabilityRepositoryPort;
+import com.citas.api.domain.exception.BusinessConflictException;
 import com.citas.api.domain.model.agenda.AvailabilityBlock;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 /**
@@ -39,8 +42,12 @@ class AvailabilityPersistenceAdapter implements AvailabilityRepositoryPort {
         AvailabilityBlock saved = block.withId(entity.getId());
 
         if (block.getId() != null) {
-            slots.deleteByBlockId(block.getId());
-            slots.flush();
+            try {
+                slots.deleteByBlockId(block.getId());
+                slots.flush();
+            } catch (DataIntegrityViolationException e) {
+                throw translateOccupied(e);
+            }
         }
         for (LocalDateTime start : saved.slotStarts()) {
             slots.save(new AvailabilitySlotJpaEntity(saved.getId(), saved.getProfessionalId(), start));
@@ -70,12 +77,31 @@ class AvailabilityPersistenceAdapter implements AvailabilityRepositoryPort {
     @Override
     public void deleteById(Long blockId) {
         // Los slots caen por ON DELETE CASCADE de la FK compuesta.
-        blocks.deleteById(blockId);
+        try {
+            blocks.deleteById(blockId);
+            blocks.flush();
+        } catch (DataIntegrityViolationException e) {
+            throw translateOccupied(e);
+        }
     }
 
     @Override
     public int countSlots(Long blockId) {
         return slots.countByBlockId(blockId);
+    }
+
+    @Override
+    public boolean hasOccupiedSlots(Long blockId) {
+        return slots.countOccupiedByBlockId(blockId) > 0;
+    }
+
+    /**
+     * Una reserva que se coló tras la comprobación de la aplicación: la FK RESTRICT fk_sr_slot
+     * impide borrar sus slots (HU-010 CA-05).
+     */
+    private static RuntimeException translateOccupied(DataIntegrityViolationException e) {
+        String detail = String.valueOf(e.getMostSpecificCause().getMessage()).toLowerCase(Locale.ROOT);
+        return detail.contains("fk_sr_slot") ? BusinessConflictException.blockHasAppointments() : e;
     }
 
     private static AvailabilityBlock toDomain(AvailabilityBlockJpaEntity entity) {
@@ -181,4 +207,11 @@ interface AvailabilitySlotJpaRepository extends JpaRepository<AvailabilitySlotJp
     void deleteByBlockId(Long blockId);
 
     int countByBlockId(Long blockId);
+
+    @Query(value = """
+            SELECT COUNT(*) FROM slot_reservations sr
+            JOIN availability_slots s ON s.id = sr.slot_id
+            WHERE s.block_id = :blockId
+            """, nativeQuery = true)
+    long countOccupiedByBlockId(Long blockId);
 }

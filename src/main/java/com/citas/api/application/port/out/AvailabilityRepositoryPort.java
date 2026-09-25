@@ -27,4 +27,7 @@ public interface AvailabilityRepositoryPort {
     void deleteById(Long blockId);
 
     int countSlots(Long blockId);
+
+    /** ¿Algún slot del bloque está reservado o retenido por una cita? (HU-010 CA-05). */
+    boolean hasOccupiedSlots(Long blockId);
 }
