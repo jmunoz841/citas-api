@@ -12,6 +12,7 @@ import com.citas.api.application.port.out.SpecialtyRepositoryPort;
 import com.citas.api.application.port.out.TokenProviderPort;
 import com.citas.api.application.port.out.UserRepositoryPort;
 import com.citas.api.application.service.AppointmentBookingService;
+import com.citas.api.application.service.AppointmentRequestService;
 import com.citas.api.application.service.AuthService;
 import com.citas.api.application.service.AvailabilitySearchService;
 import com.citas.api.application.service.AvailabilityService;
@@ -77,5 +78,10 @@ class ApplicationConfig {
                                                         AgendaQueryPort agenda,
                                                         AppointmentRepositoryPort appointments, Clock clock) {
         return new AppointmentBookingService(specialties, professionals, agenda, appointments, clock);
+    }
+
+    @Bean
+    AppointmentRequestService appointmentRequestService(AppointmentRepositoryPort appointments) {
+        return new AppointmentRequestService(appointments);
     }
 }

@@ -15,6 +15,12 @@ public class BusinessConflictException extends DomainException {
         return new BusinessConflictException("SLOT_UNAVAILABLE", "El horario ya no está disponible");
     }
 
+    /** HU-015 CA-04: solo una cita REQUESTED se aprueba o se rechaza, y solo una vez. */
+    public static BusinessConflictException invalidStatusTransition() {
+        return new BusinessConflictException("INVALID_STATUS_TRANSITION",
+                "La cita ya no está pendiente de aprobación");
+    }
+
     /** HU-010 CA-05: un bloque con slots reservados o retenidos no se edita ni se elimina. */
     public static BusinessConflictException blockHasAppointments() {
         return new BusinessConflictException("BLOCK_HAS_APPOINTMENTS",

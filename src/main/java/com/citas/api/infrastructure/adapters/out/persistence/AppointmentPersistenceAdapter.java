@@ -4,6 +4,8 @@ import com.citas.api.application.port.out.AppointmentRepositoryPort;
 import com.citas.api.domain.exception.BusinessConflictException;
 import com.citas.api.domain.model.agenda.AgendaSlot;
 import com.citas.api.domain.model.appointment.Appointment;
+import com.citas.api.domain.model.appointment.AppointmentStatus;
+import com.citas.api.domain.model.appointment.AppointmentSummary;
 import com.citas.api.domain.model.appointment.StatusChange;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,12 +18,15 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 /**
  * Citas, ocupación de slots e historial (V6).
@@ -35,11 +40,13 @@ class AppointmentPersistenceAdapter implements AppointmentRepositoryPort {
 
     private final AppointmentJpaRepository appointments;
     private final AppointmentStatusHistoryJpaRepository history;
+    private final NamedParameterJdbcTemplate jdbc;
 
     AppointmentPersistenceAdapter(AppointmentJpaRepository appointments,
-                                  AppointmentStatusHistoryJpaRepository history) {
+                                  AppointmentStatusHistoryJpaRepository history, NamedParameterJdbcTemplate jdbc) {
         this.appointments = appointments;
         this.history = history;
+        this.jdbc = jdbc;
     }
 
     @Override
@@ -76,6 +83,55 @@ class AppointmentPersistenceAdapter implements AppointmentRepositoryPort {
         history.save(new AppointmentStatusHistoryJpaEntity(change.appointmentId(), change.status().name(),
                 change.source().name(), change.actorUserId(), change.reason()));
     }
+
+    @Override
+    public Optional<Appointment> findById(Long appointmentId) {
+        return appointments.findById(appointmentId).map(entity -> Appointment.restore(entity.getId(),
+                entity.getPatientUserId(), entity.getProfessionalId(), entity.getSpecialtyId(), entity.getSiteCode(),
+                entity.getStartAt(), entity.getDurationMinutes(), AppointmentStatus.valueOf(entity.getStatusCode())));
+    }
+
+    /**
+     * UPDATE condicionado al estado esperado. Es una lectura actual de InnoDB: si otra
+     * transacción resolvió la cita y confirmó, la condición ya no se cumple y se actualizan 0
+     * filas (HU-015, dos decisiones simultáneas).
+     */
+    @Override
+    public void changeStatus(Appointment updated, AppointmentStatus expected) {
+        int rows = appointments.updateStatusIf(updated.getId(), updated.getStatus().name(), expected.name());
+        if (rows == 0) {
+            throw BusinessConflictException.invalidStatusTransition();
+        }
+    }
+
+    @Override
+    public void releaseSlots(Long appointmentId) {
+        appointments.deleteSlotReservations(appointmentId);
+    }
+
+    @Override
+    public List<AppointmentSummary> findByStatus(AppointmentStatus status) {
+        return jdbc.query(SUMMARIES, new MapSqlParameterSource("status", status.name()), (rs, row) -> {
+            LocalDateTime startAt = rs.getObject("start_at", LocalDateTime.class);
+            return new AppointmentSummary(rs.getLong("id"), AppointmentStatus.valueOf(rs.getString("status_code")),
+                    rs.getString("patient_name"), rs.getString("professional_name"),
+                    rs.getString("specialty_name"), rs.getString("site_code"), startAt,
+                    rs.getObject("end_at", LocalDateTime.class), rs.getInt("duration_minutes"));
+        });
+    }
+
+    private static final String SUMMARIES = """
+            SELECT a.id, a.status_code, a.site_code, a.start_at, a.end_at, a.duration_minutes,
+                   CONCAT(pu.first_names, ' ', pu.last_names) AS patient_name,
+                   CONCAT(du.first_names, ' ', du.last_names) AS professional_name,
+                   s.name AS specialty_name
+            FROM appointments a
+            JOIN users pu ON pu.id = a.patient_user_id
+            JOIN users du ON du.id = a.professional_id
+            JOIN specialties s ON s.id = a.specialty_id
+            WHERE a.status_code = :status
+            ORDER BY a.start_at, a.id
+            """;
 }
 
 @Entity
@@ -184,6 +240,17 @@ interface AppointmentJpaRepository extends JpaRepository<AppointmentJpaEntity, L
             VALUES (:slotId, :professionalId, :appointmentId)
             """, nativeQuery = true)
     void insertSlotReservation(Long slotId, Long professionalId, Long appointmentId);
+
+    @Modifying(clearAutomatically = true)
+    @Query(value = """
+            UPDATE appointments SET status_code = :status, version = version + 1
+            WHERE id = :id AND status_code = :expected
+            """, nativeQuery = true)
+    int updateStatusIf(Long id, String status, String expected);
+
+    @Modifying
+    @Query(value = "DELETE FROM slot_reservations WHERE appointment_id = :appointmentId", nativeQuery = true)
+    void deleteSlotReservations(Long appointmentId);
 }
 
 interface AppointmentStatusHistoryJpaRepository extends JpaRepository<AppointmentStatusHistoryJpaEntity, Long> {

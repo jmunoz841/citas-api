@@ -1,5 +1,7 @@
 package com.citas.api.domain.model.appointment;
 
+import com.citas.api.domain.exception.BusinessConflictException;
+import com.citas.api.domain.exception.InvalidFieldException;
 import com.citas.api.domain.model.professional.Specialty;
 
 import java.time.LocalDateTime;
@@ -11,6 +13,9 @@ import java.time.LocalDateTime;
  * después, la cita conserva la duración con la que se agendó.</p>
  */
 public final class Appointment {
+
+    /** Longitud de {@code appointment_status_history.reason}. */
+    public static final int MAX_REASON_LENGTH = 500;
 
     private final Long id;
     private final Long patientUserId;
@@ -54,6 +59,31 @@ public final class Appointment {
     public Appointment withId(Long newId) {
         return new Appointment(newId, patientUserId, professionalId, specialtyId, siteCode, startAt,
                 durationMinutes, status);
+    }
+
+    /** El ADMIN aprueba una solicitud especializada (HU-015 CA-01). */
+    public Appointment approve() {
+        return resolve(AppointmentStatus.APPROVED);
+    }
+
+    /** El ADMIN rechaza una solicitud especializada; el motivo es obligatorio (RN-04). */
+    public Appointment reject(String reason) {
+        if (reason == null || reason.isBlank()) {
+            throw new InvalidFieldException("reason", "El motivo del rechazo es obligatorio");
+        }
+        if (reason.trim().length() > MAX_REASON_LENGTH) {
+            throw new InvalidFieldException("reason", "El motivo supera " + MAX_REASON_LENGTH + " caracteres");
+        }
+        return resolve(AppointmentStatus.REJECTED);
+    }
+
+    /** Solo una cita {@code REQUESTED} se aprueba o se rechaza (RN-11, HU-015 CA-04). */
+    private Appointment resolve(AppointmentStatus target) {
+        if (status != AppointmentStatus.REQUESTED) {
+            throw BusinessConflictException.invalidStatusTransition();
+        }
+        return new Appointment(id, patientUserId, professionalId, specialtyId, siteCode, startAt, durationMinutes,
+                target);
     }
 
     public LocalDateTime getEndAt() {
