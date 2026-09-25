@@ -66,7 +66,7 @@ Implementa la resolución de RF-12. Incluye un listado básico de solicitudes `R
 - [x] **T-02 — Listado de solicitudes**  
   Dificultad: Bajo  
   Descripción: consulta de citas `REQUESTED` para ADMIN.
-- [ ] **T-03 — Dashboard ADMIN y vista de aprobación**  
+- [x] **T-03 — Dashboard ADMIN y vista de aprobación**  
   Dificultad: Medio  
   Descripción: según diseño aprobado.
 - [x] **T-04 — Pruebas**  
@@ -109,7 +109,7 @@ Implementa la resolución de RF-12. Incluye un listado básico de solicitudes `R
 
 - [x] Todos los criterios de aceptación obligatorios están validados con evidencia.
 - [x] Pruebas de transiciones y autorización en verde.
-- [ ] Dashboard ADMIN y vista de aprobación integrados en `citas-web`.
+- [x] Dashboard ADMIN y vista de aprobación integrados en `citas-web`.
 - [ ] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
 
 ## Evidencia de validación
@@ -124,7 +124,7 @@ Implementa la resolución de RF-12. Incluye un listado básico de solicitudes `R
 | Listado | Cumple | `elListadoMuestraSoloLasSolicitudesPendientes` | Solo `REQUESTED`, con nombres de paciente, profesional y especialidad |
 | Red → Green | Cumple | Pruebas escritas antes de la implementación | Red: 9 pruebas, 7 fallos (404: los endpoints no existían); las 2 que ya pasaban cubren autorización y cita inexistente, que dependen de reglas previas. Green: 13/13 (9 integración + 4 dominio) |
 | DoD Pruebas | Cumple | `mvnw clean test` 2026-09-25: 149 pruebas, 0 fallos | — |
-| DoD Vista `citas-web` | **Pendiente** | — | Dashboard ADMIN en la pasada de frontend |
+| DoD Vista `citas-web` | Cumple | `RequestsPage.test.tsx` (10 pruebas: listado, vacío, sin conexión, aprobar, rechazar sin motivo y con motivo, contador, error del servidor, 409 al aprobar y al rechazar) | `citas-web` `576db18`; `npm test` 95/95, lint y build en verde; verificada contra la API real con capturas autenticadas frente a Stitch v4 (D-026) |
 | Contrato | Cumple | `docs/contratos/citas.md` § Decisión del ADMIN | — |
 
 ## Historial de validación
@@ -134,6 +134,8 @@ Implementa la resolución de RF-12. Incluye un listado básico de solicitudes `R
 - 2026-09-23 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S3.
 
 - 2026-09-25 (S3) — Backend implementado con pruebas primero (Red → Green) y verificado (`mvnw clean test` 149/149). Pendiente el dashboard ADMIN.
+
+- 2026-09-25 (S3) — Vista integrada en `citas-web` (`citas-web` `576db18`) según el diseño aprobado en Stitch v4. Estado de la HU sin cambios.
 
 ## Notas y decisiones
 

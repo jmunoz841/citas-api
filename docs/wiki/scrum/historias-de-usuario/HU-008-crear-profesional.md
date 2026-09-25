@@ -72,7 +72,7 @@ Implementa RF-07 (creación y asignaciones). El profesional es un usuario con ro
 - [x] **T-02 — Caso de uso crear/editar profesional**  
   Dificultad: Alto  
   Descripción: creación transaccional de usuario + perfil + asignaciones con validaciones.
-- [ ] **T-03 — Vista CRUD de profesionales**  
+- [x] **T-03 — Vista CRUD de profesionales**  
   Dificultad: Medio  
   Descripción: formularios de asignación de especialidades y sedes.
 - [x] **T-04 — Pruebas**  
@@ -116,7 +116,7 @@ Implementa RF-07 (creación y asignaciones). El profesional es un usuario con ro
 - [x] Todos los criterios de aceptación obligatorios están validados con evidencia.
 - [x] Migración Flyway presente.
 - [x] Pruebas de backend en verde.
-- [ ] Vista CRUD integrada en `citas-web`.
+- [x] Vista CRUD integrada en `citas-web`.
 - [x] Contrato REST documentado en `docs/contratos/administracion.md`.
 - [x] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
 
@@ -134,7 +134,7 @@ Implementa RF-07 (creación y asignaciones). El profesional es un usuario con ro
 | Reasignación | Cumple | `reasignarEspecialidadesYSedesReemplazaLasAnteriores` | `PUT` reemplaza el conjunto completo; la primaria queda donde se indicó |
 | DoD Migración | Cumple | `V4__oferta_administrable_hu006_hu008.sql` | `professionals`, `professional_specialties`, `professional_sites` + ADMIN inicial (D-021) |
 | DoD Pruebas | Cumple | `mvnw test` 2026-09-23: 95 pruebas, 0 fallos | — |
-| DoD Vista `citas-web` | **Pendiente** | — | La vista CRUD de ADMIN llega en el siguiente incremento del frontend |
+| DoD Vista `citas-web` | Cumple | `ProfessionalsPage.test.tsx` (alta con validación de principal y sedes, código repetido, cajón "Editar asignaciones") | `citas-web` `576db18`; `npm test` 95/95, lint y build en verde; verificada contra la API real con capturas autenticadas frente a Stitch v4 (D-026) |
 
 ## Historial de validación
 
@@ -143,6 +143,8 @@ Implementa RF-07 (creación y asignaciones). El profesional es un usuario con ro
 - 2026-09-23 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S3.
 
 - 2026-09-23 (S3) — Backend implementado y verificado (`mvnw test` 95/95). Pendiente la vista de ADMIN en `citas-web`.
+
+- 2026-09-25 (S3) — Vista integrada en `citas-web` (`citas-web` `576db18`) según el diseño aprobado en Stitch v4. Estado de la HU sin cambios.
 
 ## Notas y decisiones
 

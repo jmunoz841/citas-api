@@ -72,7 +72,7 @@ Implementa RF-08. Un día puede tener varios bloques (p. ej. 08:00–12:00 HIC y
 - [x] **T-03 — Casos de uso CRUD de bloques**  
   Dificultad: Medio  
   Descripción: creación con slots, edición/eliminación condicionada.
-- [ ] **T-04 — Vista de calendario de bloques**  
+- [x] **T-04 — Vista de calendario de bloques**  
   Dificultad: Alto  
   Descripción: según diseño aprobado.
 - [x] **T-05 — Pruebas**  
@@ -123,7 +123,7 @@ Implementa RF-08. Un día puede tener varios bloques (p. ej. 08:00–12:00 HIC y
 - [x] CA-05 (bloque con slots comprometidos) validado con `slot_reservations` de HU-013.
 - [x] Migración Flyway presente con índices para consultas de agenda.
 - [x] Pruebas de reglas de bloques en verde.
-- [ ] Vista de bloques/calendario integrada en `citas-web`.
+- [x] Vista de bloques/calendario integrada en `citas-web`.
 - [x] Contrato REST documentado en `docs/contratos/disponibilidad.md`.
 - [x] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
 
@@ -143,7 +143,7 @@ Implementa RF-08. Un día puede tener varios bloques (p. ej. 08:00–12:00 HIC y
 | Profesional inactivo | Cumple | `unProfesionalInactivoNoPuedePublicarAgenda` | 400 con `field: professional` |
 | DoD Migración | Cumple | `V5__disponibilidad_hu010.sql` | Índices `idx_blocks_professional_site` e `idx_blocks_site_start` |
 | DoD Pruebas | Cumple | `mvnw test` 2026-09-23: 108 pruebas, 0 fallos | 13 nuevas |
-| DoD Vista `citas-web` | **Pendiente** | — | Llega con la pasada de frontend |
+| DoD Vista `citas-web` | Cumple | `AgendaPage.test.tsx` y `dates.test.ts` (20 pruebas: semana, filtro de sede, publicar, solapamiento, CA-05 en editar y eliminar, cuenta inactiva, sin conexión) | `citas-web` `576db18`; `npm test` 95/95, lint y build en verde; verificada contra la API real con capturas autenticadas frente a Stitch v4 (D-026) |
 
 ## Historial de validación
 
@@ -154,6 +154,8 @@ Implementa RF-08. Un día puede tener varios bloques (p. ej. 08:00–12:00 HIC y
 - 2026-09-23 (S3) — Backend implementado y verificado: migración V5, 4 endpoints y 13 pruebas de integración (`mvnw test` 108/108). Pendientes CA-05 (necesita HU-013) y la vista de calendario.
 
 - 2026-09-25 (S3) — CA-05 validado con las reservas de HU-013 (`mvnw test` 136/136). Pendiente la vista de calendario.
+
+- 2026-09-25 (S3) — Vista integrada en `citas-web` (`citas-web` `576db18`) según el diseño aprobado en Stitch v4. Estado de la HU sin cambios.
 
 ## Notas y decisiones
 

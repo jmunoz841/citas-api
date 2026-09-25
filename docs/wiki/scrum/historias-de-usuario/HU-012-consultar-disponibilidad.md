@@ -66,7 +66,7 @@ Implementa RF-10 y aplica RF-09. Solo se muestran horarios que puedan completar 
 - [x] **T-02 — Consulta con filtros**  
   Dificultad: Medio  
   Descripción: caso de uso y endpoint con filtros combinables e índices adecuados.
-- [ ] **T-03 — Vista de búsqueda**  
+- [x] **T-03 — Vista de búsqueda**  
   Dificultad: Medio  
   Descripción: según diseño aprobado.
 - [x] **T-04 — Pruebas de slots 30/60**  
@@ -103,7 +103,7 @@ Implementa RF-10 y aplica RF-09. Solo se muestran horarios que puedan completar 
 
 - [x] Todos los criterios de aceptación obligatorios están validados con evidencia.
 - [x] Pruebas de reglas de slots 30/60 en verde.
-- [ ] Vista de búsqueda integrada en `citas-web`.
+- [x] Vista de búsqueda integrada en `citas-web`.
 - [ ] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
 
 ## Evidencia de validación
@@ -117,7 +117,7 @@ Implementa RF-10 y aplica RF-09. Solo se muestran horarios que puedan completar 
 | Catálogo de especialidades | Cumple | `hu012_elCatalogoDeEspecialidadesEsPublicoYSoloMuestraLasActivas` | `GET /api/v1/catalogs/specialties`: público, solo activas, con `durationMinutes` y `type`. Alimenta el filtro de especialidad (añadido 2026-09-25; Red 404 → Green) |
 | Parámetros | Cumple | `laFechaEsObligatoriaYElTipoDebeSerValido` | Sin `date` o con `type` desconocido → 400 con el campo |
 | DoD Pruebas | Cumple | `mvnw test` 2026-09-25: 136 pruebas, 0 fallos | 7 de dominio + integración contra MySQL 8.4 |
-| DoD Vista `citas-web` | **Pendiente** | — | Llega con el modal de reserva de la pasada de frontend |
+| DoD Vista `citas-web` | Cumple | `PatientHomePage.test.tsx` y `booking.test.ts` (filtros de la consulta, sede "Cualquiera", estado sin horarios) | `citas-web` `576db18`; `npm test` 95/95, lint y build en verde; verificada contra la API real con capturas autenticadas frente a Stitch v4 (D-026) |
 | Contrato | Cumple | `docs/contratos/citas.md` | — |
 
 ## Historial de validación
@@ -127,6 +127,8 @@ Implementa RF-10 y aplica RF-09. Solo se muestran horarios que puedan completar 
 - 2026-09-23 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S3.
 
 - 2026-09-25 (S3) — Backend implementado y verificado: `GET /api/v1/availability`, `SlotPlanner` en el dominio, `mvnw test` 136/136. Pendiente la vista de búsqueda.
+
+- 2026-09-25 (S3) — Vista integrada en `citas-web` (`citas-web` `576db18`) según el diseño aprobado en Stitch v4. Estado de la HU sin cambios.
 
 ## Notas y decisiones
 

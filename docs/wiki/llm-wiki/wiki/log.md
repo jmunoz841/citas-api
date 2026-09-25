@@ -127,3 +127,10 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 - HECHO: la v3 de Stitch repitió dos fallos ya corregidos en la v1 (superficies azuladas y contenido inventado, incluido un soporte telefónico 24/7).
 - DECISIÓN (usuario): D-026, v4 aprobada con cinco correcciones obligatorias en la implementación.
 - Páginas afectadas: [[decisiones]], [[ejecucion]]
+
+## 2026-09-25 — LEARN — Pasada de frontend de S3
+- HECHO: la API no ofrecía los nombres de la sesión ni un perfil propio del profesional; se añadieron de forma aditiva (`/auth/session` con nombres, `/professional/me`). `mvnw clean test` 151/151.
+- HECHO: `citas-web` tiene rutas por rol, cliente con refresh ante 401 y las seis pantallas aprobadas en Stitch v4 (D-026). 95 pruebas, lint y build en verde; verificado contra la API real.
+- HECHO: en la primera carga en frío, la fuente variable de Material Symbols tarda varios segundos y los íconos se ven como texto ("inbox", "check"); después queda en caché. Afecta también al login desde S2.
+- HECHO: los datos sintéticos de prueba se cargan con un script local no versionado; PowerShell 5.1 lee un `.ps1` sin BOM como ANSI y corrompe los acentos (se corrigieron con SQL).
+- Páginas afectadas: [[ejecucion]]

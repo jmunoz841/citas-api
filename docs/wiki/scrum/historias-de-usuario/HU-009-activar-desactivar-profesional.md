@@ -58,7 +58,7 @@ Implementa la parte de activación/desactivación de RF-07.
 - [x] **T-01 — Caso de uso activar/desactivar**  
   Dificultad: Bajo  
   Descripción: cambio de estado autorizado para ADMIN.
-- [ ] **T-02 — Acción en vista de profesionales**  
+- [x] **T-02 — Acción en vista de profesionales**  
   Dificultad: Bajo  
   Descripción: control de estado en el CRUD.
 - [x] **T-03 — Pruebas**  
@@ -90,7 +90,7 @@ Implementa la parte de activación/desactivación de RF-07.
 - [x] Criterios CA-01 y CA-03 validados con evidencia.
 - [x] CA-02 (exclusión de la búsqueda y de la reserva) validado con HU-012 y HU-013.
 - [x] Pruebas de backend en verde.
-- [ ] Control de estado disponible en `citas-web`.
+- [x] Control de estado disponible en `citas-web`.
 - [x] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
 
 ## Evidencia de validación
@@ -103,7 +103,7 @@ Implementa la parte de activación/desactivación de RF-07.
 | CA-03 Reactivar | Cumple | `ca01_ca03_desactivarYReactivarConservaDatosYAsignaciones` | Vuelve a `active: true` con sus asignaciones |
 | Profesional inexistente | Cumple | `unProfesionalInexistenteDevuelve404` | 404 `NOT_FOUND` |
 | DoD Pruebas | Cumple | `mvnw test` 2026-09-23: 95 pruebas, 0 fallos | — |
-| DoD Control en `citas-web` | **Pendiente** | — | Llega con la vista de ADMIN |
+| DoD Control en `citas-web` | Cumple | `ProfessionalsPage.test.tsx` (HU-009 CA-01 desactivar con confirmación, CA-03 activar) | `citas-web` `576db18`; `npm test` 95/95, lint y build en verde; verificada contra la API real con capturas autenticadas frente a Stitch v4 (D-026) |
 
 ## Historial de validación
 
@@ -114,6 +114,8 @@ Implementa la parte de activación/desactivación de RF-07.
 - 2026-09-23 (S3) — Backend implementado y verificado (`mvnw test` 95/95). Pendiente la vista de ADMIN en `citas-web`.
 
 - 2026-09-25 (S3) — CA-02 validado con la búsqueda y la reserva (`mvnw test` 136/136). Corregido el 500 al desactivar un profesional con agenda. Pendiente la vista de ADMIN.
+
+- 2026-09-25 (S3) — Vista integrada en `citas-web` (`citas-web` `576db18`) según el diseño aprobado en Stitch v4. Estado de la HU sin cambios.
 
 ## Notas y decisiones
 

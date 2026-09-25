@@ -70,7 +70,7 @@ Implementa RF-06 (especialidades) y RF-09. Cada especialidad define una duració
 - [x] **T-03 — Autorización ADMIN**  
   Dificultad: Bajo  
   Descripción: restringir escritura a ADMIN.
-- [ ] **T-04 — Vista CRUD de especialidades**  
+- [x] **T-04 — Vista CRUD de especialidades**  
   Dificultad: Medio  
   Descripción: según diseño aprobado.
 - [x] **T-05 — Pruebas**  
@@ -108,7 +108,7 @@ Implementa RF-06 (especialidades) y RF-09. Cada especialidad define una duració
 - [x] Todos los criterios de aceptación obligatorios están validados con evidencia.
 - [x] Migración Flyway presente.
 - [x] Pruebas de backend y de autorización en verde.
-- [ ] Vista CRUD integrada en `citas-web`.
+- [x] Vista CRUD integrada en `citas-web`.
 - [x] Contrato REST documentado en `docs/contratos/administracion.md`.
 - [x] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
 
@@ -124,7 +124,7 @@ Implementa RF-06 (especialidades) y RF-09. Cada especialidad define una duració
 | Una sola general | Cumple | `medicinaGeneralEstaSembradaComoLaUnicaEspecialidadGeneral` | Índice funcional `uk_specialties_single_general` |
 | DoD Migración | Cumple | `V4__oferta_administrable_hu006_hu008.sql` | Semilla `Medicina General` (30 min, general) |
 | DoD Pruebas | Cumple | `mvnw test` 2026-09-23: 95 pruebas, 0 fallos | 17 nuevas en `AdminOfferApiIntegrationTest` |
-| DoD Vista `citas-web` | **Pendiente** | — | La vista CRUD de ADMIN llega en el siguiente incremento del frontend |
+| DoD Vista `citas-web` | Cumple | `SpecialtiesPage.test.tsx` (7 pruebas: listado, crear, nombre repetido, duración, editar, desactivar con confirmación, activar) | `citas-web` `576db18`; `npm test` 95/95, lint y build en verde; verificada contra la API real con capturas autenticadas frente a Stitch v4 (D-026) |
 
 ## Historial de validación
 
@@ -133,6 +133,8 @@ Implementa RF-06 (especialidades) y RF-09. Cada especialidad define una duració
 - 2026-09-23 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S3.
 
 - 2026-09-23 (S3) — Backend implementado y verificado (`mvnw test` 95/95). Pendiente la vista de ADMIN en `citas-web`.
+
+- 2026-09-25 (S3) — Vista integrada en `citas-web` (`citas-web` `576db18`) según el diseño aprobado en Stitch v4. Estado de la HU sin cambios.
 
 ## Notas y decisiones
 

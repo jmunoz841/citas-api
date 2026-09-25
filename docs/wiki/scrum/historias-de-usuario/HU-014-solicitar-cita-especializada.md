@@ -62,7 +62,7 @@ Implementa la parte de solicitud de RF-12. Reutiliza el mecanismo de reserva de 
 - [x] **T-01 — Caso de uso solicitar cita especializada**  
   Dificultad: Medio  
   Descripción: validaciones de especialidad/profesional/sede y retención de slots.
-- [ ] **T-02 — Flujo especializado en la vista**  
+- [x] **T-02 — Flujo especializado en la vista**  
   Dificultad: Medio  
   Descripción: selección de especialidad, sede, profesional y horario.
 - [x] **T-03 — Pruebas**  
@@ -93,7 +93,7 @@ Implementa la parte de solicitud de RF-12. Reutiliza el mecanismo de reserva de 
 
 - [x] Todos los criterios de aceptación obligatorios están validados con evidencia.
 - [x] Pruebas de backend en verde.
-- [ ] Flujo especializado integrado en `citas-web`.
+- [x] Flujo especializado integrado en `citas-web`.
 - [ ] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
 
 ## Evidencia de validación
@@ -105,7 +105,7 @@ Implementa la parte de solicitud de RF-12. Reutiliza el mecanismo de reserva de 
 | CA-03 Especialidad no asociada o inactiva | Cumple | `hu014_ca03_especialidadNoAsociadaAlProfesionalSeRechaza`; `hu012_ca04_especialidadInactivaNoAparece` | 400 con `field: specialtyId` y ninguna cita creada; FK `fk_appt_professional_specialty` como última defensa |
 | Sede no asignada | Cumple | `unaSedeDondeNoAtiendeElProfesionalSeRechaza` | 400 con `field: siteCode` |
 | DoD Pruebas | Cumple | `mvnw test` 2026-09-25: 136 pruebas, 0 fallos | — |
-| DoD Flujo en `citas-web` | **Pendiente** | — | Llega con el modal de reserva |
+| DoD Flujo en `citas-web` | Cumple | `PatientHomePage.test.tsx` (especialidad enviada como solicitud, resultado "Solicitud enviada") | `citas-web` `576db18`; `npm test` 95/95, lint y build en verde; verificada contra la API real con capturas autenticadas frente a Stitch v4 (D-026) |
 
 ## Historial de validación
 
@@ -114,6 +114,8 @@ Implementa la parte de solicitud de RF-12. Reutiliza el mecanismo de reserva de 
 - 2026-09-23 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S3.
 
 - 2026-09-25 (S3) — Backend implementado y verificado sobre el mismo `POST /api/v1/appointments` de HU-013: la especialidad decide el estado inicial (`mvnw test` 136/136). Pendiente el flujo en la vista.
+
+- 2026-09-25 (S3) — Vista integrada en `citas-web` (`citas-web` `576db18`) según el diseño aprobado en Stitch v4. Estado de la HU sin cambios.
 
 ## Notas y decisiones
 

@@ -67,7 +67,7 @@ Implementa RF-11 y RN-02. Primera HU que crea citas; establece el mecanismo de r
 - [x] **T-02 — Caso de uso reservar cita general**  
   Dificultad: Alto  
   Descripción: validación, reserva transaccional y registro de historial.
-- [ ] **T-03 — Vista de solicitud de cita**  
+- [x] **T-03 — Vista de solicitud de cita**  
   Dificultad: Medio  
   Descripción: confirmación y manejo de "horario ya no disponible".
 - [x] **T-04 — Pruebas**  
@@ -105,7 +105,7 @@ Implementa RF-11 y RN-02. Primera HU que crea citas; establece el mecanismo de r
 - [x] Todos los criterios de aceptación obligatorios están validados con evidencia.
 - [x] Migración Flyway presente.
 - [x] Prueba de doble reserva en verde.
-- [ ] Vista de solicitud integrada en `citas-web`.
+- [x] Vista de solicitud integrada en `citas-web`.
 - [ ] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
 
 ## Evidencia de validación
@@ -120,7 +120,7 @@ Implementa RF-11 y RN-02. Primera HU que crea citas; establece el mecanismo de r
 | Autorización | Cumple | `soloUnUserPuedeBuscarYReservar` | Sin token 401; PROFESSIONAL y ADMIN 403 |
 | DoD Migración | Cumple | `V6__citas_hu012_hu014.sql` | `appointments`, `slot_reservations`, `appointment_status_history`. Aplicada en `jmunoz-citas-mysql` el 2026-09-25 (Flyway v6) |
 | DoD Pruebas | Cumple | `mvnw test` 2026-09-25: 136 pruebas, 0 fallos | — |
-| DoD Vista `citas-web` | **Pendiente** | — | Llega con el modal de reserva |
+| DoD Vista `citas-web` | Cumple | `PatientHomePage.test.tsx` (Medicina General confirmada, 409 `SLOT_UNAVAILABLE` vuelve al paso 3, horario pasado) | `citas-web` `576db18`; `npm test` 95/95, lint y build en verde; verificada contra la API real con capturas autenticadas frente a Stitch v4 (D-026) |
 | Contrato | Cumple | `docs/contratos/citas.md` | — |
 
 ## Historial de validación
@@ -130,6 +130,8 @@ Implementa RF-11 y RN-02. Primera HU que crea citas; establece el mecanismo de r
 - 2026-09-23 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S3.
 
 - 2026-09-25 (S3) — Backend implementado y verificado: migración V6, `POST /api/v1/appointments`, LOOP de doble reserva en verde (`mvnw test` 136/136). Pendiente la vista de solicitud.
+
+- 2026-09-25 (S3) — Vista integrada en `citas-web` (`citas-web` `576db18`) según el diseño aprobado en Stitch v4. Estado de la HU sin cambios.
 
 ## Notas y decisiones
 
