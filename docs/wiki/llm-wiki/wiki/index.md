@@ -25,6 +25,7 @@ Punto de entrada de la memoria global. Convenciones: [SCHEMA](../schema/SCHEMA.m
 | `raw/2026-09-16-decisiones-entorno-aislado.md` | MySQL propio en 3308, aislado de otro grupo |
 | `raw/2026-09-18-decisiones-repo-raiz.md` | Raíz del workspace en repo privado |
 | `raw/2026-09-18-decisiones-comparacion-referencia.md` | password_hash 255 y estrategia contra doble reserva |
+| `raw/2026-09-25-decisiones-reserva.md` | Plan de HU-012/013/014: V6, doble reserva por PK, historial sin triggers, LOOP por HTTP |
 
 ## Diseño de base de datos
 

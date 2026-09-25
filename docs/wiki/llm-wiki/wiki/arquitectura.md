@@ -1,6 +1,6 @@
 ---
 tipo: arquitectura
-actualizado: 2026-09-16
+actualizado: 2026-09-25
 fuentes:
   - raw/RESTRICCIONES_TECNICAS.md
   - raw/PRD.md
@@ -35,6 +35,8 @@ fuentes:
 - Configuración en `application.yml` solo por variables de entorno; en local importa `citas-api/.env` (`spring.config.import: optional:file:.env[.properties]`). `ddl-auto: validate`: el esquema lo gobierna Flyway.
 - Toolchain local: JDK Temurin 21 portable en `%USERPROFILE%\.jdks\temurin-21` (el Java global del equipo es 26). Ejecutar con `JAVA_HOME` apuntando a esa ruta.
 - MySQL 8.4 + Flyway (migraciones propias del estudiante).
+- Reserva de citas (HU-012 a HU-014): el dominio (`SlotPlanner`) decide qué inicios son reservables según la duración de la especialidad; la ocupación la decide la base al insertar en `slot_reservations` (PK `slot_id`), no una comprobación previa de la aplicación. Las lecturas de agenda van por `NamedParameterJdbcTemplate` (`AgendaQueryAdapter`) en la misma transacción que JPA. Contrato: `docs/contratos/citas.md`.
+- Las asignaciones del profesional se sincronizan por diferencia, nunca con borrado total y reinserción: bloques y citas las referencian con FK RESTRICT.
 - JWT access (corta duración) y refresh separados; ver [[decisiones]] para rotación y almacenamiento.
 - Actuator health recomendado.
 

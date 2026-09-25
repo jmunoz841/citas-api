@@ -61,16 +61,16 @@ Implementa RF-11 y RN-02. Primera HU que crea citas; establece el mecanismo de r
 
 ## Tareas de desarrollo
 
-- [ ] **T-01 — Migración de citas, slots reservados e historial**  
+- [x] **T-01 — Migración de citas, slots reservados e historial**  
   Dificultad: Alto  
   Descripción: modelo de cita, vínculo con slots con restricción que impida doble reserva, historial de estados.
-- [ ] **T-02 — Caso de uso reservar cita general**  
+- [x] **T-02 — Caso de uso reservar cita general**  
   Dificultad: Alto  
   Descripción: validación, reserva transaccional y registro de historial.
 - [ ] **T-03 — Vista de solicitud de cita**  
   Dificultad: Medio  
   Descripción: confirmación y manejo de "horario ya no disponible".
-- [ ] **T-04 — Pruebas**  
+- [x] **T-04 — Pruebas**  
   Dificultad: Alto  
   Descripción: reserva exitosa, slot ocupado, doble reserva concurrente, horario pasado.
 
@@ -102,9 +102,9 @@ Implementa RF-11 y RN-02. Primera HU que crea citas; establece el mecanismo de r
 
 ## Definition of Done
 
-- [ ] Todos los criterios de aceptación obligatorios están validados con evidencia.
-- [ ] Migración Flyway presente.
-- [ ] Prueba de doble reserva en verde.
+- [x] Todos los criterios de aceptación obligatorios están validados con evidencia.
+- [x] Migración Flyway presente.
+- [x] Prueba de doble reserva en verde.
 - [ ] Vista de solicitud integrada en `citas-web`.
 - [ ] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
 
@@ -112,11 +112,16 @@ Implementa RF-11 y RN-02. Primera HU que crea citas; establece el mecanismo de r
 
 | Elemento | Resultado | Evidencia | Observación |
 |---|---|---|---|
-| CA-01 | Pendiente | — | — |
-| CA-02 | Pendiente | — | — |
-| CA-03 | Pendiente | — | — |
-| CA-04 | Pendiente | — | — |
-| DoD | Pendiente | — | — |
+| CA-01 Reserva exitosa | Cumple | `BookingApiIntegrationTest.hu013_ca01_citaGeneralQuedaAprobadaOcupaElSlotYDejaHistorial` | 201 `APPROVED`; 1 fila en `slot_reservations`; historial `APPROVED`, `source: USER`, actor = paciente |
+| CA-02 Horario ocupado al confirmar | Cumple | `hu013_ca02_horarioOcupadoAlConfirmarSeRechazaConCodigoIdentificable` | 409 `SLOT_UNAVAILABLE`; la transacción fallida no deja una cita huérfana |
+| CA-03 Doble reserva concurrente (LOOP) | Cumple | `hu013_ca03_dobleReservaConcurrenteSoloUnaCreaLaCita`; `hu013_ca03_laClavePrimariaDeLaBaseImpideOcuparDosVecesElMismoSlot` | Dos hilos por HTTP sobre el mismo slot → exactamente un 201 y un 409; 1 cita y 1 ocupación en BD. La aplicación no comprueba antes: decide `pk_slot_reservations` (un `INSERT` directo duplicado lanza `DuplicateKeyException`) |
+| CA-04 Horario pasado | Cumple | `hu013_ca04_horarioPasadoSeRechaza` | 400 con `field: startTime` |
+| Horario inexistente | Cumple | `unHorarioQueNoExisteSeRechaza` | 409 `SLOT_UNAVAILABLE` |
+| Autorización | Cumple | `soloUnUserPuedeBuscarYReservar` | Sin token 401; PROFESSIONAL y ADMIN 403 |
+| DoD Migración | Cumple | `V6__citas_hu012_hu014.sql` | `appointments`, `slot_reservations`, `appointment_status_history`. Aplicada en `jmunoz-citas-mysql` el 2026-09-25 (Flyway v6) |
+| DoD Pruebas | Cumple | `mvnw test` 2026-09-25: 136 pruebas, 0 fallos | — |
+| DoD Vista `citas-web` | **Pendiente** | — | Llega con el modal de reserva |
+| Contrato | Cumple | `docs/contratos/citas.md` | — |
 
 ## Historial de validación
 
@@ -124,6 +129,9 @@ Implementa RF-11 y RN-02. Primera HU que crea citas; establece el mecanismo de r
 
 - 2026-09-23 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S3.
 
+- 2026-09-25 (S3) — Backend implementado y verificado: migración V6, `POST /api/v1/appointments`, LOOP de doble reserva en verde (`mvnw test` 136/136). Pendiente la vista de solicitud.
+
 ## Notas y decisiones
 
-- Decisión pendiente (normalización): mecanismo de prevención de doble reserva (restricción única por slot activo, bloqueo pesimista u optimista).
+- Resuelto (D-013): la doble reserva la impide la clave primaria `slot_id` de `slot_reservations`, no un bloqueo de la aplicación. Los slots de una cita de 60 minutos se insertan ordenados por id para que dos reservas en competencia no se interbloqueen.
+- Resuelto (D-025): sin triggers de inmutabilidad; el historial solo se inserta desde la aplicación.

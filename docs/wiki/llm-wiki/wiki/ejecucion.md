@@ -1,6 +1,6 @@
 ---
 tipo: ejecucion
-actualizado: 2026-09-23
+actualizado: 2026-09-25
 fuentes:
   - raw/RESTRICCIONES_TECNICAS.md
 ---
@@ -44,59 +44,35 @@ HU objetivo: [[HU-001-registro-e-inicio-de-sesion-jwt]] (`Aprobada`).
 | 6 | HU-004 Afiliación opcional (GOAL del instructor) | Hecho | Migración `V3__afiliacion_hu004.sql` (eps, eps_plans, user_affiliations + seed sintético con un plan inactivo y una EPS inactiva); `GET /api/v1/catalogs/insurance-plans`; registro con `insurancePlanId` y `regimeCode` en pareja; sección "Afiliación (opcional)" en el registro de `citas-web`. `mvnw test` 78/78 y `npm test` 22/22. Flyway v3 `success=1` en MySQL real |
 | 7 | HU-006, HU-008 y HU-009 Oferta administrable (backend) | Hecho | Migración `V4__oferta_administrable_hu006_hu008.sql` con los dos índices funcionales del diseño 3FN (una sola especialidad general; una sola primaria por profesional), semilla de `Medicina General` y **ADMIN inicial** (D-021). Endpoints `/api/v1/admin/**` con `hasRole('ADMIN')`; sin DELETE de especialidades. 17 pruebas de integración; `mvnw test` 95/95. Humo contra MySQL real: login del ADMIN sembrado, duración 45 rechazada, 401 sin token, Flyway v1–v4 `success=1`. Contrato `docs/contratos/administracion.md` |
 | 8 | HU-010 Disponibilidad (backend) | Hecho | Migración `V5__disponibilidad_hu010.sql`; slots materializados de 30 min; 4 endpoints bajo `/api/v1/professional/**` con `hasRole('PROFESSIONAL')` y pertenencia por token; 13 pruebas de integración; `mvnw test` 108/108. Contrato `docs/contratos/disponibilidad.md`. CA-05 pendiente hasta HU-013 |
+| 9 | HU-012, HU-013 y HU-014 Búsqueda y reserva (backend) | Hecho | Migración `V6__citas_hu012_hu014.sql` (`appointments`, `slot_reservations` con PK `slot_id`, `appointment_status_history`); `GET /api/v1/availability` y `POST /api/v1/appointments` con `hasRole('USER')`; `SlotPlanner` en el dominio (30/60 min, sin combinar bloques). **LOOP del instructor en verde:** dos reservas simultáneas por HTTP sobre el mismo slot → un 201 y un 409 `SLOT_UNAVAILABLE`, decidido por la PK. Cerrados los diferidos HU-009 CA-02 y HU-010 CA-05 (409 `BLOCK_HAS_APPOINTMENTS`). Corregido el 500 al desactivar o reasignar un profesional con agenda. 28 pruebas nuevas; `mvnw clean test` 136/136. Flyway v5 y v6 aplicadas en `jmunoz-citas-mysql`; health `UP`. Contrato `docs/contratos/citas.md` |
 
-Pendiente de S3: las **vistas de ADMIN y de PROFESSIONAL** en `citas-web` (HU-006 T-04, HU-008 T-03, HU-009 T-02, HU-010 T-04), HU-012/013/014 (búsqueda y reserva, con el LOOP de doble reserva) y HU-015 (decisión administrativa). HU-009 CA-02 (exclusión de la búsqueda) y HU-010 CA-05 (bloque con slots comprometidos) solo serán verificables con HU-012 y HU-013.
+Pendiente de S3: HU-015 (decisión administrativa), las **vistas** en `citas-web` (ADMIN, PROFESSIONAL y el modal de reserva en 4 pasos) y la evidencia de cierre.
 
-## Punto de retoma (fin de clase 2026-09-23)
-
-### 0. Publicar en GitHub — bloqueante, primero que todo
-
-Nada de S2 ni de S3 está publicado. En este equipo el Administrador de credenciales de Windows guarda el token de **otra cuenta** (`christtobar-land`), que no tiene permiso sobre `jmunoz841/*`: el push falla con `403`. Los commits sí están firmados correctamente como `Juan Munoz <jmunoz841@unab.edu.co>`; el problema es solo la credencial de red.
-
-Ya quedó configurado en los tres repos, en `.git/config` local (no global, para no romper la sesión del otro estudiante):
-
-```text
-credential.https://github.com.username = jmunoz841
-```
-
-Con eso Git pide una credencial nueva bajo la clave `jmunoz841@github.com` en vez de reutilizar la ajena. Falta autenticarse una vez, desde una terminal propia (abre navegador o pide token):
-
-```powershell
-cd "...\FCV_Proyecto_Citas_v1\citas-api"
-git push origin develop
-git push origin main
-git push origin s2
-cd ..\citas-web
-git push origin develop; git push origin main; git push origin s2
-```
-
-Si pide contraseña en vez de abrir el navegador, generar un **Personal Access Token** en GitHub (`Settings → Developer settings → Tokens`) con permiso `repo` y pegarlo como contraseña. Nunca escribir el token en la URL del remoto ni en un archivo versionado.
-
-Pendiente de publicar: `citas-api` 13 commits en `develop`, 17 en `main`, tag `s2`; `citas-web` 4 commits en `develop`, 7 en `main`, tag `s2`. El repo raíz ya está sincronizado.
+## Punto de retoma (actualizado 2026-09-25)
 
 ### 1. Preparar el equipo
 
-Igual que en el punto de retoma anterior: `git pull` en los tres repos, JDK 21 portable en `%USERPROFILE%\.jdks\temurin-21`, `.env` en raíz, `citas-api` y `citas-web`, Docker Desktop abierto y `docker compose up -d` desde `citas-api/` (proyecto `jmunoz-citas`, MySQL en 3308). Verificar con `$env:JAVA_HOME="$env:USERPROFILE\.jdks\temurin-21"; .\mvnw.cmd test` → deben pasar 108 pruebas.
+`git pull` en los tres repos, JDK 21 portable en `%USERPROFILE%\.jdks\temurin-21`, `.env` en raíz, `citas-api` y `citas-web`. Docker Desktop está instalado **por usuario** en `%LOCALAPPDATA%\Programs\DockerDesktop\Docker Desktop.exe`, no en `Program Files`. Luego `docker compose up -d` desde `citas-api/` (MySQL en 3308).
 
-### 2. Lo que falta de S3
+Verificar con `$env:JAVA_HOME="$env:USERPROFILE\.jdks\temurin-21"; .\mvnw.cmd clean test` → deben pasar **136** pruebas.
 
-| Orden | Trabajo | Alcance | Desbloquea |
-|---|---|---|---|
-| 1 | [[HU-012-consultar-disponibilidad]], [[HU-013-reservar-cita-general]], [[HU-014-solicitar-cita-especializada]] | Migración `V6`: `appointments`, `slot_reservations`, `appointment_status_history`. Búsqueda de disponibilidad, reserva general `APPROVED` y solicitud especializada `REQUESTED` | El **LOOP de doble reserva** del instructor: dos reservas sobre el mismo slot → una `201`, otra `409`, garantizado por clave primaria en la base |
-| 2 | [[HU-015-resolver-cita-especializada]] | Decisión del ADMIN con motivo obligatorio y liberación de slots al rechazar | Cierra el flujo de cita especializada |
-| 3 | Pasada de frontend | Vistas de ADMIN (especialidades, profesionales, asignaciones, solicitudes pendientes), vista de PROFESSIONAL (calendario de bloques) y modal de reserva en 4 pasos para USER | Tareas [[HU-006-gestionar-especialidades]] T-04, [[HU-008-crear-profesional]] T-03, [[HU-009-activar-desactivar-profesional]] T-02, [[HU-010-gestionar-bloques-de-disponibilidad]] T-04 |
-| 4 | Evidencia de cierre de S3 | Matriz por CA y DoD, demo Red→Green del hook, trazabilidad final | Entregable de la sesión |
+**Usar `clean test`, no solo `test`.** En este equipo los archivos quedan con horas de modificación incoherentes: el editor los guarda unas 5 horas "en el futuro" y otras herramientas con la hora real. La compilación incremental de Maven puede entonces tomar una fuente por más antigua que su `.class` y ejecutar código viejo. El mismo desfase de reloj provoca a veces que MySQL de Testcontainers presente un certificado TLS "todavía no válido" (`CertificateNotYetValidException`): varias clases de integración fallan al arrancar el contexto. Se resuelve relanzando.
 
-### 3. Criterios diferidos a propósito
+### 2. GitHub
 
-Dos criterios quedaron en `Pendiente` con la razón escrita en su HU; no son deuda olvidada, esperan a que exista la tabla que los hace verificables:
+Credencial local `credential.https://github.com.username = jmunoz841` configurada en los tres repos (no global). Hay que autenticarse una vez por clase desde una terminal propia; hasta entonces el repo raíz (privado) no admite `pull` ni `push`.
 
-- [[HU-009-activar-desactivar-profesional]] CA-02 — un profesional inactivo no aparece en la búsqueda. Necesita HU-012.
-- [[HU-010-gestionar-bloques-de-disponibilidad]] CA-05 — no se edita ni elimina un bloque con slots comprometidos. Necesita `slot_reservations` de HU-013. El guardián ya existe vacío y documentado en `AvailabilityService.requireNoCommittedSlots`.
+### 3. Lo que falta de S3
 
-### 4. Estado al cerrar
+| Orden | Trabajo | Alcance |
+|---|---|---|
+| 1 | [[HU-015-resolver-cita-especializada]] | El ADMIN aprueba o rechaza una cita `REQUESTED`; motivo obligatorio al rechazar; rechazar libera los slots (DELETE en `slot_reservations`) y registra historial `source: ADMIN`. `appointments.version` ya existe para el bloqueo optimista |
+| 2 | Pasada de frontend | Vistas de ADMIN (especialidades, profesionales, asignaciones, solicitudes pendientes), vista de PROFESSIONAL (calendario de bloques) y modal de reserva en 4 pasos para USER: HU-006 T-04, HU-008 T-03, HU-009 T-02, HU-010 T-04, HU-012 T-03, HU-013 T-03, HU-014 T-02 |
+| 3 | Evidencia de cierre de S3 | Matriz por CA y DoD, demo Red→Green del hook, trazabilidad final |
 
-Backend de S3 completo hasta disponibilidad: migraciones `V1`–`V5` aplicadas, 108 pruebas en verde, contratos documentados en `docs/contratos/`. El frontend solo tiene login y registro con afiliación opcional (22 pruebas). Diez HU en estado `Aprobada`.
+### 4. Preguntas abiertas para el Product Owner
+
+Ver [[decisiones]]: endpoint único de reserva, retirar especialidad o sede con agenda (hoy 500 por FK) y qué pasa con las citas de un profesional desactivado.
 
 
 ## Relacionadas

@@ -100,3 +100,13 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 - DECISIÓN: se fija `credential.https://github.com.username = jmunoz841` en el `.git/config` **local** de los tres repos, no en el global, para no invalidar la sesión del otro estudiante del equipo compartido.
 - PREGUNTA ABIERTA: falta autenticarse una vez y publicar S2 y S3.
 - Páginas afectadas: [[ejecucion]]
+
+## 2026-09-25 — LEARN — Búsqueda y reserva de citas (HU-012, HU-013, HU-014)
+- Fuentes: `raw/2026-09-25-decisiones-reserva.md`
+- HECHO: migración `V6`; `GET /api/v1/availability` y `POST /api/v1/appointments`; `mvnw clean test` 136/136. Flyway v5 y v6 aplicadas en `jmunoz-citas-mysql` (la base local seguía en v4, aunque el log del 2026-09-23 decía v1–v5).
+- HECHO: el LOOP del instructor pasa por HTTP con dos hilos: un 201 y un 409. La aplicación no comprueba antes si el slot está libre; lo decide la PK `slot_id` de `slot_reservations` (error 1062).
+- HECHO: guardar un profesional borraba y reinsertaba sus asignaciones; con bloques, la FK RESTRICT devolvía 500 al desactivarlo. Ahora se sincroniza por diferencia.
+- HECHO: en este equipo el editor guarda los archivos con hora de modificación unas 5 h adelantada y la compilación incremental de Maven puede ejecutar clases viejas; usar `mvnw clean test`. El desfase de reloj provoca también fallos intermitentes de TLS con MySQL de Testcontainers.
+- DECISIÓN (usuario): D-025, historial sin triggers; LOOP probado por HTTP.
+- PREGUNTA ABIERTA: endpoint único de reserva; retirar especialidad o sede con agenda (500 por FK); citas de un profesional desactivado.
+- Páginas afectadas: [[decisiones]], [[ejecucion]], [[arquitectura]]

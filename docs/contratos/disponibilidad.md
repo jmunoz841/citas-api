@@ -42,18 +42,16 @@ Respuesta `201`:
 | Sin solapamiento con otro bloque propio, **incluso en otra sede** | `400`, `field: startTime` | Aplicación + `uk_slots_professional_start` |
 | El profesional está asignado a esa sede | `400`, `field: siteCode` | Aplicación + FK compuesta `fk_blocks_professional_site` |
 | El profesional está activo | `400`, `field: professional` | Aplicación |
+| No se edita ni elimina un bloque con slots reservados o retenidos (CA-05) | `409 BLOCK_HAS_APPOINTMENTS` | Aplicación + FK `fk_sr_slot` `ON DELETE RESTRICT` desde `slot_reservations` |
 
 Dos bloques **contiguos** (08:00–12:00 y 12:00–14:00) son válidos: no se solapan.
-
-## Pendiente
-
-CA-05 —"no se edita ni elimina un bloque con slots reservados o retenidos"— se implementará con HU-013, cuando exista `slot_reservations`. Entonces la clave foránea `ON DELETE RESTRICT` desde esa tabla será además la última defensa en la base.
 
 ## Errores
 
 | HTTP | `code` | Cuándo |
 |---|---|---|
-| 400 | `VALIDATION_ERROR` | Cualquier regla de la tabla anterior |
+| 400 | `VALIDATION_ERROR` | Cualquier regla `400` de la tabla anterior |
 | 401 | `UNAUTHORIZED` | Sin access token válido |
 | 403 | `FORBIDDEN` | Autenticado sin rol `PROFESSIONAL` |
 | 404 | `NOT_FOUND` | Bloque inexistente, o de otro profesional |
+| 409 | `BLOCK_HAS_APPOINTMENTS` | El bloque tiene citas (`PATCH` o `DELETE`) |

@@ -120,7 +120,7 @@ Implementa RF-08. Un día puede tener varios bloques (p. ej. 08:00–12:00 HIC y
 ## Definition of Done
 
 - [x] Criterios CA-01, CA-02, CA-03, CA-04 y CA-06 validados con evidencia.
-- [ ] CA-05 (bloque con slots comprometidos) validado: depende de `slot_reservations`, que llega con HU-013.
+- [x] CA-05 (bloque con slots comprometidos) validado con `slot_reservations` de HU-013.
 - [x] Migración Flyway presente con índices para consultas de agenda.
 - [x] Pruebas de reglas de bloques en verde.
 - [ ] Vista de bloques/calendario integrada en `citas-web`.
@@ -135,7 +135,7 @@ Implementa RF-08. Un día puede tener varios bloques (p. ej. 08:00–12:00 HIC y
 | CA-02 Bloque en el pasado | Cumple | `ca02_unBloqueEnElPasadoSeRechaza` | 400 con `field: startTime`; la regla vive en la aplicación porque MySQL no admite `NOW()` en un CHECK |
 | CA-03 Solapamiento | Cumple | `ca03_unBloqueQueSeCruzaConOtroSeRechazaAunEnOtraSede`; `bloquesContiguosNoSeConsideranSolapados` | Rechaza 11:00–13:00 sobre 08:00–12:00, también en otra sede; 12:00–14:00 sí se acepta |
 | CA-04 Sede no asignada | Cumple | `ca04_unaSedeNoAsignadaSeRechaza` | 400 con `field: siteCode`; FK compuesta `fk_blocks_professional_site` como última defensa |
-| CA-05 Bloque con citas | **Pendiente** | — | Requiere `slot_reservations` (HU-013). El guardián está previsto en `AvailabilityService.requireNoCommittedSlots` |
+| CA-05 Bloque con citas | Cumple | `BookingApiIntegrationTest.hu010_ca05_unBloqueConCitasNoSeEditaNiSeElimina`; `hu010_ca05_laFkDeLaBaseImpideBorrarLosSlotsDeUnBloqueConCitas` | `PATCH` y `DELETE` → 409 `BLOCK_HAS_APPOINTMENTS` y los 4 slots siguen en BD. Guardián en `AvailabilityService.requireNoCommittedSlots`; si una reserva se cuela después, la FK `fk_sr_slot` RESTRICT impide el borrado directo en la base |
 | CA-06 Ownership | Cumple | `ca06_nadiePuedeTocarLosBloquesDeOtroProfesional`; `unUsuarioSinRolProfesionalNoAccedeALaAgenda` | Bloque ajeno → 404 (no se revela que existe) y la fila sigue intacta; sin rol → 403; sin token → 401 |
 | Alineación y rango | Cumple | `lasHorasDebenCaerEnPuntoOYMedia`, `elFinDebeSerPosteriorAlInicio` | 08:15 y 12:45 rechazados |
 | Edición y borrado | Cumple | `editarUnBloqueRegeneraSusSlots`, `eliminarUnBloqueSeLlevaSusSlots` | Editar 08:00–12:00 → 09:00–10:30 deja 3 slots; borrar arrastra los slots por `ON DELETE CASCADE` |
@@ -153,7 +153,8 @@ Implementa RF-08. Un día puede tener varios bloques (p. ej. 08:00–12:00 HIC y
 
 - 2026-09-23 (S3) — Backend implementado y verificado: migración V5, 4 endpoints y 13 pruebas de integración (`mvnw test` 108/108). Pendientes CA-05 (necesita HU-013) y la vista de calendario.
 
+- 2026-09-25 (S3) — CA-05 validado con las reservas de HU-013 (`mvnw test` 136/136). Pendiente la vista de calendario.
+
 ## Notas y decisiones
 
 - Resuelto (D-013): los slots se materializan como filas al crear el bloque. Es lo que permite que la ocupación sea una fila con clave primaria por slot y que la doble reserva la impida la base.
-- CA-05 solo es verificable una vez existan reservas ([[HU-013-reservar-cita-general]]).

@@ -47,8 +47,10 @@ Las contraseñas de MySQL solo se aplican al crear el volumen `jmunoz-citas_mysq
 $env:JAVA_HOME="$env:USERPROFILE\.jdks\temurin-21"; $env:Path="$env:JAVA_HOME\bin;$env:Path"
 docker compose up -d          # MySQL propio en localhost:3308
 .\mvnw.cmd spring-boot:run    # API en http://localhost:8081 (aplica migraciones Flyway)
-.\mvnw.cmd test               # pruebas (requiere Docker Desktop: Testcontainers)
+.\mvnw.cmd clean test         # pruebas (requiere Docker Desktop: Testcontainers)
 ```
+
+Usa `clean test` en el equipo del laboratorio: su reloj deja horas de modificación incoherentes en los archivos y la compilación incremental de Maven puede ejecutar clases viejas. Si varias pruebas de integración fallan al arrancar con `CertificateNotYetValidException`, es el mismo desfase de reloj entre Windows y la VM de Docker: vuelve a lanzarlas.
 
 **No** uses el `docker-compose.yml` de la raíz del workspace: sus contenedores `fcv-citas-*` chocan con otro grupo que comparte el equipo.
 

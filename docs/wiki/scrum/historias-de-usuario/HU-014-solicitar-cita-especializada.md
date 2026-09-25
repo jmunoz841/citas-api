@@ -59,13 +59,13 @@ Implementa la parte de solicitud de RF-12. Reutiliza el mecanismo de reserva de 
 
 ## Tareas de desarrollo
 
-- [ ] **T-01 — Caso de uso solicitar cita especializada**  
+- [x] **T-01 — Caso de uso solicitar cita especializada**  
   Dificultad: Medio  
   Descripción: validaciones de especialidad/profesional/sede y retención de slots.
 - [ ] **T-02 — Flujo especializado en la vista**  
   Dificultad: Medio  
   Descripción: selección de especialidad, sede, profesional y horario.
-- [ ] **T-03 — Pruebas**  
+- [x] **T-03 — Pruebas**  
   Dificultad: Medio  
   Descripción: 30/60 min, slots retenidos, especialidad no asociada.
 
@@ -91,8 +91,8 @@ Implementa la parte de solicitud de RF-12. Reutiliza el mecanismo de reserva de 
 
 ## Definition of Done
 
-- [ ] Todos los criterios de aceptación obligatorios están validados con evidencia.
-- [ ] Pruebas de backend en verde.
+- [x] Todos los criterios de aceptación obligatorios están validados con evidencia.
+- [x] Pruebas de backend en verde.
 - [ ] Flujo especializado integrado en `citas-web`.
 - [ ] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
 
@@ -100,16 +100,20 @@ Implementa la parte de solicitud de RF-12. Reutiliza el mecanismo de reserva de 
 
 | Elemento | Resultado | Evidencia | Observación |
 |---|---|---|---|
-| CA-01 | Pendiente | — | — |
-| CA-02 | Pendiente | — | — |
-| CA-03 | Pendiente | — | — |
-| DoD | Pendiente | — | — |
+| CA-01 Solicitud creada | Cumple | `BookingApiIntegrationTest.hu014_ca01_citaEspecializadaQuedaSolicitadaYRetieneElSlot` | 201 `REQUESTED`; slot retenido en `slot_reservations`; historial `REQUESTED`; el slot desaparece de la búsqueda |
+| CA-02 Retención de 60 minutos | Cumple | `hu014_ca02_sesentaMinutosRetieneDosSlotsQueDesaparecenDeLaBusqueda` | Retiene 08:00 y 08:30; la búsqueda solo ofrece desde 09:00 |
+| CA-03 Especialidad no asociada o inactiva | Cumple | `hu014_ca03_especialidadNoAsociadaAlProfesionalSeRechaza`; `hu012_ca04_especialidadInactivaNoAparece` | 400 con `field: specialtyId` y ninguna cita creada; FK `fk_appt_professional_specialty` como última defensa |
+| Sede no asignada | Cumple | `unaSedeDondeNoAtiendeElProfesionalSeRechaza` | 400 con `field: siteCode` |
+| DoD Pruebas | Cumple | `mvnw test` 2026-09-25: 136 pruebas, 0 fallos | — |
+| DoD Flujo en `citas-web` | **Pendiente** | — | Llega con el modal de reserva |
 
 ## Historial de validación
 
 - 2026-09-16 (S2) — HU creada en estado `Borrador`.
 
 - 2026-09-23 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S3.
+
+- 2026-09-25 (S3) — Backend implementado y verificado sobre el mismo `POST /api/v1/appointments` de HU-013: la especialidad decide el estado inicial (`mvnw test` 136/136). Pendiente el flujo en la vista.
 
 ## Notas y decisiones
 

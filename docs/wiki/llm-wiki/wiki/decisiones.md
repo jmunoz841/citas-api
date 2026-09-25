@@ -1,8 +1,9 @@
 ---
 tipo: decisiones
-actualizado: 2026-09-16
+actualizado: 2026-09-25
 fuentes:
   - raw/2026-09-16-decisiones-hu-001.md
+  - raw/2026-09-25-decisiones-reserva.md
   - raw/RESTRICCIONES_TECNICAS.md
 ---
 
@@ -38,6 +39,7 @@ Solo se registran como DECISIÓN los puntos aprobados explícitamente por el usu
 | D-023 | 2026-09-23 | Instrumental de calidad del frontend: Vitest + jsdom + Testing Library para pruebas y **oxlint** como linter (`typescript-eslint` aún no admite TypeScript 7). Resuelve la pregunta abierta sobre herramienta de pruebas de `citas-web` | Frontend | `raw/2026-09-23-decisiones-s3.md` |
 | D-024 | 2026-09-23 | Hooks `pre-commit` versionados en `.githooks/` de ambos repos, activados con `git config core.hooksPath .githooks`: detector de secretos en dos niveles siempre, más pruebas Maven (backend) o lint/pruebas/build (frontend) cuando el commit toca código | Calidad | `raw/2026-09-23-decisiones-s3.md` |
 | D-022 | 2026-09-23 | HU-002 (recuperar contraseña) **no** se marca `Completada`: no está implementada y permanece en S4. La HU-002 del documento del instructor pertenece a otra numeración | Scrum | `raw/2026-09-23-decisiones-s3.md` |
+| D-025 | 2026-09-25 | `appointment_status_history` sin los triggers de inmutabilidad del diseño 3FN (riesgo Q-10); la aplicación solo inserta. La prueba del LOOP de doble reserva es de punta a punta por HTTP con dos peticiones simultáneas | HU-013 | `raw/2026-09-25-decisiones-reserva.md` |
 
 ## Preguntas abiertas
 
@@ -47,6 +49,9 @@ Solo se registran como DECISIÓN los puntos aprobados explícitamente por el usu
 - **Comparación con la referencia** C-02, C-03 (→ HU-004) y C-04 (→ HU-013).
 - **Riesgo:** Flyway (versión gestionada por Spring Boot 3.5.16) avisa que su soporte probado de MySQL llega a 8.1; la V1 se aplicó sin errores en 8.4.11. Revisar si aparece algún fallo en migraciones futuras.
 - ~~**Q-004 — Framework frontend.**~~ → resuelta por D-015 (React + Vite + TypeScript). Herramienta de pruebas resuelta por D-023 (Vitest + oxlint).
+- **Endpoint único de reserva (propuesta del agente, 2026-09-25).** Se implementó `POST /api/v1/appointments` para HU-013 y HU-014: la especialidad decide si la cita nace `APPROVED` o `REQUESTED`. El plan aprobado hablaba de dos endpoints (`/general` y `/specialized`). Falta que el Product Owner lo confirme o pida separarlos.
+- **Retirar una especialidad o sede con agenda.** Si el ADMIN quita a un profesional una especialidad o sede que ya tiene bloques o citas, la FK RESTRICT lo impide y hoy la API responde 500. Falta decidir la regla (rechazar con 409, o conservar la fila como inactiva). Afecta a HU-008 y HU-009.
+- **Desactivar un profesional con citas.** Lo excluye de la búsqueda y de nuevas reservas (HU-009 CA-02), pero no cancela las citas ya reservadas. El PRD no dice qué hacer con ellas.
 
 ## Relacionadas
 
