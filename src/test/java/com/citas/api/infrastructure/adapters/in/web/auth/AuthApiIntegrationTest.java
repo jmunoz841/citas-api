@@ -200,6 +200,8 @@ class AuthApiIntegrationTest {
         mvc.perform(get("/api/v1/auth/session").header(HttpHeaders.AUTHORIZATION, bearer(tokens, "accessToken")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value(user.get("email")))
+                .andExpect(jsonPath("$.firstNames").value("Ana"))
+                .andExpect(jsonPath("$.lastNames").value("Prueba"))
                 .andExpect(jsonPath("$.roles[0]").value("USER"));
 
         mvc.perform(get("/api/v1/auth/session"))

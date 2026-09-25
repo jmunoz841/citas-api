@@ -247,6 +247,35 @@ class AvailabilityApiIntegrationTest {
                 .andExpect(jsonPath("$.errors[0].field").value("professional"));
     }
 
+    /** "Mi agenda" necesita las sedes, el estado y la especialidad principal del profesional. */
+    @Test
+    void elProfesionalConsultaSuPropioPerfil() throws Exception {
+        asignarSedes(profId, List.of("HIC", "ICV"));
+
+        mvc.perform(get("/api/v1/professional/me").header(HttpHeaders.AUTHORIZATION, "Bearer " + profToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(profId))
+                .andExpect(jsonPath("$.firstNames").value("Laura"))
+                .andExpect(jsonPath("$.lastNames").value("Agenda"))
+                .andExpect(jsonPath("$.active").value(true))
+                .andExpect(jsonPath("$.primarySpecialty.name").value(org.hamcrest.Matchers.startsWith("Agenda ")))
+                .andExpect(jsonPath("$.sites.length()").value(2))
+                .andExpect(jsonPath("$.sites[0].code").value("HIC"))
+                .andExpect(jsonPath("$.sites[0].name").value("Hospital Internacional de Colombia"));
+
+        mvc.perform(patch("/api/v1/admin/professionals/" + profId + "/active")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json.writeValueAsBytes(Map.of("active", false))))
+                .andExpect(status().isOk());
+        mvc.perform(get("/api/v1/professional/me").header(HttpHeaders.AUTHORIZATION, "Bearer " + profToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.active").value(false));
+
+        mvc.perform(get("/api/v1/professional/me").header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenDeUnUserNuevo()))
+                .andExpect(status().isForbidden());
+    }
+
     // ---------- Utilidades ----------
 
     private int contarSlots(Long blockId) {

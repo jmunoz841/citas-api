@@ -77,6 +77,6 @@ final class AuthDtos {
         }
     }
 
-    record SessionResponse(Long userId, String email, List<String> roles) {
+    record SessionResponse(Long userId, String email, String firstNames, String lastNames, List<String> roles) {
     }
 }

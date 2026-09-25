@@ -105,8 +105,10 @@ Revoca el refresh token. Idempotente: responde `204` aunque el token no exista o
 Respuesta `200`:
 
 ```json
-{ "userId": 1, "email": "ana@example.com", "roles": ["USER"] }
+{ "userId": 1, "email": "ana@example.com", "firstNames": "Ana", "lastNames": "Pérez", "roles": ["USER"] }
 ```
+
+`userId`, `email` y `roles` salen del access token; `firstNames` y `lastNames` se leen de la base (añadidos en S3 para la cabecera y el saludo de la app; cambio aditivo).
 
 ## Errores
 

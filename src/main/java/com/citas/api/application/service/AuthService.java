@@ -1,6 +1,7 @@
 package com.citas.api.application.service;
 
 import com.citas.api.application.port.in.AuthTokens;
+import com.citas.api.application.port.in.GetSessionProfileUseCase;
 import com.citas.api.application.port.in.LoginUseCase;
 import com.citas.api.application.port.in.LogoutUseCase;
 import com.citas.api.application.port.in.RefreshSessionUseCase;
@@ -16,6 +17,7 @@ import com.citas.api.domain.exception.EmailAlreadyRegisteredException;
 import com.citas.api.domain.exception.InvalidCredentialsException;
 import com.citas.api.domain.exception.InvalidFieldException;
 import com.citas.api.domain.exception.InvalidRefreshTokenException;
+import com.citas.api.domain.exception.ResourceNotFoundException;
 import com.citas.api.domain.model.affiliation.Affiliation;
 import com.citas.api.domain.model.auth.RefreshToken;
 import com.citas.api.domain.model.user.DocumentType;
@@ -34,7 +36,8 @@ import java.util.Optional;
 /**
  * Casos de uso de HU-001: registro, login, refresh con rotación y logout.
  */
-public class AuthService implements RegisterUserUseCase, LoginUseCase, RefreshSessionUseCase, LogoutUseCase {
+public class AuthService implements RegisterUserUseCase, LoginUseCase, RefreshSessionUseCase, LogoutUseCase,
+        GetSessionProfileUseCase {
 
     private final UserRepositoryPort users;
     private final RefreshTokenRepositoryPort refreshTokens;
@@ -171,6 +174,13 @@ public class AuthService implements RegisterUserUseCase, LoginUseCase, RefreshSe
         AuthTokens tokens = new AuthTokens(access.value(), secondsBetween(now, access.expiresAt()),
                 refresh.value(), secondsBetween(now, refresh.expiresAt()));
         return new Issued(tokens, saved.getId());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public SessionProfile profile(Long userId) {
+        User user = users.findById(userId).orElseThrow(() -> new ResourceNotFoundException("El usuario no existe"));
+        return new SessionProfile(user.getFirstNames(), user.getLastNames());
     }
 
     private LocalDateTime toLocal(Instant instant) {

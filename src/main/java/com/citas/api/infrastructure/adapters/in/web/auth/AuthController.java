@@ -1,5 +1,7 @@
 package com.citas.api.infrastructure.adapters.in.web.auth;
 
+import com.citas.api.application.port.in.GetSessionProfileUseCase;
+import com.citas.api.application.port.in.GetSessionProfileUseCase.SessionProfile;
 import com.citas.api.application.port.in.LoginUseCase;
 import com.citas.api.application.port.in.LoginUseCase.LoginCommand;
 import com.citas.api.application.port.in.LogoutUseCase;
@@ -34,13 +36,15 @@ class AuthController {
     private final LoginUseCase login;
     private final RefreshSessionUseCase refreshSession;
     private final LogoutUseCase logout;
+    private final GetSessionProfileUseCase sessionProfile;
 
     AuthController(RegisterUserUseCase registerUser, LoginUseCase login, RefreshSessionUseCase refreshSession,
-                   LogoutUseCase logout) {
+                   LogoutUseCase logout, GetSessionProfileUseCase sessionProfile) {
         this.registerUser = registerUser;
         this.login = login;
         this.refreshSession = refreshSession;
         this.logout = logout;
+        this.sessionProfile = sessionProfile;
     }
 
     @PostMapping("/register")
@@ -68,9 +72,14 @@ class AuthController {
         logout.logout(request.refreshToken());
     }
 
-    /** Recurso protegido mínimo: datos de la sesión tomados del access token (CA-08). */
+    /**
+     * Recurso protegido mínimo (CA-08): id, email y roles salen del access token; los nombres,
+     * de la base, para que el cliente pueda saludar y mostrar al usuario en la cabecera.
+     */
     @GetMapping("/session")
     SessionResponse session(@AuthenticationPrincipal AuthenticatedUser user) {
-        return new SessionResponse(user.userId(), user.email(), List.copyOf(user.roles().stream().sorted().toList()));
+        SessionProfile profile = sessionProfile.profile(user.userId());
+        return new SessionResponse(user.userId(), user.email(), profile.firstNames(), profile.lastNames(),
+                List.copyOf(user.roles().stream().sorted().toList()));
     }
 }

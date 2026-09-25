@@ -1,6 +1,7 @@
 package com.citas.api.application.service;
 
 import com.citas.api.application.port.in.ManageProfessionalsUseCase;
+import com.citas.api.application.port.in.ViewOwnProfessionalProfileUseCase;
 import com.citas.api.application.port.out.CatalogRepositoryPort;
 import com.citas.api.application.port.out.PasswordHasherPort;
 import com.citas.api.application.port.out.ProfessionalRepositoryPort;
@@ -33,7 +34,7 @@ import java.util.stream.Collectors;
  * <p>Crear un profesional crea también su cuenta: comparten identidad, así que las dos
  * escrituras van en la misma transacción.</p>
  */
-public class ProfessionalService implements ManageProfessionalsUseCase {
+public class ProfessionalService implements ManageProfessionalsUseCase, ViewOwnProfessionalProfileUseCase {
 
     private final UserRepositoryPort users;
     private final ProfessionalRepositoryPort professionals;
@@ -110,6 +111,19 @@ public class ProfessionalService implements ManageProfessionalsUseCase {
     public ProfessionalView setActive(Long professionalId, boolean active) {
         Professional current = require(professionalId);
         return toViewLoadingUser(professionals.save(current.withActive(active)));
+    }
+
+    /** Sedes en el orden del catálogo; la especialidad principal aunque esté inactiva. */
+    @Override
+    @Transactional(readOnly = true)
+    public OwnProfile ownProfile(Long professionalId) {
+        Professional professional = require(professionalId);
+        Specialty primary = specialties.findById(professional.getAssignments().primarySpecialtyId())
+                .orElseThrow(ResourceNotFoundException::specialty);
+        List<Site> sites = catalogs.findSites().stream()
+                .filter(site -> professional.getAssignments().siteCodes().contains(site.code()))
+                .toList();
+        return new OwnProfile(toViewLoadingUser(professional), primary, sites);
     }
 
     private Professional require(Long professionalId) {

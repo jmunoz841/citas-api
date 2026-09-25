@@ -15,6 +15,21 @@
 | POST | `/api/v1/professional/availability-blocks` | Publica un bloque (`201`) |
 | PATCH | `/api/v1/professional/availability-blocks/{id}` | Cambia horario o sede y **regenera los slots** |
 | DELETE | `/api/v1/professional/availability-blocks/{id}` | Elimina el bloque y sus slots (`204`) |
+| GET | `/api/v1/professional/me` | Perfil propio: estado, especialidad principal y sedes asignadas |
+
+## Perfil propio
+
+"Mi agenda" lo usa para ofrecer solo las sedes asignadas, mostrar la especialidad principal en la cabecera y avisar si la cuenta está inactiva.
+
+```json
+{
+  "id": 12, "firstNames": "Laura", "lastNames": "Gómez", "active": true,
+  "primarySpecialty": { "id": 4, "name": "Cardiología", "durationMinutes": 60 },
+  "sites": [ { "code": "HIC", "name": "Hospital Internacional de Colombia" } ]
+}
+```
+
+Las sedes salen en el orden del catálogo.
 
 ## Crear un bloque
 
