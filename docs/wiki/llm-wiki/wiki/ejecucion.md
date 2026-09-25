@@ -45,8 +45,9 @@ HU objetivo: [[HU-001-registro-e-inicio-de-sesion-jwt]] (`Aprobada`).
 | 7 | HU-006, HU-008 y HU-009 Oferta administrable (backend) | Hecho | Migración `V4__oferta_administrable_hu006_hu008.sql` con los dos índices funcionales del diseño 3FN (una sola especialidad general; una sola primaria por profesional), semilla de `Medicina General` y **ADMIN inicial** (D-021). Endpoints `/api/v1/admin/**` con `hasRole('ADMIN')`; sin DELETE de especialidades. 17 pruebas de integración; `mvnw test` 95/95. Humo contra MySQL real: login del ADMIN sembrado, duración 45 rechazada, 401 sin token, Flyway v1–v4 `success=1`. Contrato `docs/contratos/administracion.md` |
 | 8 | HU-010 Disponibilidad (backend) | Hecho | Migración `V5__disponibilidad_hu010.sql`; slots materializados de 30 min; 4 endpoints bajo `/api/v1/professional/**` con `hasRole('PROFESSIONAL')` y pertenencia por token; 13 pruebas de integración; `mvnw test` 108/108. Contrato `docs/contratos/disponibilidad.md`. CA-05 pendiente hasta HU-013 |
 | 9 | HU-012, HU-013 y HU-014 Búsqueda y reserva (backend) | Hecho | Migración `V6__citas_hu012_hu014.sql` (`appointments`, `slot_reservations` con PK `slot_id`, `appointment_status_history`); `GET /api/v1/availability` y `POST /api/v1/appointments` con `hasRole('USER')`; `SlotPlanner` en el dominio (30/60 min, sin combinar bloques). **LOOP del instructor en verde:** dos reservas simultáneas por HTTP sobre el mismo slot → un 201 y un 409 `SLOT_UNAVAILABLE`, decidido por la PK. Cerrados los diferidos HU-009 CA-02 y HU-010 CA-05 (409 `BLOCK_HAS_APPOINTMENTS`). Corregido el 500 al desactivar o reasignar un profesional con agenda. 28 pruebas nuevas; `mvnw clean test` 136/136. Flyway v5 y v6 aplicadas en `jmunoz-citas-mysql`; health `UP`. Contrato `docs/contratos/citas.md` |
+| 10 | HU-015 Decisión del ADMIN (backend) | Hecho | Pruebas escritas primero: **Red** 9 pruebas, 7 fallos (404, endpoints inexistentes) → **Green** 13/13. `GET /api/v1/admin/appointments/requests`, `POST .../{id}/approve` y `.../{id}/reject` (motivo obligatorio); rechazar libera los slots; historial `source: ADMIN`. La transición es un `UPDATE ... WHERE status_code = 'REQUESTED'`: aprobar y rechazar a la vez → un 200 y un 409 `INVALID_STATUS_TRANSITION`. `mvnw clean test` 149/149. Contrato `docs/contratos/citas.md` |
 
-Pendiente de S3: HU-015 (decisión administrativa), las **vistas** en `citas-web` (ADMIN, PROFESSIONAL y el modal de reserva en 4 pasos) y la evidencia de cierre.
+Pendiente de S3: las **vistas** en `citas-web` (ADMIN, PROFESSIONAL y el modal de reserva en 4 pasos) y la evidencia de cierre.
 
 ## Punto de retoma (actualizado 2026-09-25)
 
@@ -54,7 +55,7 @@ Pendiente de S3: HU-015 (decisión administrativa), las **vistas** en `citas-web
 
 `git pull` en los tres repos, JDK 21 portable en `%USERPROFILE%\.jdks\temurin-21`, `.env` en raíz, `citas-api` y `citas-web`. Docker Desktop está instalado **por usuario** en `%LOCALAPPDATA%\Programs\DockerDesktop\Docker Desktop.exe`, no en `Program Files`. Luego `docker compose up -d` desde `citas-api/` (MySQL en 3308).
 
-Verificar con `$env:JAVA_HOME="$env:USERPROFILE\.jdks\temurin-21"; .\mvnw.cmd clean test` → deben pasar **136** pruebas.
+Verificar con `$env:JAVA_HOME="$env:USERPROFILE\.jdks\temurin-21"; .\mvnw.cmd clean test` → deben pasar **149** pruebas.
 
 **Usar `clean test`, no solo `test`.** En este equipo los archivos quedan con horas de modificación incoherentes: el editor los guarda unas 5 horas "en el futuro" y otras herramientas con la hora real. La compilación incremental de Maven puede entonces tomar una fuente por más antigua que su `.class` y ejecutar código viejo. El mismo desfase de reloj provoca a veces que MySQL de Testcontainers presente un certificado TLS "todavía no válido" (`CertificateNotYetValidException`): varias clases de integración fallan al arrancar el contexto. Se resuelve relanzando.
 
@@ -66,9 +67,8 @@ Credencial local `credential.https://github.com.username = jmunoz841` configurad
 
 | Orden | Trabajo | Alcance |
 |---|---|---|
-| 1 | [[HU-015-resolver-cita-especializada]] | El ADMIN aprueba o rechaza una cita `REQUESTED`; motivo obligatorio al rechazar; rechazar libera los slots (DELETE en `slot_reservations`) y registra historial `source: ADMIN`. `appointments.version` ya existe para el bloqueo optimista |
-| 2 | Pasada de frontend | Vistas de ADMIN (especialidades, profesionales, asignaciones, solicitudes pendientes), vista de PROFESSIONAL (calendario de bloques) y modal de reserva en 4 pasos para USER: HU-006 T-04, HU-008 T-03, HU-009 T-02, HU-010 T-04, HU-012 T-03, HU-013 T-03, HU-014 T-02 |
-| 3 | Evidencia de cierre de S3 | Matriz por CA y DoD, demo Red→Green del hook, trazabilidad final |
+| 1 | Pasada de frontend | Vistas de ADMIN (especialidades, profesionales, asignaciones, solicitudes pendientes), vista de PROFESSIONAL (calendario de bloques) y modal de reserva en 4 pasos para USER: HU-006 T-04, HU-008 T-03, HU-009 T-02, HU-010 T-04, HU-012 T-03, HU-013 T-03, HU-014 T-02, HU-015 T-03 (dashboard ADMIN) |
+| 2 | Evidencia de cierre de S3 | Matriz por CA y DoD, demo Red→Green del hook, trazabilidad final |
 
 ### 4. Preguntas abiertas para el Product Owner
 

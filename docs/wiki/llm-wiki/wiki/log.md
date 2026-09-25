@@ -110,3 +110,9 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 - DECISIÓN (usuario): D-025, historial sin triggers; LOOP probado por HTTP.
 - PREGUNTA ABIERTA: endpoint único de reserva; retirar especialidad o sede con agenda (500 por FK); citas de un profesional desactivado.
 - Páginas afectadas: [[decisiones]], [[ejecucion]], [[arquitectura]]
+
+## 2026-09-25 — LEARN — Decisión del ADMIN sobre citas especializadas (HU-015)
+- HECHO: pruebas escritas antes del código (Red: 7 de 9 fallan con 404 → Green: 13/13); `mvnw clean test` 149/149.
+- HECHO: aprobar y rechazar cambian el estado con un `UPDATE` condicionado a `REQUESTED`; dos decisiones simultáneas → un 200 y un 409 `INVALID_STATUS_TRANSITION`. Rechazar borra las filas de `slot_reservations` y los slots vuelven a la búsqueda.
+- PREGUNTA ABIERTA: expiración de solicitudes `REQUESTED` (el PRD no la define).
+- Páginas afectadas: [[ejecucion]]
