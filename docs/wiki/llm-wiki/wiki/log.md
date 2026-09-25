@@ -134,3 +134,9 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 - HECHO: en la primera carga en frío, la fuente variable de Material Symbols tarda varios segundos y los íconos se ven como texto ("inbox", "check"); después queda en caché. Afecta también al login desde S2.
 - HECHO: los datos sintéticos de prueba se cargan con un script local no versionado; PowerShell 5.1 lee un `.ps1` sin BOM como ANSI y corrompe los acentos (se corrigieron con SQL).
 - Páginas afectadas: [[ejecucion]]
+
+## 2026-09-25 — INGEST — Preguntas abiertas de S3 resueltas
+- Fuentes: `raw/2026-09-25-decisiones-abiertas-s3.md`
+- DECISIÓN (usuario): D-027 endpoint único de reserva; D-028 `409 ASSIGNMENT_IN_USE` al quitar una asignación en uso; D-029 desactivar conserva las citas; D-030 sin expiración de solicitudes en S3.
+- HECHO: D-028 implementada con la prueba primero (Red: 500 → Green: 409); `mvnw clean test` 152/152.
+- Páginas afectadas: [[decisiones]], [[ejecucion]]

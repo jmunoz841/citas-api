@@ -482,6 +482,48 @@ class BookingApiIntegrationTest {
         assertThat(inicios(buscar(Map.of("specialtyId", segunda)))).containsExactly("08:30");
     }
 
+    /** D-027: quitar una asignación que ya tiene agenda o citas es un 409 explicado, no un 500. */
+    @Test
+    void quitarUnaEspecialidadOSedeEnUsoResponde409YNoCambiaNada() throws Exception {
+        long conCitas = crearEspecialidad(30);
+        long libre = crearEspecialidad(30);
+        Profesional prof = crearProfesional(List.of(conCitas, libre), List.of("HIC", "ICV"));
+        crearBloque(prof, MANANA, "08:00", "09:00", "HIC");
+        reservar(userToken, prof.id(), conCitas, "HIC", MANANA, "08:00").andExpect(status().isCreated());
+
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                        .put("/api/v1/admin/professionals/" + prof.id() + "/specialties")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json.writeValueAsBytes(Map.of("specialties", List.of(
+                                Map.of("specialtyId", libre, "primary", true))))))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("ASSIGNMENT_IN_USE"))
+                .andExpect(jsonPath("$.detail").value(org.hamcrest.Matchers.containsString("especialidad")));
+
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                        .put("/api/v1/admin/professionals/" + prof.id() + "/sites")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json.writeValueAsBytes(Map.of("siteCodes", List.of("ICV")))))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("ASSIGNMENT_IN_USE"))
+                .andExpect(jsonPath("$.detail").value(org.hamcrest.Matchers.containsString("sede")));
+
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM professional_specialties WHERE professional_id = ?",
+                Integer.class, prof.id())).isEqualTo(2);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM professional_sites WHERE professional_id = ?",
+                Integer.class, prof.id())).isEqualTo(2);
+
+        // Lo que no está en uso sí se puede quitar.
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                        .put("/api/v1/admin/professionals/" + prof.id() + "/sites")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json.writeValueAsBytes(Map.of("siteCodes", List.of("HIC")))))
+                .andExpect(status().isOk());
+    }
+
     // ---------- Autorización ----------
 
     @Test

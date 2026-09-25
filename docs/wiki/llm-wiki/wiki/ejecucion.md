@@ -51,7 +51,7 @@ HU objetivo: [[HU-001-registro-e-inicio-de-sesion-jwt]] (`Aprobada`).
 | 13 | Contrato para las vistas (backend) | Hecho | `GET /api/v1/auth/session` añade `firstNames`/`lastNames` y nuevo `GET /api/v1/professional/me` (estado, especialidad principal, sedes). Aditivos, prueba primero; `citas-api` `6813dc8`, `mvnw clean test` 151/151 |
 | 14 | Pasada de frontend de S3 | Hecho | `citas-web` `fa704a4` (sesión por rol, cliente con refresh, estructura común) y `576db18` (Solicitudes, Especialidades, Profesionales, Mi agenda, Inicio y modal de reserva). 95 pruebas Vitest, lint y build en verde. Verificado contra la API real con datos sintéticos y capturas autenticadas (Edge por CDP) frente a Stitch v4; las 5 correcciones obligatorias aplicadas (acciones visibles a 1280 px, badge real, sin textos inventados, subtítulo de rechazo) |
 
-Pendiente de S3: la evidencia de cierre (matriz por CA y DoD, trazabilidad de épicas, demo Red→Green del hook) y las preguntas abiertas de [[decisiones]].
+Pendiente de S3: la evidencia de cierre (matriz por CA y DoD, trazabilidad de épicas, demo Red→Green del hook). Las preguntas abiertas de S3 quedaron resueltas (D-027 a D-030).
 
 ## Punto de retoma (actualizado 2026-09-25)
 
@@ -59,7 +59,7 @@ Pendiente de S3: la evidencia de cierre (matriz por CA y DoD, trazabilidad de é
 
 `git pull` en los tres repos, JDK 21 portable en `%USERPROFILE%\.jdks\temurin-21`, `.env` en raíz, `citas-api` y `citas-web`. Docker Desktop está instalado **por usuario** en `%LOCALAPPDATA%\Programs\DockerDesktop\Docker Desktop.exe`, no en `Program Files`. Luego `docker compose up -d` desde `citas-api/` (MySQL en 3308).
 
-Verificar con `$env:JAVA_HOME="$env:USERPROFILE\.jdks\temurin-21"; .\mvnw.cmd clean test` → deben pasar **151** pruebas; en `citas-web`, `npm run lint`, `npm test` (95), `npm run typecheck` y `npm run build`.
+Verificar con `$env:JAVA_HOME="$env:USERPROFILE\.jdks\temurin-21"; .\mvnw.cmd clean test` → deben pasar **152** pruebas; en `citas-web`, `npm run lint`, `npm test` (95), `npm run typecheck` y `npm run build`.
 
 **Usar `clean test`, no solo `test`.** En este equipo los archivos quedan con horas de modificación incoherentes: el editor los guarda unas 5 horas "en el futuro" y otras herramientas con la hora real. La compilación incremental de Maven puede entonces tomar una fuente por más antigua que su `.class` y ejecutar código viejo. El mismo desfase de reloj provoca a veces que MySQL de Testcontainers presente un certificado TLS "todavía no válido" (`CertificateNotYetValidException`): varias clases de integración fallan al arrancar el contexto. Se resuelve relanzando.
 
@@ -73,9 +73,9 @@ Credencial local `credential.https://github.com.username = jmunoz841` configurad
 |---|---|---|
 | 1 | Evidencia de cierre de S3 | Matriz por CA y DoD, demo Red→Green del hook, trazabilidad de las épicas (siguen listando las HU como `Borrador`), con la skill `scrum-spec-orchestrator` |
 
-### 4. Preguntas abiertas para el Product Owner
+### 4. Decisiones del Product Owner pendientes
 
-Ver [[decisiones]]: endpoint único de reserva, retirar especialidad o sede con agenda (hoy 500 por FK) y qué pasa con las citas de un profesional desactivado.
+Ninguna de producto: las preguntas abiertas de S3 quedaron resueltas (D-027 a D-030 en [[decisiones]]). Quedan por confirmar al cierre el paso de las HU a `Completada` y el merge `develop` → `main` con la etiqueta `s3`.
 
 
 ## Relacionadas

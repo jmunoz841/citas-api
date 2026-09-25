@@ -140,4 +140,4 @@ Implementa la resolución de RF-12. Incluye un listado básico de solicitudes `R
 ## Notas y decisiones
 
 - La transición es un `UPDATE` condicionado a `status_code = 'REQUESTED'`: la base decide cuál de dos decisiones simultáneas se aplica, igual que la PK de `slot_reservations` en la reserva.
-- Incógnita heredada de HU-014: el PRD no define expiración de solicitudes `REQUESTED` no resueltas.
+- Resuelto (D-030): las solicitudes `REQUESTED` no expiran en S3.

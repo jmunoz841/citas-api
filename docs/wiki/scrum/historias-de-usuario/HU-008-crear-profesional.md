@@ -148,4 +148,5 @@ Implementa RF-07 (creación y asignaciones). El profesional es un usuario con ro
 
 ## Notas y decisiones
 
+- Resuelto (D-028): quitar una especialidad con citas o una sede con bloques o citas responde `409 ASSIGNMENT_IN_USE` (`BookingApiIntegrationTest.quitarUnaEspecialidadOSedeEnUsoResponde409YNoCambiaNada`); antes era un 500.
 - Incógnita: cómo recibe el profesional su contraseña inicial (definida por ADMIN o flujo de recuperación de [[HU-002-recuperar-contrasena]]).

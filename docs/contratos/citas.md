@@ -75,7 +75,7 @@ Respuesta `201`:
 }
 ```
 
-Un solo endpoint para los dos flujos: **la especialidad decide el estado inicial**. El cliente envía los mismos datos que le devolvió la búsqueda.
+Un solo endpoint para los dos flujos (D-027): **la especialidad decide el estado inicial**. El cliente envía los mismos datos que le devolvió la búsqueda.
 
 | Especialidad | Estado inicial | Slots |
 |---|---|---|

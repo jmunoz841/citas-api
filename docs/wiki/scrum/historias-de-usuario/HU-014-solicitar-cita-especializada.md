@@ -119,4 +119,4 @@ Implementa la parte de solicitud de RF-12. Reutiliza el mecanismo de reserva de 
 
 ## Notas y decisiones
 
-- Incógnita: el PRD no define expiración automática de solicitudes `REQUESTED` no resueltas.
+- Resuelto (D-030): las solicitudes `REQUESTED` no expiran en S3.

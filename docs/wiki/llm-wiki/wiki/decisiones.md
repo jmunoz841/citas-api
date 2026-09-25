@@ -4,6 +4,7 @@ actualizado: 2026-09-25
 fuentes:
   - raw/2026-09-16-decisiones-hu-001.md
   - raw/2026-09-25-decisiones-reserva.md
+  - raw/2026-09-25-decisiones-abiertas-s3.md
   - raw/RESTRICCIONES_TECNICAS.md
 ---
 
@@ -41,6 +42,10 @@ Solo se registran como DECISIÓN los puntos aprobados explícitamente por el usu
 | D-022 | 2026-09-23 | HU-002 (recuperar contraseña) **no** se marca `Completada`: no está implementada y permanece en S4. La HU-002 del documento del instructor pertenece a otra numeración | Scrum | `raw/2026-09-23-decisiones-s3.md` |
 | D-025 | 2026-09-25 | `appointment_status_history` sin los triggers de inmutabilidad del diseño 3FN (riesgo Q-10); la aplicación solo inserta. La prueba del LOOP de doble reserva es de punta a punta por HTTP con dos peticiones simultáneas | HU-013 | `raw/2026-09-25-decisiones-reserva.md` |
 | D-026 | 2026-09-25 | Diseño de las áreas autenticadas de S3 (ADMIN, PROFESSIONAL, USER) aprobado en Stitch v4, con cinco correcciones obligatorias en la implementación. Extiende `DESIGN.md` de `citas-web` sin cambiar el sistema visual de D-014 | Frontend | `raw/2026-09-25-aprobacion-diseno-s3.md` |
+| D-027 | 2026-09-25 | Un solo `POST /api/v1/appointments` para cita general y especializada; la especialidad decide `APPROVED` o `REQUESTED` | HU-013, HU-014 | `raw/2026-09-25-decisiones-abiertas-s3.md` |
+| D-028 | 2026-09-25 | Quitar a un profesional una especialidad con citas, o una sede con bloques o citas, responde `409 ASSIGNMENT_IN_USE` y no cambia nada | HU-008 | `raw/2026-09-25-decisiones-abiertas-s3.md` |
+| D-029 | 2026-09-25 | Desactivar un profesional conserva sus citas; cancelarlas queda para S4 | HU-009 | `raw/2026-09-25-decisiones-abiertas-s3.md` |
+| D-030 | 2026-09-25 | Las citas `REQUESTED` no expiran en S3; se evaluará en S4 o S5 | HU-014, HU-015 | `raw/2026-09-25-decisiones-abiertas-s3.md` |
 
 ## Preguntas abiertas
 
@@ -50,9 +55,10 @@ Solo se registran como DECISIÓN los puntos aprobados explícitamente por el usu
 - **Comparación con la referencia** C-02, C-03 (→ HU-004) y C-04 (→ HU-013).
 - **Riesgo:** Flyway (versión gestionada por Spring Boot 3.5.16) avisa que su soporte probado de MySQL llega a 8.1; la V1 se aplicó sin errores en 8.4.11. Revisar si aparece algún fallo en migraciones futuras.
 - ~~**Q-004 — Framework frontend.**~~ → resuelta por D-015 (React + Vite + TypeScript). Herramienta de pruebas resuelta por D-023 (Vitest + oxlint).
-- **Endpoint único de reserva (propuesta del agente, 2026-09-25).** Se implementó `POST /api/v1/appointments` para HU-013 y HU-014: la especialidad decide si la cita nace `APPROVED` o `REQUESTED`. El plan aprobado hablaba de dos endpoints (`/general` y `/specialized`). Falta que el Product Owner lo confirme o pida separarlos.
-- **Retirar una especialidad o sede con agenda.** Si el ADMIN quita a un profesional una especialidad o sede que ya tiene bloques o citas, la FK RESTRICT lo impide y hoy la API responde 500. Falta decidir la regla (rechazar con 409, o conservar la fila como inactiva). Afecta a HU-008 y HU-009.
-- **Desactivar un profesional con citas.** Lo excluye de la búsqueda y de nuevas reservas (HU-009 CA-02), pero no cancela las citas ya reservadas. El PRD no dice qué hacer con ellas.
+- ~~Endpoint único de reserva~~ → resuelta por D-027.
+- ~~Retirar una especialidad o sede con agenda~~ → resuelta por D-028.
+- ~~Desactivar un profesional con citas~~ → resuelta por D-029.
+- ~~Expiración de solicitudes `REQUESTED`~~ → resuelta por D-030.
 
 ## Relacionadas
 

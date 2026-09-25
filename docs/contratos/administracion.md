@@ -98,3 +98,4 @@ Desactivar conserva datos, asignaciones e historial: solo excluye al profesional
 | 409 | `PROFESSIONAL_CODE_ALREADY_REGISTERED` | Código profesional repetido |
 | 409 | `LICENSE_ALREADY_REGISTERED` | Matrícula repetida |
 | 409 | `EMAIL_ALREADY_REGISTERED` / `DOCUMENT_ALREADY_REGISTERED` | Email o documento ya registrados |
+| 409 | `ASSIGNMENT_IN_USE` | Al reasignar: se intenta quitar una especialidad con citas o una sede con bloques de disponibilidad o citas (D-028). No se cambia nada |

@@ -120,4 +120,4 @@ Implementa la parte de activación/desactivación de RF-07.
 ## Notas y decisiones
 
 - Incógnita: si un profesional inactivo puede seguir iniciando sesión para consultar su agenda histórica.
-- Desactivar no cancela las citas ya reservadas: el PRD no lo pide. Queda como pregunta abierta en [[decisiones]].
+- Resuelto (D-029): desactivar no cancela las citas ya reservadas; cancelarlas queda para S4.

@@ -4,12 +4,15 @@ import com.citas.api.application.port.out.ProfessionalRepositoryPort;
 import com.citas.api.domain.model.professional.Professional;
 import com.citas.api.domain.model.professional.ProfessionalAssignments;
 import com.citas.api.domain.model.professional.ProfessionalAssignments.SpecialtyAssignment;
+import com.citas.api.domain.exception.BusinessConflictException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -68,7 +71,7 @@ class ProfessionalPersistenceAdapter implements ProfessionalRepositoryPort {
                 row.setPrimary(false);
             }
         });
-        specialties.flush();
+        flushOrExplain(specialties);
 
         wanted.forEach(assignment -> {
             ProfessionalSpecialtyJpaEntity row = current.get(assignment.specialtyId());
@@ -91,9 +94,29 @@ class ProfessionalPersistenceAdapter implements ProfessionalRepositoryPort {
                 sites.delete(row);
             }
         }
+        flushOrExplain(sites);
         wanted.stream().filter(code -> !kept.contains(code))
                 .forEach(code -> sites.save(new ProfessionalSiteJpaEntity(id, code, true)));
         sites.flush();
+    }
+
+    /**
+     * D-027: la FK RESTRICT de bloques o citas impide borrar una asignación en uso. Se traduce a un
+     * 409 que dice qué se intentó quitar, en lugar de dejar escapar un 500.
+     */
+    private static void flushOrExplain(JpaRepository<?, ?> repository) {
+        try {
+            repository.flush();
+        } catch (DataIntegrityViolationException e) {
+            String detail = String.valueOf(e.getMostSpecificCause().getMessage()).toLowerCase(Locale.ROOT);
+            if (detail.contains("fk_appt_professional_specialty")) {
+                throw BusinessConflictException.specialtyInUse();
+            }
+            if (detail.contains("fk_blocks_professional_site") || detail.contains("fk_appt_professional_site")) {
+                throw BusinessConflictException.siteInUse();
+            }
+            throw e;
+        }
     }
 
     @Override

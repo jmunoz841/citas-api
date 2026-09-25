@@ -21,6 +21,18 @@ public class BusinessConflictException extends DomainException {
                 "La cita ya no está pendiente de aprobación");
     }
 
+    /** D-027: no se quita a un profesional una especialidad con citas. */
+    public static BusinessConflictException specialtyInUse() {
+        return new BusinessConflictException("ASSIGNMENT_IN_USE",
+                "No se puede quitar la especialidad: el profesional tiene citas en ella");
+    }
+
+    /** D-027: no se quita a un profesional una sede con bloques de disponibilidad o citas. */
+    public static BusinessConflictException siteInUse() {
+        return new BusinessConflictException("ASSIGNMENT_IN_USE",
+                "No se puede quitar la sede: el profesional tiene bloques de disponibilidad o citas en ella");
+    }
+
     /** HU-010 CA-05: un bloque con slots reservados o retenidos no se edita ni se elimina. */
     public static BusinessConflictException blockHasAppointments() {
         return new BusinessConflictException("BLOCK_HAS_APPOINTMENTS",
