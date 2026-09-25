@@ -195,6 +195,31 @@ class BookingApiIntegrationTest {
                 .andExpect(jsonPath("$.errors[0].field").value("professionalId"));
     }
 
+    /** El filtro de especialidad del modal de reserva necesita este catálogo (HU-012 CA-03). */
+    @Test
+    void hu012_elCatalogoDeEspecialidadesEsPublicoYSoloMuestraLasActivas() throws Exception {
+        long activa = crearEspecialidad(60);
+        long inactiva = crearEspecialidad(30);
+        activarEspecialidad(inactiva, false);
+
+        String body = mvc.perform(get("/api/v1/catalogs/specialties"))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
+        JsonNode items = json.readTree(body).get("items");
+
+        List<Long> ids = new ArrayList<>();
+        items.forEach(item -> ids.add(item.get("id").asLong()));
+        assertThat(ids).contains(generalId, activa).doesNotContain(inactiva);
+        JsonNode general = items.get(ids.indexOf(generalId));
+        assertThat(general.get("name").asText()).isEqualTo("Medicina General");
+        assertThat(general.get("durationMinutes").asInt()).isEqualTo(30);
+        assertThat(general.get("type").asText()).isEqualTo("GENERAL");
+        JsonNode especializada = items.get(ids.indexOf(activa));
+        assertThat(especializada.get("durationMinutes").asInt()).isEqualTo(60);
+        assertThat(especializada.get("type").asText()).isEqualTo("SPECIALIZED");
+        assertThat(especializada.has("active")).isFalse();
+    }
+
     @Test
     void laFechaEsObligatoriaYElTipoDebeSerValido() throws Exception {
         mvc.perform(get("/api/v1/availability").header(HttpHeaders.AUTHORIZATION, "Bearer " + userToken))

@@ -5,6 +5,7 @@ import com.citas.api.infrastructure.adapters.in.web.catalog.CatalogDtos.CatalogE
 import com.citas.api.infrastructure.adapters.in.web.catalog.CatalogDtos.InsurancePlanResponse;
 import com.citas.api.infrastructure.adapters.in.web.catalog.CatalogDtos.ItemsResponse;
 import com.citas.api.infrastructure.adapters.in.web.catalog.CatalogDtos.SiteResponse;
+import com.citas.api.infrastructure.adapters.in.web.catalog.CatalogDtos.SpecialtyResponse;
 import com.citas.api.infrastructure.adapters.in.web.catalog.CatalogDtos.StatusResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +47,15 @@ class CatalogController {
     @GetMapping("/insurance-plans")
     ItemsResponse<InsurancePlanResponse> insurancePlans() {
         return ItemsResponse.of(catalogs.insurancePlans(), InsurancePlanResponse::from);
+    }
+
+    /**
+     * Especialidades activas para el filtro de búsqueda y el modal de reserva (HU-012). Es oferta
+     * pública, no un catálogo fijo: la administra el ADMIN en {@code /api/v1/admin/specialties}.
+     */
+    @GetMapping("/specialties")
+    ItemsResponse<SpecialtyResponse> specialties() {
+        return ItemsResponse.of(catalogs.activeSpecialties(), SpecialtyResponse::from);
     }
 
     @GetMapping("/roles")

@@ -116,3 +116,8 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 - HECHO: aprobar y rechazar cambian el estado con un `UPDATE` condicionado a `REQUESTED`; dos decisiones simultáneas → un 200 y un 409 `INVALID_STATUS_TRANSITION`. Rechazar borra las filas de `slot_reservations` y los slots vuelven a la búsqueda.
 - PREGUNTA ABIERTA: expiración de solicitudes `REQUESTED` (el PRD no la define).
 - Páginas afectadas: [[ejecucion]]
+
+## 2026-09-25 — LEARN — Catálogo público de especialidades
+- HECHO: el modal de reserva no tenía de dónde listar especialidades (`/api/v1/admin/specialties` es solo ADMIN). Se añadió `GET /api/v1/catalogs/specialties` (activas, con `type` GENERAL/SPECIALIZED); `mvnw clean test` 150/150.
+- HECHO: se entregaron tres prompts de Stitch (ADMIN, PROFESSIONAL, USER) que extienden `citas-web/docs/diseno/DESIGN.md`; el diseño sigue pendiente de generar y aprobar.
+- Páginas afectadas: [[ejecucion]]

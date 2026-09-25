@@ -3,10 +3,12 @@ package com.citas.api.application.service;
 import com.citas.api.application.port.in.ConsultCatalogsUseCase;
 import com.citas.api.application.port.out.AffiliationRepositoryPort;
 import com.citas.api.application.port.out.CatalogRepositoryPort;
+import com.citas.api.application.port.out.SpecialtyRepositoryPort;
 import com.citas.api.domain.model.affiliation.InsurancePlan;
 import com.citas.api.domain.model.catalog.CatalogEntry;
 import com.citas.api.domain.model.catalog.Site;
 import com.citas.api.domain.model.catalog.StatusEntry;
+import com.citas.api.domain.model.professional.Specialty;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -19,10 +21,13 @@ public class CatalogService implements ConsultCatalogsUseCase {
 
     private final CatalogRepositoryPort catalogs;
     private final AffiliationRepositoryPort affiliations;
+    private final SpecialtyRepositoryPort specialties;
 
-    public CatalogService(CatalogRepositoryPort catalogs, AffiliationRepositoryPort affiliations) {
+    public CatalogService(CatalogRepositoryPort catalogs, AffiliationRepositoryPort affiliations,
+                          SpecialtyRepositoryPort specialties) {
         this.catalogs = catalogs;
         this.affiliations = affiliations;
+        this.specialties = specialties;
     }
 
     @Override
@@ -65,5 +70,11 @@ public class CatalogService implements ConsultCatalogsUseCase {
     @Transactional(readOnly = true)
     public List<InsurancePlan> insurancePlans() {
         return affiliations.findSelectablePlans();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Specialty> activeSpecialties() {
+        return specialties.findAll(true);
     }
 }

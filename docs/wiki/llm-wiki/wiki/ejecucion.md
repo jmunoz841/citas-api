@@ -46,6 +46,7 @@ HU objetivo: [[HU-001-registro-e-inicio-de-sesion-jwt]] (`Aprobada`).
 | 8 | HU-010 Disponibilidad (backend) | Hecho | Migración `V5__disponibilidad_hu010.sql`; slots materializados de 30 min; 4 endpoints bajo `/api/v1/professional/**` con `hasRole('PROFESSIONAL')` y pertenencia por token; 13 pruebas de integración; `mvnw test` 108/108. Contrato `docs/contratos/disponibilidad.md`. CA-05 pendiente hasta HU-013 |
 | 9 | HU-012, HU-013 y HU-014 Búsqueda y reserva (backend) | Hecho | Migración `V6__citas_hu012_hu014.sql` (`appointments`, `slot_reservations` con PK `slot_id`, `appointment_status_history`); `GET /api/v1/availability` y `POST /api/v1/appointments` con `hasRole('USER')`; `SlotPlanner` en el dominio (30/60 min, sin combinar bloques). **LOOP del instructor en verde:** dos reservas simultáneas por HTTP sobre el mismo slot → un 201 y un 409 `SLOT_UNAVAILABLE`, decidido por la PK. Cerrados los diferidos HU-009 CA-02 y HU-010 CA-05 (409 `BLOCK_HAS_APPOINTMENTS`). Corregido el 500 al desactivar o reasignar un profesional con agenda. 28 pruebas nuevas; `mvnw clean test` 136/136. Flyway v5 y v6 aplicadas en `jmunoz-citas-mysql`; health `UP`. Contrato `docs/contratos/citas.md` |
 | 10 | HU-015 Decisión del ADMIN (backend) | Hecho | Pruebas escritas primero: **Red** 9 pruebas, 7 fallos (404, endpoints inexistentes) → **Green** 13/13. `GET /api/v1/admin/appointments/requests`, `POST .../{id}/approve` y `.../{id}/reject` (motivo obligatorio); rechazar libera los slots; historial `source: ADMIN`. La transición es un `UPDATE ... WHERE status_code = 'REQUESTED'`: aprobar y rechazar a la vez → un 200 y un 409 `INVALID_STATUS_TRANSITION`. `mvnw clean test` 149/149. Contrato `docs/contratos/citas.md` |
+| 11 | Catálogo de especialidades (HU-012) | Hecho | `GET /api/v1/catalogs/specialties`, público, solo activas; lo necesita el paso 1 del modal de reserva. Red (404) → Green; `mvnw clean test` 150/150. Prompts de Stitch para ADMIN, PROFESSIONAL y USER entregados al usuario |
 
 Pendiente de S3: las **vistas** en `citas-web` (ADMIN, PROFESSIONAL y el modal de reserva en 4 pasos) y la evidencia de cierre.
 
@@ -55,7 +56,7 @@ Pendiente de S3: las **vistas** en `citas-web` (ADMIN, PROFESSIONAL y el modal d
 
 `git pull` en los tres repos, JDK 21 portable en `%USERPROFILE%\.jdks\temurin-21`, `.env` en raíz, `citas-api` y `citas-web`. Docker Desktop está instalado **por usuario** en `%LOCALAPPDATA%\Programs\DockerDesktop\Docker Desktop.exe`, no en `Program Files`. Luego `docker compose up -d` desde `citas-api/` (MySQL en 3308).
 
-Verificar con `$env:JAVA_HOME="$env:USERPROFILE\.jdks\temurin-21"; .\mvnw.cmd clean test` → deben pasar **149** pruebas.
+Verificar con `$env:JAVA_HOME="$env:USERPROFILE\.jdks\temurin-21"; .\mvnw.cmd clean test` → deben pasar **150** pruebas.
 
 **Usar `clean test`, no solo `test`.** En este equipo los archivos quedan con horas de modificación incoherentes: el editor los guarda unas 5 horas "en el futuro" y otras herramientas con la hora real. La compilación incremental de Maven puede entonces tomar una fuente por más antigua que su `.class` y ejecutar código viejo. El mismo desfase de reloj provoca a veces que MySQL de Testcontainers presente un certificado TLS "todavía no válido" (`CertificateNotYetValidException`): varias clases de integración fallan al arrancar el contexto. Se resuelve relanzando.
 

@@ -114,6 +114,7 @@ Implementa RF-10 y aplica RF-09. Solo se muestran horarios que puedan completar 
 | CA-02 60 minutos | Cumple | `SlotPlannerTest.ca02_sesentaMinutosConEl0830OcupadoSoloOfrece0900`; `hu012_ca02_sesentaMinutosConEl0830ReservadoSoloOfrece0900` | Solo 09:00–10:00. Además: el último slot de un bloque no inicia una cita de 60 y dos bloques contiguos no se combinan |
 | CA-03 Filtros | Cumple | `hu012_ca03_losResultadosCumplenTodosLosFiltros` | `specialtyId`, `siteCode`, `professionalId` y `type` combinables |
 | CA-04 Exclusiones | Cumple | `hu012_ca04_especialidadInactivaNoAparece`; `hu012_ca04_horariosPasadosNoAparecen`; `hu009_ca02_profesionalInactivoNoApareceYNoSePuedeReservar`; `SlotPlannerTest.ca04_losHorariosPasadosNoSeOfrecen` | Pasado, profesional inactivo y especialidad inactiva excluidos |
+| Catálogo de especialidades | Cumple | `hu012_elCatalogoDeEspecialidadesEsPublicoYSoloMuestraLasActivas` | `GET /api/v1/catalogs/specialties`: público, solo activas, con `durationMinutes` y `type`. Alimenta el filtro de especialidad (añadido 2026-09-25; Red 404 → Green) |
 | Parámetros | Cumple | `laFechaEsObligatoriaYElTipoDebeSerValido` | Sin `date` o con `type` desconocido → 400 con el campo |
 | DoD Pruebas | Cumple | `mvnw test` 2026-09-25: 136 pruebas, 0 fallos | 7 de dominio + integración contra MySQL 8.4 |
 | DoD Vista `citas-web` | **Pendiente** | — | Llega con el modal de reserva de la pasada de frontend |

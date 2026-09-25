@@ -4,6 +4,7 @@ import com.citas.api.domain.model.affiliation.InsurancePlan;
 import com.citas.api.domain.model.catalog.CatalogEntry;
 import com.citas.api.domain.model.catalog.Site;
 import com.citas.api.domain.model.catalog.StatusEntry;
+import com.citas.api.domain.model.professional.Specialty;
 
 import java.util.List;
 
@@ -26,4 +27,7 @@ public interface ConsultCatalogsUseCase {
 
     /** Planes de EPS seleccionables: plan activo y EPS activa (HU-004). */
     List<InsurancePlan> insurancePlans();
+
+    /** Especialidades activas, por nombre, para buscar y reservar citas (HU-012). */
+    List<Specialty> activeSpecialties();
 }

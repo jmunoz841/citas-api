@@ -15,6 +15,7 @@
 | GET | `/api/v1/catalogs/document-types` | Tipos de documento (CC, CE, TI, RC, PA, PPT) |
 | GET | `/api/v1/catalogs/regimes` | Regímenes de afiliación |
 | GET | `/api/v1/catalogs/insurance-plans` | Planes de EPS seleccionables (HU-004) |
+| GET | `/api/v1/catalogs/specialties` | Especialidades activas, para buscar y reservar citas (HU-012) |
 | GET | `/api/v1/catalogs/roles` | Roles del sistema |
 | GET | `/api/v1/catalogs/appointment-statuses` | Estados del ciclo de vida de una cita |
 | GET | `/api/v1/catalogs/reschedule-statuses` | Estados de una solicitud de reprogramación |
@@ -68,6 +69,19 @@ Solo aparecen los planes **seleccionables**: el plan debe estar activo **y** su 
 ```
 
 Los datos son sintéticos: ninguna EPS real de Colombia. Su CRUD administrativo llega con HU-007.
+
+### Especialidades
+
+No es un catálogo fijo: el ADMIN las administra en `/api/v1/admin/specialties` (HU-006). Aquí solo se publican las **activas**, ordenadas por nombre, para el filtro de especialidad y el modal de reserva. `type` usa los mismos valores que el parámetro `type` de `GET /api/v1/availability`.
+
+```json
+{
+  "items": [
+    { "id": 4, "name": "Cardiología", "durationMinutes": 60, "type": "SPECIALIZED" },
+    { "id": 1, "name": "Medicina General", "durationMinutes": 30, "type": "GENERAL" }
+  ]
+}
+```
 
 ### Estados
 

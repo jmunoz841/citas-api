@@ -45,8 +45,9 @@ class ApplicationConfig {
     }
 
     @Bean
-    CatalogService catalogService(CatalogRepositoryPort catalogs, AffiliationRepositoryPort affiliations) {
-        return new CatalogService(catalogs, affiliations);
+    CatalogService catalogService(CatalogRepositoryPort catalogs, AffiliationRepositoryPort affiliations,
+                                  SpecialtyRepositoryPort specialties) {
+        return new CatalogService(catalogs, affiliations, specialties);
     }
 
     @Bean

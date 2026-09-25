@@ -4,6 +4,7 @@ import com.citas.api.domain.model.affiliation.InsurancePlan;
 import com.citas.api.domain.model.catalog.CatalogEntry;
 import com.citas.api.domain.model.catalog.Site;
 import com.citas.api.domain.model.catalog.StatusEntry;
+import com.citas.api.domain.model.professional.Specialty;
 
 import java.util.List;
 
@@ -41,6 +42,15 @@ final class CatalogDtos {
 
         static SiteResponse from(Site site) {
             return new SiteResponse(site.code(), site.name(), site.address());
+        }
+    }
+
+    /** {@code type} usa los mismos valores que el filtro de búsqueda de disponibilidad. */
+    record SpecialtyResponse(Long id, String name, int durationMinutes, String type) {
+
+        static SpecialtyResponse from(Specialty specialty) {
+            return new SpecialtyResponse(specialty.getId(), specialty.getName(), specialty.getDurationMinutes(),
+                    specialty.isGeneral() ? "GENERAL" : "SPECIALIZED");
         }
     }
 
