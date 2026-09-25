@@ -1,11 +1,14 @@
 package com.citas.api.infrastructure.adapters.in.web.error;
 
+import com.citas.api.domain.exception.BusinessConflictException;
 import com.citas.api.domain.exception.DocumentAlreadyRegisteredException;
 import com.citas.api.domain.exception.DomainException;
+import com.citas.api.domain.exception.DuplicateValueException;
 import com.citas.api.domain.exception.EmailAlreadyRegisteredException;
 import com.citas.api.domain.exception.InvalidCredentialsException;
 import com.citas.api.domain.exception.InvalidFieldException;
 import com.citas.api.domain.exception.InvalidRefreshTokenException;
+import com.citas.api.domain.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -14,8 +17,10 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
@@ -35,14 +40,34 @@ class GlobalExceptionHandler {
         return ApiProblems.validation(errors);
     }
 
+    /** Parámetro de consulta ausente, p. ej. la fecha obligatoria de la búsqueda (HU-012). */
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    ProblemDetail missingParameter(MissingServletRequestParameterException e) {
+        return ApiProblems.validation(List.of(Map.of("field", e.getParameterName(),
+                "message", "El parámetro es obligatorio")));
+    }
+
+    /** Parámetro con formato inválido: fecha mal escrita, tipo de cita desconocido, id no numérico. */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    ProblemDetail typeMismatch(MethodArgumentTypeMismatchException e) {
+        return ApiProblems.validation(List.of(Map.of("field", e.getName(),
+                "message", "El valor no tiene un formato válido")));
+    }
+
     @ExceptionHandler(InvalidFieldException.class)
     ProblemDetail domainValidation(InvalidFieldException e) {
         return ApiProblems.validation(List.of(Map.of("field", e.getField(), "message", e.getMessage())));
     }
 
-    @ExceptionHandler({EmailAlreadyRegisteredException.class, DocumentAlreadyRegisteredException.class})
+    @ExceptionHandler({EmailAlreadyRegisteredException.class, DocumentAlreadyRegisteredException.class,
+            DuplicateValueException.class, BusinessConflictException.class})
     ProblemDetail conflict(DomainException e) {
         return ApiProblems.of(HttpStatus.CONFLICT, e.getCode(), e.getMessage());
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    ProblemDetail domainNotFound(ResourceNotFoundException e) {
+        return ApiProblems.of(HttpStatus.NOT_FOUND, e.getCode(), e.getMessage());
     }
 
     @ExceptionHandler({InvalidCredentialsException.class, InvalidRefreshTokenException.class})

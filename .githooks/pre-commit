@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# Verificaciones antes de cada commit en citas-api.
+#   1. Detector de secretos sobre los archivos en staging (siempre).
+#   2. mvnw test, solo si el commit toca codigo o build (requiere Docker Desktop
+#      por Testcontainers); un commit de documentacion no paga ese coste.
+#
+# Activar una vez por clon:  git config core.hooksPath .githooks
+# Omitir en una emergencia:  git commit --no-verify   (dejalo justificado)
+
+set -uo pipefail
+
+repo_root=$(git rev-parse --show-toplevel)
+cd "$repo_root" || exit 1
+
+echo "[pre-commit] Buscando secretos en los archivos preparados..."
+if ! bash .githooks/detect-secrets.sh; then
+  exit 1
+fi
+echo "[pre-commit] Sin secretos."
+
+if ! git diff --cached --name-only --diff-filter=ACMR | grep -qE '^(src/|pom\.xml$)'; then
+  echo "[pre-commit] Sin cambios en src/ ni pom.xml: se omiten las pruebas."
+  exit 0
+fi
+
+if [ -z "${JAVA_HOME:-}" ] || [ ! -x "${JAVA_HOME}/bin/java" ]; then
+  if [ -x "$HOME/.jdks/temurin-21/bin/java" ]; then
+    JAVA_HOME="$HOME/.jdks/temurin-21"
+    export JAVA_HOME
+  else
+    echo "[pre-commit] No encuentro un JDK 21. Exporta JAVA_HOME y reintenta." >&2
+    exit 1
+  fi
+fi
+
+if ! docker info >/dev/null 2>&1; then
+  echo "[pre-commit] Docker Desktop no responde y las pruebas de integracion lo" >&2
+  echo "             necesitan (Testcontainers). Arrancalo y reintenta." >&2
+  exit 1
+fi
+
+echo "[pre-commit] Ejecutando mvnw test..."
+if ! ./mvnw.cmd -q test; then
+  echo "[pre-commit] Pruebas en rojo: commit bloqueado." >&2
+  exit 1
+fi
+
+echo "[pre-commit] Pruebas en verde."
+exit 0

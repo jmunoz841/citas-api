@@ -1,10 +1,24 @@
 package com.citas.api.infrastructure.config;
 
+import com.citas.api.application.port.out.AffiliationRepositoryPort;
+import com.citas.api.application.port.out.AgendaQueryPort;
+import com.citas.api.application.port.out.AppointmentRepositoryPort;
+import com.citas.api.application.port.out.AvailabilityRepositoryPort;
+import com.citas.api.application.port.out.CatalogRepositoryPort;
 import com.citas.api.application.port.out.PasswordHasherPort;
+import com.citas.api.application.port.out.ProfessionalRepositoryPort;
 import com.citas.api.application.port.out.RefreshTokenRepositoryPort;
+import com.citas.api.application.port.out.SpecialtyRepositoryPort;
 import com.citas.api.application.port.out.TokenProviderPort;
 import com.citas.api.application.port.out.UserRepositoryPort;
+import com.citas.api.application.service.AppointmentBookingService;
+import com.citas.api.application.service.AppointmentRequestService;
 import com.citas.api.application.service.AuthService;
+import com.citas.api.application.service.AvailabilitySearchService;
+import com.citas.api.application.service.AvailabilityService;
+import com.citas.api.application.service.CatalogService;
+import com.citas.api.application.service.ProfessionalService;
+import com.citas.api.application.service.SpecialtyService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -25,7 +39,50 @@ class ApplicationConfig {
 
     @Bean
     AuthService authService(UserRepositoryPort users, RefreshTokenRepositoryPort refreshTokens,
-                            PasswordHasherPort passwordHasher, TokenProviderPort tokenProvider, Clock clock) {
-        return new AuthService(users, refreshTokens, passwordHasher, tokenProvider, clock);
+                            AffiliationRepositoryPort affiliations, PasswordHasherPort passwordHasher,
+                            TokenProviderPort tokenProvider, Clock clock) {
+        return new AuthService(users, refreshTokens, affiliations, passwordHasher, tokenProvider, clock);
+    }
+
+    @Bean
+    CatalogService catalogService(CatalogRepositoryPort catalogs, AffiliationRepositoryPort affiliations,
+                                  SpecialtyRepositoryPort specialties) {
+        return new CatalogService(catalogs, affiliations, specialties);
+    }
+
+    @Bean
+    AvailabilityService availabilityService(AvailabilityRepositoryPort blocks,
+                                            ProfessionalRepositoryPort professionals, Clock clock) {
+        return new AvailabilityService(blocks, professionals, clock);
+    }
+
+    @Bean
+    SpecialtyService specialtyService(SpecialtyRepositoryPort specialties) {
+        return new SpecialtyService(specialties);
+    }
+
+    @Bean
+    ProfessionalService professionalService(UserRepositoryPort users, ProfessionalRepositoryPort professionals,
+                                            SpecialtyRepositoryPort specialties, CatalogRepositoryPort catalogs,
+                                            PasswordHasherPort passwordHasher) {
+        return new ProfessionalService(users, professionals, specialties, catalogs, passwordHasher);
+    }
+
+    @Bean
+    AvailabilitySearchService availabilitySearchService(AgendaQueryPort agenda, Clock clock) {
+        return new AvailabilitySearchService(agenda, clock);
+    }
+
+    @Bean
+    AppointmentBookingService appointmentBookingService(SpecialtyRepositoryPort specialties,
+                                                        ProfessionalRepositoryPort professionals,
+                                                        AgendaQueryPort agenda,
+                                                        AppointmentRepositoryPort appointments, Clock clock) {
+        return new AppointmentBookingService(specialties, professionals, agenda, appointments, clock);
+    }
+
+    @Bean
+    AppointmentRequestService appointmentRequestService(AppointmentRepositoryPort appointments) {
+        return new AppointmentRequestService(appointments);
     }
 }

@@ -1,10 +1,12 @@
 package com.citas.api.application.service;
 
 import com.citas.api.application.port.in.AuthTokens;
+import com.citas.api.application.port.in.GetSessionProfileUseCase;
 import com.citas.api.application.port.in.LoginUseCase;
 import com.citas.api.application.port.in.LogoutUseCase;
 import com.citas.api.application.port.in.RefreshSessionUseCase;
 import com.citas.api.application.port.in.RegisterUserUseCase;
+import com.citas.api.application.port.out.AffiliationRepositoryPort;
 import com.citas.api.application.port.out.PasswordHasherPort;
 import com.citas.api.application.port.out.RefreshTokenRepositoryPort;
 import com.citas.api.application.port.out.TokenProviderPort;
@@ -13,7 +15,10 @@ import com.citas.api.application.port.out.UserRepositoryPort;
 import com.citas.api.domain.exception.DocumentAlreadyRegisteredException;
 import com.citas.api.domain.exception.EmailAlreadyRegisteredException;
 import com.citas.api.domain.exception.InvalidCredentialsException;
+import com.citas.api.domain.exception.InvalidFieldException;
 import com.citas.api.domain.exception.InvalidRefreshTokenException;
+import com.citas.api.domain.exception.ResourceNotFoundException;
+import com.citas.api.domain.model.affiliation.Affiliation;
 import com.citas.api.domain.model.auth.RefreshToken;
 import com.citas.api.domain.model.user.DocumentType;
 import com.citas.api.domain.model.user.Email;
@@ -31,19 +36,23 @@ import java.util.Optional;
 /**
  * Casos de uso de HU-001: registro, login, refresh con rotación y logout.
  */
-public class AuthService implements RegisterUserUseCase, LoginUseCase, RefreshSessionUseCase, LogoutUseCase {
+public class AuthService implements RegisterUserUseCase, LoginUseCase, RefreshSessionUseCase, LogoutUseCase,
+        GetSessionProfileUseCase {
 
     private final UserRepositoryPort users;
     private final RefreshTokenRepositoryPort refreshTokens;
+    private final AffiliationRepositoryPort affiliations;
     private final PasswordHasherPort passwordHasher;
     private final TokenProviderPort tokenProvider;
     private final Clock clock;
     private final String timingDummyHash;
 
     public AuthService(UserRepositoryPort users, RefreshTokenRepositoryPort refreshTokens,
-                       PasswordHasherPort passwordHasher, TokenProviderPort tokenProvider, Clock clock) {
+                       AffiliationRepositoryPort affiliations, PasswordHasherPort passwordHasher,
+                       TokenProviderPort tokenProvider, Clock clock) {
         this.users = users;
         this.refreshTokens = refreshTokens;
+        this.affiliations = affiliations;
         this.passwordHasher = passwordHasher;
         this.tokenProvider = tokenProvider;
         this.clock = clock;
@@ -58,6 +67,8 @@ public class AuthService implements RegisterUserUseCase, LoginUseCase, RefreshSe
         Email email = new Email(command.email());
         IdentityDocument document = new IdentityDocument(DocumentType.fromCode(command.documentType()),
                 command.documentNumber());
+        // Se valida antes de crear nada para que un plan inválido no deje usuario a medias (CA-03).
+        validateAffiliation(command);
 
         if (users.existsByEmail(email)) {
             throw new EmailAlreadyRegisteredException();
@@ -68,7 +79,38 @@ public class AuthService implements RegisterUserUseCase, LoginUseCase, RefreshSe
 
         User user = User.registerNew(command.firstNames(), command.lastNames(), document, email, command.phone(),
                 passwordHasher.hash(command.password()));
-        return users.save(user);
+        User saved = users.save(user);
+
+        if (command.insurancePlanId() != null) {
+            affiliations.save(Affiliation.initial(saved.getId(), command.insurancePlanId(), command.regimeCode()));
+        }
+        return saved;
+    }
+
+    /**
+     * La afiliación es opcional, pero plan y régimen van en pareja (CA-06). Si llegan, el plan
+     * debe ser seleccionable —activo y de una EPS activa— y el régimen debe existir.
+     */
+    private void validateAffiliation(RegisterUserCommand command) {
+        boolean hasPlan = command.insurancePlanId() != null;
+        boolean hasRegime = command.regimeCode() != null && !command.regimeCode().isBlank();
+
+        if (!hasPlan && !hasRegime) {
+            return;
+        }
+        if (!hasPlan) {
+            throw new InvalidFieldException("insurancePlanId",
+                    "Selecciona un plan de EPS o deja también el régimen vacío");
+        }
+        if (!hasRegime) {
+            throw new InvalidFieldException("regimeCode", "Selecciona el régimen de tu afiliación");
+        }
+        if (affiliations.findSelectablePlanById(command.insurancePlanId()).isEmpty()) {
+            throw new InvalidFieldException("insurancePlanId", "El plan seleccionado no está disponible");
+        }
+        if (!affiliations.regimeExists(command.regimeCode())) {
+            throw new InvalidFieldException("regimeCode", "El régimen seleccionado no existe");
+        }
     }
 
     @Override
@@ -132,6 +174,13 @@ public class AuthService implements RegisterUserUseCase, LoginUseCase, RefreshSe
         AuthTokens tokens = new AuthTokens(access.value(), secondsBetween(now, access.expiresAt()),
                 refresh.value(), secondsBetween(now, refresh.expiresAt()));
         return new Issued(tokens, saved.getId());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public SessionProfile profile(Long userId) {
+        User user = users.findById(userId).orElseThrow(() -> new ResourceNotFoundException("El usuario no existe"));
+        return new SessionProfile(user.getFirstNames(), user.getLastNames());
     }
 
     private LocalDateTime toLocal(Instant instant) {

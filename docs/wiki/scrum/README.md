@@ -20,12 +20,12 @@ Aplicación web de agendamiento de citas (USER, PROFESSIONAL, ADMIN) en dos sede
 
 | Épica | HU | Estado |
 |---|---|---|
-| [[EP-001-identidad-y-acceso]] | HU-001, HU-002 | En curso (HU-001 Completada) |
-| [[EP-002-perfil-y-afiliacion]] | HU-003, HU-004 | Borrador |
-| [[EP-003-catalogos]] | HU-005, HU-006, HU-007 | Borrador |
-| [[EP-004-gestion-de-profesionales]] | HU-008, HU-009 | Borrador |
-| [[EP-005-agenda-del-profesional]] | HU-010, HU-011 | Borrador |
-| [[EP-006-reserva-de-citas]] | HU-012, HU-013, HU-014, HU-015, HU-022 | Borrador |
+| [[EP-001-identidad-y-acceso]] | HU-001, HU-002 | En curso (HU-001 Completada; HU-002 en S4) |
+| [[EP-002-perfil-y-afiliacion]] | HU-003, HU-004 | En curso (HU-004 Aprobada para S3) |
+| [[EP-003-catalogos]] | HU-005, HU-006, HU-007 | En curso (HU-005 y HU-006 Aprobadas; HU-007 en S4) |
+| [[EP-004-gestion-de-profesionales]] | HU-008, HU-009 | Aprobada para S3 |
+| [[EP-005-agenda-del-profesional]] | HU-010, HU-011 | En curso (HU-010 Aprobada; HU-011 en S4) |
+| [[EP-006-reserva-de-citas]] | HU-012, HU-013, HU-014, HU-015, HU-022 | En curso (HU-012 a HU-015 Aprobadas; HU-022 en S4) |
 | [[EP-007-ciclo-de-vida-de-citas]] | HU-016 a HU-021 | Borrador |
 | [[EP-008-automatizaciones-n8n]] | HU-023, HU-024, HU-025 | Borrador |
 
@@ -39,7 +39,10 @@ Incremento: backend inicializado con registro + login JWT funcional y verificado
 
 ### Sprint 2 — Flujo de reserva (S3)
 
+Todas **Aprobadas** el 2026-09-23 (D-020).
+
 - [[HU-005-consultar-catalogos-fijos]] — Bajo
+- [[HU-004-registrar-afiliacion]] — Medio — alcance recortado a afiliación opcional en el registro (D-019)
 - [[HU-006-gestionar-especialidades]] — Medio
 - [[HU-008-crear-profesional]] — Alto
 - [[HU-009-activar-desactivar-profesional]] — Bajo
@@ -56,7 +59,6 @@ Incremento: un ADMIN configura profesionales, el profesional publica agenda y el
 - [[HU-002-recuperar-contrasena]] — Medio
 - [[HU-003-consultar-y-actualizar-perfil]] — Bajo
 - [[HU-007-gestionar-eps-y-planes]] — Medio
-- [[HU-004-registrar-afiliacion]] — Medio
 - [[HU-011-consultar-agenda-del-profesional]] — Medio
 - [[HU-016-consultar-mis-citas]] — Medio
 - [[HU-017-cancelar-cita]] — Medio

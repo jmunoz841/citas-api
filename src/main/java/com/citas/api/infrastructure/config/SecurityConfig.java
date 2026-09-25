@@ -33,10 +33,22 @@ class SecurityConfig {
                 .logout(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/api/auth/register", "/api/auth/login",
-                                "/api/auth/refresh", "/api/auth/logout").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/register", "/api/v1/auth/login",
+                                "/api/v1/auth/refresh", "/api/v1/auth/logout").permitAll()
+                        // Catálogos fijos: solo lectura y públicos, porque el formulario de
+                        // registro los necesita antes de que exista una sesión (HU-005).
+                        .requestMatchers(HttpMethod.GET, "/api/v1/catalogs/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/actuator/health").permitAll()
                         .requestMatchers("/error").permitAll()
+                        // Administración de la oferta: solo ADMIN (HU-006 CA-03, HU-008 CA-05).
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        // Agenda propia: solo PROFESSIONAL. La pertenencia la comprueba el
+                        // caso de uso con el id del token (HU-010 CA-06).
+                        .requestMatchers("/api/v1/professional/**").hasRole("PROFESSIONAL")
+                        // Búsqueda y reserva de citas: solo USER. El paciente sale siempre del
+                        // access token (HU-012, HU-013, HU-014).
+                        .requestMatchers("/api/v1/availability", "/api/v1/availability/**",
+                                "/api/v1/appointments", "/api/v1/appointments/**").hasRole("USER")
                         .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(problemHandlers.authenticationEntryPoint())

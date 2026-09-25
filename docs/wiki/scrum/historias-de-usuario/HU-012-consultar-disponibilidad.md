@@ -2,7 +2,7 @@
 id: HU-012
 tipo: historia-de-usuario
 titulo: "Consultar disponibilidad"
-estado: Borrador
+estado: Completada
 epica: "[[EP-006-reserva-de-citas]]"
 esfuerzo: "Alto"
 sprint_sugerido: "Sprint 2"
@@ -60,16 +60,16 @@ Implementa RF-10 y aplica RF-09. Solo se muestran horarios que puedan completar 
 
 ## Tareas de desarrollo
 
-- [ ] **T-01 — Servicio de dominio de disponibilidad**  
+- [x] **T-01 — Servicio de dominio de disponibilidad**  
   Dificultad: Alto  
   Descripción: cálculo de inicios reservables según duración y estado de slots.
-- [ ] **T-02 — Consulta con filtros**  
+- [x] **T-02 — Consulta con filtros**  
   Dificultad: Medio  
   Descripción: caso de uso y endpoint con filtros combinables e índices adecuados.
-- [ ] **T-03 — Vista de búsqueda**  
+- [x] **T-03 — Vista de búsqueda**  
   Dificultad: Medio  
   Descripción: según diseño aprobado.
-- [ ] **T-04 — Pruebas de slots 30/60**  
+- [x] **T-04 — Pruebas de slots 30/60**  
   Dificultad: Medio  
   Descripción: huecos de un slot, slots consecutivos, pasado, profesional/especialidad inactivos.
 
@@ -101,24 +101,36 @@ Implementa RF-10 y aplica RF-09. Solo se muestran horarios que puedan completar 
 
 ## Definition of Done
 
-- [ ] Todos los criterios de aceptación obligatorios están validados con evidencia.
-- [ ] Pruebas de reglas de slots 30/60 en verde.
-- [ ] Vista de búsqueda integrada en `citas-web`.
-- [ ] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
+- [x] Todos los criterios de aceptación obligatorios están validados con evidencia.
+- [x] Pruebas de reglas de slots 30/60 en verde.
+- [x] Vista de búsqueda integrada en `citas-web`.
+- [x] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/` (EP-006 sincronizada el 2026-09-25).
 
 ## Evidencia de validación
 
 | Elemento | Resultado | Evidencia | Observación |
 |---|---|---|---|
-| CA-01 | Pendiente | — | — |
-| CA-02 | Pendiente | — | — |
-| CA-03 | Pendiente | — | — |
-| CA-04 | Pendiente | — | — |
-| DoD | Pendiente | — | — |
+| CA-01 30 minutos | Cumple | `SlotPlannerTest.ca01_treintaMinutosOfreceSoloLosSlotsLibres`; `BookingApiIntegrationTest.hu012_ca01_treintaMinutosMuestraSoloSlotsLibres` | Bloque 08:00–10:00 con 08:30 reservado → 08:00, 09:00, 09:30 |
+| CA-02 60 minutos | Cumple | `SlotPlannerTest.ca02_sesentaMinutosConEl0830OcupadoSoloOfrece0900`; `hu012_ca02_sesentaMinutosConEl0830ReservadoSoloOfrece0900` | Solo 09:00–10:00. Además: el último slot de un bloque no inicia una cita de 60 y dos bloques contiguos no se combinan |
+| CA-03 Filtros | Cumple | `hu012_ca03_losResultadosCumplenTodosLosFiltros` | `specialtyId`, `siteCode`, `professionalId` y `type` combinables |
+| CA-04 Exclusiones | Cumple | `hu012_ca04_especialidadInactivaNoAparece`; `hu012_ca04_horariosPasadosNoAparecen`; `hu009_ca02_profesionalInactivoNoApareceYNoSePuedeReservar`; `SlotPlannerTest.ca04_losHorariosPasadosNoSeOfrecen` | Pasado, profesional inactivo y especialidad inactiva excluidos |
+| Catálogo de especialidades | Cumple | `hu012_elCatalogoDeEspecialidadesEsPublicoYSoloMuestraLasActivas` | `GET /api/v1/catalogs/specialties`: público, solo activas, con `durationMinutes` y `type`. Alimenta el filtro de especialidad (añadido 2026-09-25; Red 404 → Green) |
+| Parámetros | Cumple | `laFechaEsObligatoriaYElTipoDebeSerValido` | Sin `date` o con `type` desconocido → 400 con el campo |
+| DoD Pruebas | Cumple | `mvnw test` 2026-09-25: 136 pruebas, 0 fallos | 7 de dominio + integración contra MySQL 8.4 |
+| DoD Vista `citas-web` | Cumple | `PatientHomePage.test.tsx` y `booking.test.ts` (filtros de la consulta, sede "Cualquiera", estado sin horarios) | `citas-web` `576db18`; `npm test` 95/95, lint y build en verde; verificada contra la API real con capturas autenticadas frente a Stitch v4 (D-026) |
+| Contrato | Cumple | `docs/contratos/citas.md` | — |
 
 ## Historial de validación
 
 - 2026-09-16 (S2) — HU creada en estado `Borrador`.
+
+- 2026-09-23 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S3.
+
+- 2026-09-25 (S3) — Backend implementado y verificado: `GET /api/v1/availability`, `SlotPlanner` en el dominio, `mvnw test` 136/136. Pendiente la vista de búsqueda.
+
+- 2026-09-25 (S3) — Vista integrada en `citas-web` (`citas-web` `576db18`) según el diseño aprobado en Stitch v4. Estado de la HU sin cambios.
+
+- 2026-09-25 (S3) — HU `Completada` con confirmación explícita del Product Owner (Juan Muñoz): todos los CA y la DoD en `Cumple` con evidencia. Resumen en [[evidencia-s3]].
 
 ## Notas y decisiones
 

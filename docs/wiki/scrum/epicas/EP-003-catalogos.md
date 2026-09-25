@@ -47,8 +47,8 @@ Datos de referencia consistentes y normalizados para profesionales, agenda, cita
 
 ## Historias de usuario
 
-- [[HU-005-consultar-catalogos-fijos]] — Sprint 2 — Borrador
-- [[HU-006-gestionar-especialidades]] — Sprint 2 — Borrador
+- [[HU-005-consultar-catalogos-fijos]] — Sprint 2 — Completada
+- [[HU-006-gestionar-especialidades]] — Sprint 2 — Completada
 - [[HU-007-gestionar-eps-y-planes]] — Sprint 3 — Borrador
 
 ## Criterio de completitud de la épica

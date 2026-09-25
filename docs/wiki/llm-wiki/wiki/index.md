@@ -11,6 +11,7 @@ Punto de entrada de la memoria global. Convenciones: [SCHEMA](../schema/SCHEMA.m
 | [[decisiones]] | decisiones | Decisiones aprobadas y preguntas abiertas |
 | [[ejecucion]] | ejecucion | Plan S2, estado de avance y evidencia por sesión |
 | [[evidencia-s2]] | ejecucion | Registro de evidencia S2 por repositorio (plantilla del curso) |
+| [[evidencia-s3]] | ejecucion | Registro de evidencia S3: plantilla por repo, matriz resumida de las 10 HU y demo del hook FAIL/PASS |
 
 ## Fuentes (`raw/`)
 
@@ -25,6 +26,9 @@ Punto de entrada de la memoria global. Convenciones: [SCHEMA](../schema/SCHEMA.m
 | `raw/2026-09-16-decisiones-entorno-aislado.md` | MySQL propio en 3308, aislado de otro grupo |
 | `raw/2026-09-18-decisiones-repo-raiz.md` | Raíz del workspace en repo privado |
 | `raw/2026-09-18-decisiones-comparacion-referencia.md` | password_hash 255 y estrategia contra doble reserva |
+| `raw/2026-09-25-decisiones-reserva.md` | Plan de HU-012/013/014: V6, doble reserva por PK, historial sin triggers, LOOP por HTTP |
+| `raw/2026-09-25-aprobacion-diseno-s3.md` | Aprobación del diseño Stitch v4 de las áreas autenticadas de S3 |
+| `raw/2026-09-25-decisiones-abiertas-s3.md` | Endpoint único de reserva, 409 por asignación en uso, citas de profesional desactivado, sin expiración |
 
 ## Diseño de base de datos
 

@@ -2,7 +2,7 @@
 id: HU-014
 tipo: historia-de-usuario
 titulo: "Solicitar cita especializada"
-estado: Borrador
+estado: Completada
 epica: "[[EP-006-reserva-de-citas]]"
 esfuerzo: "Medio"
 sprint_sugerido: "Sprint 2"
@@ -59,13 +59,13 @@ Implementa la parte de solicitud de RF-12. Reutiliza el mecanismo de reserva de 
 
 ## Tareas de desarrollo
 
-- [ ] **T-01 — Caso de uso solicitar cita especializada**  
+- [x] **T-01 — Caso de uso solicitar cita especializada**  
   Dificultad: Medio  
   Descripción: validaciones de especialidad/profesional/sede y retención de slots.
-- [ ] **T-02 — Flujo especializado en la vista**  
+- [x] **T-02 — Flujo especializado en la vista**  
   Dificultad: Medio  
   Descripción: selección de especialidad, sede, profesional y horario.
-- [ ] **T-03 — Pruebas**  
+- [x] **T-03 — Pruebas**  
   Dificultad: Medio  
   Descripción: 30/60 min, slots retenidos, especialidad no asociada.
 
@@ -91,24 +91,34 @@ Implementa la parte de solicitud de RF-12. Reutiliza el mecanismo de reserva de 
 
 ## Definition of Done
 
-- [ ] Todos los criterios de aceptación obligatorios están validados con evidencia.
-- [ ] Pruebas de backend en verde.
-- [ ] Flujo especializado integrado en `citas-web`.
-- [ ] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
+- [x] Todos los criterios de aceptación obligatorios están validados con evidencia.
+- [x] Pruebas de backend en verde.
+- [x] Flujo especializado integrado en `citas-web`.
+- [x] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/` (EP-006 sincronizada el 2026-09-25).
 
 ## Evidencia de validación
 
 | Elemento | Resultado | Evidencia | Observación |
 |---|---|---|---|
-| CA-01 | Pendiente | — | — |
-| CA-02 | Pendiente | — | — |
-| CA-03 | Pendiente | — | — |
-| DoD | Pendiente | — | — |
+| CA-01 Solicitud creada | Cumple | `BookingApiIntegrationTest.hu014_ca01_citaEspecializadaQuedaSolicitadaYRetieneElSlot` | 201 `REQUESTED`; slot retenido en `slot_reservations`; historial `REQUESTED`; el slot desaparece de la búsqueda |
+| CA-02 Retención de 60 minutos | Cumple | `hu014_ca02_sesentaMinutosRetieneDosSlotsQueDesaparecenDeLaBusqueda` | Retiene 08:00 y 08:30; la búsqueda solo ofrece desde 09:00 |
+| CA-03 Especialidad no asociada o inactiva | Cumple | `hu014_ca03_especialidadNoAsociadaAlProfesionalSeRechaza`; `hu012_ca04_especialidadInactivaNoAparece` | 400 con `field: specialtyId` y ninguna cita creada; FK `fk_appt_professional_specialty` como última defensa |
+| Sede no asignada | Cumple | `unaSedeDondeNoAtiendeElProfesionalSeRechaza` | 400 con `field: siteCode` |
+| DoD Pruebas | Cumple | `mvnw test` 2026-09-25: 136 pruebas, 0 fallos | — |
+| DoD Flujo en `citas-web` | Cumple | `PatientHomePage.test.tsx` (especialidad enviada como solicitud, resultado "Solicitud enviada") | `citas-web` `576db18`; `npm test` 95/95, lint y build en verde; verificada contra la API real con capturas autenticadas frente a Stitch v4 (D-026) |
 
 ## Historial de validación
 
 - 2026-09-16 (S2) — HU creada en estado `Borrador`.
 
+- 2026-09-23 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S3.
+
+- 2026-09-25 (S3) — Backend implementado y verificado sobre el mismo `POST /api/v1/appointments` de HU-013: la especialidad decide el estado inicial (`mvnw test` 136/136). Pendiente el flujo en la vista.
+
+- 2026-09-25 (S3) — Vista integrada en `citas-web` (`citas-web` `576db18`) según el diseño aprobado en Stitch v4. Estado de la HU sin cambios.
+
+- 2026-09-25 (S3) — HU `Completada` con confirmación explícita del Product Owner (Juan Muñoz): todos los CA y la DoD en `Cumple` con evidencia. Resumen en [[evidencia-s3]].
+
 ## Notas y decisiones
 
-- Incógnita: el PRD no define expiración automática de solicitudes `REQUESTED` no resueltas.
+- Resuelto (D-030): las solicitudes `REQUESTED` no expiran en S3.

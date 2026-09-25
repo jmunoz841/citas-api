@@ -47,7 +47,35 @@ Las contraseñas de MySQL solo se aplican al crear el volumen `jmunoz-citas_mysq
 $env:JAVA_HOME="$env:USERPROFILE\.jdks\temurin-21"; $env:Path="$env:JAVA_HOME\bin;$env:Path"
 docker compose up -d          # MySQL propio en localhost:3308
 .\mvnw.cmd spring-boot:run    # API en http://localhost:8081 (aplica migraciones Flyway)
-.\mvnw.cmd test               # pruebas (requiere Docker Desktop: Testcontainers)
+.\mvnw.cmd clean test         # pruebas (requiere Docker Desktop: Testcontainers)
 ```
 
+Usa `clean test` en el equipo del laboratorio: su reloj deja horas de modificación incoherentes en los archivos y la compilación incremental de Maven puede ejecutar clases viejas. Si varias pruebas de integración fallan al arrancar con `CertificateNotYetValidException`, es el mismo desfase de reloj entre Windows y la VM de Docker: vuelve a lanzarlas.
+
 **No** uses el `docker-compose.yml` de la raíz del workspace: sus contenedores `fcv-citas-*` chocan con otro grupo que comparte el equipo.
+
+## Cuenta ADMIN de laboratorio
+
+La migración `V4` siembra un ADMIN inicial, porque sin él nadie podría crear el primer profesional (D-021):
+
+| Campo | Valor |
+|---|---|
+| Email | `admin@citas.local` |
+| Contraseña | `Admin.Lab2026` |
+
+Son credenciales **de laboratorio con datos sintéticos**, pensadas para que cualquiera pueda levantar el proyecto y reproducir las pruebas. La contraseña se guarda solo como hash BCrypt. **Antes de exponer la API fuera de tu máquina, cámbiala**: este repositorio es público y cualquiera puede leer este README.
+
+## Hooks de calidad
+
+Los hooks viven en `.githooks/` y están versionados, pero Git no los activa solo. Una vez por clon:
+
+```powershell
+git config core.hooksPath .githooks
+```
+
+`pre-commit` hace dos cosas:
+
+1. **Detector de secretos** sobre los archivos preparados, en cada commit. Bloquea siempre los archivos `.env`, las claves privadas y las credenciales de nube o de conexión. Los patrones más genéricos (asignaciones de contraseñas y JWT) admiten exenciones por ruta en `.githooks/secrets-allowlist.txt`, donde cada entrada explica por qué ese contenido es ficticio.
+2. **`mvnw test`**, solo si el commit toca `src/` o `pom.xml`. Requiere Docker Desktop porque las pruebas de integración levantan MySQL con Testcontainers. Un commit de documentación no paga ese coste.
+
+Si necesitas saltártelo en una emergencia, `git commit --no-verify`, y deja constancia del motivo.

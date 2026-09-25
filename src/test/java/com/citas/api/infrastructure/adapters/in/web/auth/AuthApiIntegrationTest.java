@@ -65,7 +65,7 @@ class AuthApiIntegrationTest {
     void ca01_registroExitosoCreaUserSinExponerLaContrasena() throws Exception {
         Map<String, Object> body = newUser();
 
-        postJson("/api/auth/register", body)
+        postJson("/api/v1/auth/register", body)
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.email").value(body.get("email")))
@@ -78,7 +78,7 @@ class AuthApiIntegrationTest {
     @Test
     void ca02_laContrasenaSeGuardaComoHashBCrypt() throws Exception {
         Map<String, Object> body = newUser();
-        postJson("/api/auth/register", body).andExpect(status().isCreated());
+        postJson("/api/v1/auth/register", body).andExpect(status().isCreated());
 
         String hash = jdbc.queryForObject("SELECT password_hash FROM users WHERE email = ?", String.class,
                 body.get("email"));
@@ -89,12 +89,12 @@ class AuthApiIntegrationTest {
     @Test
     void ca03_emailDuplicadoConOtrasMayusculasDevuelve409() throws Exception {
         Map<String, Object> first = newUser();
-        postJson("/api/auth/register", first).andExpect(status().isCreated());
+        postJson("/api/v1/auth/register", first).andExpect(status().isCreated());
 
         Map<String, Object> second = newUser();
         second.put("email", ((String) first.get("email")).toUpperCase());
 
-        postJson("/api/auth/register", second)
+        postJson("/api/v1/auth/register", second)
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.code").value("EMAIL_ALREADY_REGISTERED"));
         assertThat(countUsersByDocument((String) second.get("documentNumber"))).isZero();
@@ -103,13 +103,13 @@ class AuthApiIntegrationTest {
     @Test
     void ca04_documentoDuplicadoAunqueTengaPuntosDevuelve409() throws Exception {
         Map<String, Object> first = newUser();
-        postJson("/api/auth/register", first).andExpect(status().isCreated());
+        postJson("/api/v1/auth/register", first).andExpect(status().isCreated());
 
         String number = (String) first.get("documentNumber");
         Map<String, Object> second = newUser();
         second.put("documentNumber", number.substring(0, 3) + "." + number.substring(3));
 
-        postJson("/api/auth/register", second)
+        postJson("/api/v1/auth/register", second)
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.code").value("DOCUMENT_ALREADY_REGISTERED"));
     }
@@ -120,7 +120,7 @@ class AuthApiIntegrationTest {
         body.put("email", "no-es-email");
         body.put("firstNames", "");
 
-        postJson("/api/auth/register", body)
+        postJson("/api/v1/auth/register", body)
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value("VALIDATION_ERROR"))
                 .andExpect(jsonPath("$.errors[?(@.field == 'email')]").exists())
@@ -134,7 +134,7 @@ class AuthApiIntegrationTest {
             Map<String, Object> body = newUser();
             body.put("password", weak);
 
-            postJson("/api/auth/register", body)
+            postJson("/api/v1/auth/register", body)
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.errors[0].field").value("password"));
         }
@@ -145,7 +145,7 @@ class AuthApiIntegrationTest {
         Map<String, Object> body = newUser();
         body.put("documentType", "XX");
 
-        postJson("/api/auth/register", body)
+        postJson("/api/v1/auth/register", body)
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errors[0].field").value("documentType"));
     }
@@ -155,7 +155,7 @@ class AuthApiIntegrationTest {
         Map<String, Object> body = newUser();
         body.put("roles", new String[]{"ADMIN"});
 
-        postJson("/api/auth/register", body)
+        postJson("/api/v1/auth/register", body)
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.roles.length()").value(1))
                 .andExpect(jsonPath("$.roles[0]").value("USER"));
@@ -179,12 +179,12 @@ class AuthApiIntegrationTest {
     void ca07_credencialesInvalidasDevuelvenElMismo401() throws Exception {
         Map<String, Object> user = registered();
 
-        String wrongPassword = postJson("/api/auth/login", Map.of("email", user.get("email"), "password", "Otra12345"))
+        String wrongPassword = postJson("/api/v1/auth/login", Map.of("email", user.get("email"), "password", "Otra12345"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.code").value("INVALID_CREDENTIALS"))
                 .andExpect(jsonPath("$.accessToken").doesNotExist())
                 .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
-        String unknownEmail = postJson("/api/auth/login", Map.of("email", "nadie@test.local", "password", PASSWORD))
+        String unknownEmail = postJson("/api/v1/auth/login", Map.of("email", "nadie@test.local", "password", PASSWORD))
                 .andExpect(status().isUnauthorized())
                 .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
 
@@ -197,17 +197,19 @@ class AuthApiIntegrationTest {
         Map<String, Object> user = registered();
         JsonNode tokens = login((String) user.get("email"), PASSWORD);
 
-        mvc.perform(get("/api/auth/session").header(HttpHeaders.AUTHORIZATION, bearer(tokens, "accessToken")))
+        mvc.perform(get("/api/v1/auth/session").header(HttpHeaders.AUTHORIZATION, bearer(tokens, "accessToken")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value(user.get("email")))
+                .andExpect(jsonPath("$.firstNames").value("Ana"))
+                .andExpect(jsonPath("$.lastNames").value("Prueba"))
                 .andExpect(jsonPath("$.roles[0]").value("USER"));
 
-        mvc.perform(get("/api/auth/session"))
+        mvc.perform(get("/api/v1/auth/session"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.code").value("UNAUTHORIZED"));
-        mvc.perform(get("/api/auth/session").header(HttpHeaders.AUTHORIZATION, "Bearer abc.def.ghi"))
+        mvc.perform(get("/api/v1/auth/session").header(HttpHeaders.AUTHORIZATION, "Bearer abc.def.ghi"))
                 .andExpect(status().isUnauthorized());
-        mvc.perform(get("/api/auth/session").header(HttpHeaders.AUTHORIZATION, bearer(tokens, "refreshToken")))
+        mvc.perform(get("/api/v1/auth/session").header(HttpHeaders.AUTHORIZATION, bearer(tokens, "refreshToken")))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -219,7 +221,7 @@ class AuthApiIntegrationTest {
         JsonNode first = login((String) user.get("email"), PASSWORD);
         String oldRefresh = first.get("refreshToken").asText();
 
-        JsonNode second = readJson(postJson("/api/auth/refresh", Map.of("refreshToken", oldRefresh))
+        JsonNode second = readJson(postJson("/api/v1/auth/refresh", Map.of("refreshToken", oldRefresh))
                 .andExpect(status().isOk()));
         String newRefresh = second.get("refreshToken").asText();
 
@@ -231,7 +233,7 @@ class AuthApiIntegrationTest {
         assertThat(oldRow.get("revoked_at")).isNotNull();
         assertThat(((Number) oldRow.get("replaced_by_token_id")).longValue()).isEqualTo(newId);
 
-        postJson("/api/auth/refresh", Map.of("refreshToken", oldRefresh))
+        postJson("/api/v1/auth/refresh", Map.of("refreshToken", oldRefresh))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.code").value("INVALID_REFRESH_TOKEN"));
     }
@@ -242,7 +244,7 @@ class AuthApiIntegrationTest {
         JsonNode tokens = login((String) user.get("email"), PASSWORD);
 
         for (String invalid : new String[]{tokens.get("accessToken").asText(), "no.es.token", "basura"}) {
-            postJson("/api/auth/refresh", Map.of("refreshToken", invalid))
+            postJson("/api/v1/auth/refresh", Map.of("refreshToken", invalid))
                     .andExpect(status().isUnauthorized())
                     .andExpect(jsonPath("$.code").value("INVALID_REFRESH_TOKEN"))
                     .andExpect(jsonPath("$.accessToken").doesNotExist());
@@ -254,10 +256,10 @@ class AuthApiIntegrationTest {
         Map<String, Object> user = registered();
         String refresh = login((String) user.get("email"), PASSWORD).get("refreshToken").asText();
 
-        postJson("/api/auth/logout", Map.of("refreshToken", refresh)).andExpect(status().isNoContent());
-        postJson("/api/auth/logout", Map.of("refreshToken", refresh)).andExpect(status().isNoContent());
+        postJson("/api/v1/auth/logout", Map.of("refreshToken", refresh)).andExpect(status().isNoContent());
+        postJson("/api/v1/auth/logout", Map.of("refreshToken", refresh)).andExpect(status().isNoContent());
 
-        postJson("/api/auth/refresh", Map.of("refreshToken", refresh))
+        postJson("/api/v1/auth/refresh", Map.of("refreshToken", refresh))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.code").value("INVALID_REFRESH_TOKEN"));
     }
@@ -280,20 +282,20 @@ class AuthApiIntegrationTest {
 
     @Test
     void jsonMalformadoDevuelve400() throws Exception {
-        mvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON).content("{no json"))
+        mvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON).content("{no json"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value("MALFORMED_REQUEST"));
     }
 
     @Test
     void corsPermiteSoloElOrigenDelFrontend() throws Exception {
-        mvc.perform(options("/api/auth/login")
+        mvc.perform(options("/api/v1/auth/login")
                         .header(HttpHeaders.ORIGIN, "http://localhost:5174")
                         .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "POST"))
                 .andExpect(status().isOk())
                 .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:5174"));
 
-        mvc.perform(options("/api/auth/login")
+        mvc.perform(options("/api/v1/auth/login")
                         .header(HttpHeaders.ORIGIN, "http://evil.example")
                         .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "POST"))
                 .andExpect(status().isForbidden());
@@ -321,12 +323,12 @@ class AuthApiIntegrationTest {
 
     private Map<String, Object> registered() throws Exception {
         Map<String, Object> body = newUser();
-        postJson("/api/auth/register", body).andExpect(status().isCreated());
+        postJson("/api/v1/auth/register", body).andExpect(status().isCreated());
         return body;
     }
 
     private JsonNode login(String email, String password) throws Exception {
-        return readJson(postJson("/api/auth/login", Map.of("email", email, "password", password))
+        return readJson(postJson("/api/v1/auth/login", Map.of("email", email, "password", password))
                 .andExpect(status().isOk()));
     }
 
