@@ -26,6 +26,7 @@ Punto de entrada de la memoria global. Convenciones: [SCHEMA](../schema/SCHEMA.m
 | `raw/2026-09-18-decisiones-repo-raiz.md` | Raíz del workspace en repo privado |
 | `raw/2026-09-18-decisiones-comparacion-referencia.md` | password_hash 255 y estrategia contra doble reserva |
 | `raw/2026-09-25-decisiones-reserva.md` | Plan de HU-012/013/014: V6, doble reserva por PK, historial sin triggers, LOOP por HTTP |
+| `raw/2026-09-25-aprobacion-diseno-s3.md` | Aprobación del diseño Stitch v4 de las áreas autenticadas de S3 |
 
 ## Diseño de base de datos
 

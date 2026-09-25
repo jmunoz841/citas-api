@@ -121,3 +121,9 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 - HECHO: el modal de reserva no tenía de dónde listar especialidades (`/api/v1/admin/specialties` es solo ADMIN). Se añadió `GET /api/v1/catalogs/specialties` (activas, con `type` GENERAL/SPECIALIZED); `mvnw clean test` 150/150.
 - HECHO: se entregaron tres prompts de Stitch (ADMIN, PROFESSIONAL, USER) que extienden `citas-web/docs/diseno/DESIGN.md`; el diseño sigue pendiente de generar y aprobar.
 - Páginas afectadas: [[ejecucion]]
+
+## 2026-09-25 — INGEST — Diseño aprobado de las áreas autenticadas de S3
+- Fuentes: `raw/2026-09-25-aprobacion-diseno-s3.md`, `citas-web/docs/diseno/APROBACION.md`
+- HECHO: la v3 de Stitch repitió dos fallos ya corregidos en la v1 (superficies azuladas y contenido inventado, incluido un soporte telefónico 24/7).
+- DECISIÓN (usuario): D-026, v4 aprobada con cinco correcciones obligatorias en la implementación.
+- Páginas afectadas: [[decisiones]], [[ejecucion]]

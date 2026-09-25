@@ -40,6 +40,7 @@ Solo se registran como DECISIÓN los puntos aprobados explícitamente por el usu
 | D-024 | 2026-09-23 | Hooks `pre-commit` versionados en `.githooks/` de ambos repos, activados con `git config core.hooksPath .githooks`: detector de secretos en dos niveles siempre, más pruebas Maven (backend) o lint/pruebas/build (frontend) cuando el commit toca código | Calidad | `raw/2026-09-23-decisiones-s3.md` |
 | D-022 | 2026-09-23 | HU-002 (recuperar contraseña) **no** se marca `Completada`: no está implementada y permanece en S4. La HU-002 del documento del instructor pertenece a otra numeración | Scrum | `raw/2026-09-23-decisiones-s3.md` |
 | D-025 | 2026-09-25 | `appointment_status_history` sin los triggers de inmutabilidad del diseño 3FN (riesgo Q-10); la aplicación solo inserta. La prueba del LOOP de doble reserva es de punta a punta por HTTP con dos peticiones simultáneas | HU-013 | `raw/2026-09-25-decisiones-reserva.md` |
+| D-026 | 2026-09-25 | Diseño de las áreas autenticadas de S3 (ADMIN, PROFESSIONAL, USER) aprobado en Stitch v4, con cinco correcciones obligatorias en la implementación. Extiende `DESIGN.md` de `citas-web` sin cambiar el sistema visual de D-014 | Frontend | `raw/2026-09-25-aprobacion-diseno-s3.md` |
 
 ## Preguntas abiertas
 
