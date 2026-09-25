@@ -71,6 +71,15 @@ class SlotPlannerTest {
     }
 
     @Test
+    void unBloqueDeUnSoloSlotNoAdmiteUnaCitaDeSesenta() {
+        // Demo Red→Green de S3: se intentó primero con hasSize(1) y el hook bloqueó el commit.
+        List<AgendaSlot> bloque = bloque(1L, "08:00", "08:30", Set.of());
+
+        assertThat(SlotPlanner.bookableStarts(bloque, 60, ANTES)).isEmpty();
+        assertThat(SlotPlanner.bookableStarts(bloque, 30, ANTES)).hasSize(1);
+    }
+
+    @Test
     void allocateFallaSiElHorarioNoExiste() {
         List<AgendaSlot> bloque = bloque(1L, "08:00", "10:00", Set.of());
 
