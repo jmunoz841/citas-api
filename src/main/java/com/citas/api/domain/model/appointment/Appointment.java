@@ -77,6 +77,15 @@ public final class Appointment {
         return resolve(AppointmentStatus.REJECTED);
     }
 
+    /** El paciente puede cancelar solo una cita pendiente o aprobada (HU-017). */
+    public Appointment cancel() {
+        if (status != AppointmentStatus.REQUESTED && status != AppointmentStatus.APPROVED) {
+            throw BusinessConflictException.invalidStatusTransition();
+        }
+        return new Appointment(id, patientUserId, professionalId, specialtyId, siteCode, startAt, durationMinutes,
+                AppointmentStatus.CANCELLED);
+    }
+
     /** Solo una cita {@code REQUESTED} se aprueba o se rechaza (RN-11, HU-015 CA-04). */
     private Appointment resolve(AppointmentStatus target) {
         if (status != AppointmentStatus.REQUESTED) {

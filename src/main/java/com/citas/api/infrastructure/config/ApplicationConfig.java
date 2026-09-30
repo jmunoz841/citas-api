@@ -20,6 +20,7 @@ import com.citas.api.application.service.CatalogService;
 import com.citas.api.application.service.ProfessionalService;
 import com.citas.api.application.service.SpecialtyService;
 import com.citas.api.application.service.OwnAppointmentsService;
+import com.citas.api.application.service.AppointmentCancellationService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -90,5 +91,10 @@ class ApplicationConfig {
     @Bean
     OwnAppointmentsService ownAppointmentsService(AppointmentRepositoryPort appointments) {
         return new OwnAppointmentsService(appointments);
+    }
+
+    @Bean
+    AppointmentCancellationService appointmentCancellationService(AppointmentRepositoryPort appointments, Clock clock) {
+        return new AppointmentCancellationService(appointments, clock);
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -59,6 +60,9 @@ class MyAppointmentsApiIntegrationTest {
 
     @Autowired
     private ObjectMapper json;
+
+    @Autowired
+    private JdbcTemplate jdbc;
 
     private String adminToken;
     private String userToken;
@@ -188,6 +192,41 @@ class MyAppointmentsApiIntegrationTest {
                 .andExpect(status().isForbidden());
     }
 
+    @Test
+    void ca01_cancelarUnaCitaPropiaFuturaLaCancelaLiberaSlotsYRegistraHistorial() throws Exception {
+        Escenario general = escenarioConEspecialidad(idEspecialidadGeneral());
+        long citaId = idDe(reservar(userToken, general, MANANA, "08:00").andExpect(status().isCreated()));
+
+        cancelar(userToken, citaId).andExpect(status().isOk()).andExpect(jsonPath("$.status").value("CANCELLED"));
+
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM slot_reservations WHERE appointment_id = ?", Integer.class, citaId)).isZero();
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM appointment_status_history WHERE appointment_id = ? AND status_code = 'CANCELLED' AND source = 'USER'", Integer.class, citaId)).isEqualTo(1);
+    }
+
+    @Test
+    void ca02_unaCitaPasadaOTerminalNoSePuedeCancelar() throws Exception {
+        Escenario general = escenarioConEspecialidad(idEspecialidadGeneral());
+        long terminal = idDe(reservar(userToken, general, MANANA, "08:00").andExpect(status().isCreated()));
+        cancelar(userToken, terminal).andExpect(status().isOk());
+        cancelar(userToken, terminal).andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("INVALID_STATUS_TRANSITION"));
+
+        long pasada = idDe(reservar(userToken, general, PASADO_MANANA, "08:00").andExpect(status().isCreated()));
+        jdbc.update("UPDATE appointments SET start_at = ? WHERE id = ?", LocalDate.now().minusDays(1).atTime(8, 0), pasada);
+        cancelar(userToken, pasada).andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors[0].field").value("appointmentId"));
+    }
+
+    @Test
+    void ca03_unUserNoPuedeCancelarLaCitaDeOtroPaciente() throws Exception {
+        Escenario general = escenarioConEspecialidad(idEspecialidadGeneral());
+        long ajena = idDe(reservar(userToken, general, MANANA, "08:00").andExpect(status().isCreated()));
+        String otroToken = login(registrarUsuario(), PASSWORD);
+
+        cancelar(otroToken, ajena).andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value("NOT_FOUND"));
+    }
+
     // ---------- Utilidades ----------
 
     record Escenario(long professionalId, long specialtyId, String profToken) {
@@ -256,6 +295,11 @@ class MyAppointmentsApiIntegrationTest {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json.writeValueAsBytes(body)));
+    }
+
+    private ResultActions cancelar(String token, long citaId) throws Exception {
+        return mvc.perform(post("/api/v1/appointments/" + citaId + "/cancel")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token));
     }
 
     private void rechazar(long citaId, String reason) throws Exception {

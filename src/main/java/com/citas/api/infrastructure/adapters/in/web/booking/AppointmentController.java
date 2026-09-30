@@ -3,6 +3,7 @@ package com.citas.api.infrastructure.adapters.in.web.booking;
 import com.citas.api.application.port.in.BookAppointmentUseCase;
 import com.citas.api.application.port.in.BookAppointmentUseCase.BookingCommand;
 import com.citas.api.application.port.in.ViewOwnAppointmentsUseCase;
+import com.citas.api.application.port.in.CancelOwnAppointmentUseCase;
 import com.citas.api.domain.model.appointment.Appointment;
 import com.citas.api.domain.model.appointment.AppointmentStatus;
 import com.citas.api.domain.model.appointment.AppointmentView;
@@ -39,10 +40,13 @@ class AppointmentController {
 
     private final BookAppointmentUseCase booking;
     private final ViewOwnAppointmentsUseCase ownAppointments;
+    private final CancelOwnAppointmentUseCase cancellation;
 
-    AppointmentController(BookAppointmentUseCase booking, ViewOwnAppointmentsUseCase ownAppointments) {
+    AppointmentController(BookAppointmentUseCase booking, ViewOwnAppointmentsUseCase ownAppointments,
+                          CancelOwnAppointmentUseCase cancellation) {
         this.booking = booking;
         this.ownAppointments = ownAppointments;
+        this.cancellation = cancellation;
     }
 
     @GetMapping
@@ -57,6 +61,11 @@ class AppointmentController {
     @GetMapping("/{appointmentId}")
     AppointmentViewResponse get(@AuthenticationPrincipal AuthenticatedUser user, @PathVariable Long appointmentId) {
         return AppointmentViewResponse.from(ownAppointments.get(user.userId(), appointmentId));
+    }
+
+    @PostMapping("/{appointmentId}/cancel")
+    AppointmentResponse cancel(@AuthenticationPrincipal AuthenticatedUser user, @PathVariable Long appointmentId) {
+        return AppointmentResponse.from(cancellation.cancel(user.userId(), appointmentId));
     }
 
     @PostMapping

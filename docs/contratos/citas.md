@@ -19,6 +19,7 @@
 
 | GET | `/api/v1/appointments?status=&from=&to=` | USER: lista sus propias citas (HU-016) |
 | GET | `/api/v1/appointments/{id}` | USER: consulta el detalle de una cita propia (HU-016) |
+| POST | `/api/v1/appointments/{id}/cancel` | USER: cancela una cita propia futura (HU-017) |
 
 ## Mis citas (HU-016)
 
@@ -52,6 +53,21 @@ mismo objeto. Ambos incluyen sede, profesional, especialidad, fecha/hora, duraci
 `rejectionReason` es `null` en citas no rechazadas. Una cita inexistente o de otro USER
 responde `404 NOT_FOUND`, sin revelar su existencia. Filtros invalidos responden
 `400 VALIDATION_ERROR`.
+
+## Cancelar cita (HU-017)
+
+```http
+POST /api/v1/appointments/31/cancel
+```
+
+La cancelacion solo esta disponible para el `USER` propietario de una cita futura en estado
+`REQUESTED` o `APPROVED`. Devuelve `200` con la respuesta de cita y estado `CANCELLED`.
+La operacion libera todas las filas de `slot_reservations` de la cita y agrega un registro de
+historial con `source: USER` y el paciente como actor, en la misma transaccion.
+
+Una cita ajena o inexistente devuelve `404 NOT_FOUND` sin revelar su existencia. Una cita pasada
+o en estado distinto de `REQUESTED` y `APPROVED` devuelve `400 VALIDATION_ERROR` o
+`409 INVALID_STATUS_TRANSITION`, respectivamente. Una cita cancelada no se reactiva.
 
 ## Buscar disponibilidad (HU-012)
 
