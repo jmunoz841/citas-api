@@ -5,6 +5,8 @@ import com.citas.api.domain.model.appointment.Appointment;
 import com.citas.api.domain.model.appointment.AppointmentStatus;
 import com.citas.api.domain.model.appointment.AppointmentSummary;
 import com.citas.api.domain.model.appointment.AppointmentView;
+import com.citas.api.domain.model.appointment.ProfessionalAppointmentView;
+import com.citas.api.domain.model.appointment.AppointmentHistoryEntry;
 import com.citas.api.domain.model.appointment.StatusChange;
 
 import java.time.LocalDateTime;
@@ -49,4 +51,8 @@ public interface AppointmentRepositoryPort {
                                              LocalDateTime to);
 
     Optional<AppointmentView> findViewByIdAndPatient(Long appointmentId, Long patientUserId);
+
+    List<ProfessionalAppointmentView> findApprovedViewsByProfessional(Long professionalId, LocalDateTime from,
+                                                                       LocalDateTime to, String siteCode);
+    List<AppointmentHistoryEntry> findHistory(Long appointmentId);
 }

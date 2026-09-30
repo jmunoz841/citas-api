@@ -12,6 +12,7 @@ Punto de entrada de la memoria global. Convenciones: [SCHEMA](../schema/SCHEMA.m
 | [[ejecucion]] | ejecucion | Plan S2, estado de avance y evidencia por sesión |
 | [[evidencia-s2]] | ejecucion | Registro de evidencia S2 por repositorio (plantilla del curso) |
 | [[evidencia-s3]] | ejecucion | Registro de evidencia S3: plantilla por repo, matriz resumida de las 10 HU y demo del hook FAIL/PASS |
+| [[evidencia-s4]] | ejecucion | Evidencia técnica, Builder/Verifier y loops de S4 |
 
 ## Fuentes (`raw/`)
 

@@ -4,6 +4,7 @@ import com.citas.api.application.port.in.BookAppointmentUseCase;
 import com.citas.api.application.port.in.BookAppointmentUseCase.BookingCommand;
 import com.citas.api.application.port.in.ViewOwnAppointmentsUseCase;
 import com.citas.api.application.port.in.CancelOwnAppointmentUseCase;
+import com.citas.api.application.port.in.ViewAppointmentHistoryUseCase;
 import com.citas.api.domain.model.appointment.Appointment;
 import com.citas.api.domain.model.appointment.AppointmentStatus;
 import com.citas.api.domain.model.appointment.AppointmentView;
@@ -41,12 +42,14 @@ class AppointmentController {
     private final BookAppointmentUseCase booking;
     private final ViewOwnAppointmentsUseCase ownAppointments;
     private final CancelOwnAppointmentUseCase cancellation;
+    private final ViewAppointmentHistoryUseCase history;
 
     AppointmentController(BookAppointmentUseCase booking, ViewOwnAppointmentsUseCase ownAppointments,
-                          CancelOwnAppointmentUseCase cancellation) {
+                          CancelOwnAppointmentUseCase cancellation, ViewAppointmentHistoryUseCase history) {
         this.booking = booking;
         this.ownAppointments = ownAppointments;
         this.cancellation = cancellation;
+        this.history = history;
     }
 
     @GetMapping
@@ -67,6 +70,10 @@ class AppointmentController {
     AppointmentResponse cancel(@AuthenticationPrincipal AuthenticatedUser user, @PathVariable Long appointmentId) {
         return AppointmentResponse.from(cancellation.cancel(user.userId(), appointmentId));
     }
+
+    @GetMapping("/{appointmentId}/history")
+    HistoryResponse history(@AuthenticationPrincipal AuthenticatedUser user, @PathVariable Long appointmentId) {
+        return new HistoryResponse(history.forPatient(user.userId(), appointmentId).stream().map(HistoryItem::from).toList()); }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -101,6 +108,8 @@ class AppointmentController {
 
     record AppointmentListResponse(java.util.List<AppointmentViewResponse> items) {
     }
+    record HistoryResponse(java.util.List<HistoryItem> items) { }
+    record HistoryItem(String status,String source,Long actorUserId,String changedAt,String reason) { static HistoryItem from(com.citas.api.domain.model.appointment.AppointmentHistoryEntry h){return new HistoryItem(h.status().name(),h.source(),h.actorUserId(),h.changedAt().toString(),h.reason());} }
 
     record AppointmentViewResponse(Long id, String status, String professionalName, String specialtyName,
                                    String siteCode, String siteName, String date, String startTime, String endTime,

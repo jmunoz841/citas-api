@@ -16,6 +16,28 @@
 | PATCH | `/api/v1/professional/availability-blocks/{id}` | Cambia horario o sede y **regenera los slots** |
 | DELETE | `/api/v1/professional/availability-blocks/{id}` | Elimina el bloque y sus slots (`204`) |
 | GET | `/api/v1/professional/me` | Perfil propio: estado, especialidad principal y sedes asignadas |
+| GET | `/api/v1/professional/appointments?from=&to=&siteCode=` | Citas `APPROVED` propias por día/semana (HU-011) |
+| POST | `/api/v1/professional/appointments/{id}/close?result=COMPLETED\|NO_SHOW` | Cierra una cita propia iniciada (HU-020) |
+| GET | `/api/v1/professional/appointments/{id}/history` | Historial de una cita propia (HU-021) |
+
+## Citas de mi agenda (HU-011)
+
+`from` y `to` son obligatorios (`YYYY-MM-DD`, inclusivos); `siteCode` es opcional. Solo devuelve
+las citas `APPROVED` cuyo profesional es el del access token, ordenadas por inicio. Cada item trae
+paciente, especialidad, sede, fecha/hora y duración. Un rango invertido o incompleto responde
+`400 VALIDATION_ERROR`; sin token `401` y otro rol `403`.
+
+## Cerrar atención (HU-020)
+
+```http
+POST /api/v1/professional/appointments/31/close?result=COMPLETED
+```
+
+Solo el profesional asignado puede cerrar una cita propia en estado `APPROVED`, desde su hora
+de inicio inclusive. `result` solo admite `COMPLETED` o `NO_SHOW`. La operación agrega al
+historial una entrada con `source: PROFESSIONAL` y el profesional como actor. Una cita futura
+devuelve `400 VALIDATION_ERROR`; una cita ajena o inexistente, `404`; un estado no aprobable,
+`409 INVALID_STATUS_TRANSITION`.
 
 ## Perfil propio
 

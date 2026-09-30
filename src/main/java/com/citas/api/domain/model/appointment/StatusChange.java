@@ -13,7 +13,8 @@ public record StatusChange(Long appointmentId, AppointmentStatus status, Source 
     public enum Source {
         SYSTEM,
         USER,
-        ADMIN
+        ADMIN,
+        PROFESSIONAL
     }
 
     public StatusChange {

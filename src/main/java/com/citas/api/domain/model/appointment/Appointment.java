@@ -86,6 +86,13 @@ public final class Appointment {
                 AppointmentStatus.CANCELLED);
     }
 
+    public Appointment close(AppointmentStatus result) {
+        if (status != AppointmentStatus.APPROVED || (result != AppointmentStatus.COMPLETED && result != AppointmentStatus.NO_SHOW)) {
+            throw BusinessConflictException.invalidStatusTransition();
+        }
+        return new Appointment(id, patientUserId, professionalId, specialtyId, siteCode, startAt, durationMinutes, result);
+    }
+
     /** Solo una cita {@code REQUESTED} se aprueba o se rechaza (RN-11, HU-015 CA-04). */
     private Appointment resolve(AppointmentStatus target) {
         if (status != AppointmentStatus.REQUESTED) {

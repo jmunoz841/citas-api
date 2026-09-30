@@ -21,6 +21,9 @@ import com.citas.api.application.service.ProfessionalService;
 import com.citas.api.application.service.SpecialtyService;
 import com.citas.api.application.service.OwnAppointmentsService;
 import com.citas.api.application.service.AppointmentCancellationService;
+import com.citas.api.application.service.ProfessionalAgendaService;
+import com.citas.api.application.service.ProfessionalAppointmentClosureService;
+import com.citas.api.application.service.AppointmentHistoryService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -97,4 +100,7 @@ class ApplicationConfig {
     AppointmentCancellationService appointmentCancellationService(AppointmentRepositoryPort appointments, Clock clock) {
         return new AppointmentCancellationService(appointments, clock);
     }
+    @Bean ProfessionalAgendaService professionalAgendaService(AppointmentRepositoryPort appointments) { return new ProfessionalAgendaService(appointments); }
+    @Bean ProfessionalAppointmentClosureService professionalAppointmentClosureService(AppointmentRepositoryPort appointments, Clock clock) { return new ProfessionalAppointmentClosureService(appointments, clock); }
+    @Bean AppointmentHistoryService appointmentHistoryService(AppointmentRepositoryPort appointments) { return new AppointmentHistoryService(appointments); }
 }

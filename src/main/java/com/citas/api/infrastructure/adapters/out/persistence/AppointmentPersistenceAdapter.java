@@ -7,6 +7,8 @@ import com.citas.api.domain.model.appointment.Appointment;
 import com.citas.api.domain.model.appointment.AppointmentStatus;
 import com.citas.api.domain.model.appointment.AppointmentSummary;
 import com.citas.api.domain.model.appointment.AppointmentView;
+import com.citas.api.domain.model.appointment.ProfessionalAppointmentView;
+import com.citas.api.domain.model.appointment.AppointmentHistoryEntry;
 import com.citas.api.domain.model.appointment.StatusChange;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -140,6 +142,23 @@ class AppointmentPersistenceAdapter implements AppointmentRepositoryPort {
                 (rs, row) -> toView(rs)).stream().findFirst();
     }
 
+    @Override
+    public List<ProfessionalAppointmentView> findApprovedViewsByProfessional(Long professionalId, LocalDateTime from,
+                                                                              LocalDateTime to, String siteCode) {
+        return jdbc.query(PROFESSIONAL_VIEWS, new MapSqlParameterSource().addValue("professionalId", professionalId)
+                .addValue("from", from).addValue("to", to).addValue("siteCode", siteCode), (rs, row) ->
+                new ProfessionalAppointmentView(rs.getLong("id"), rs.getString("patient_name"),
+                        rs.getString("specialty_name"), rs.getString("site_code"),
+                        rs.getObject("start_at", LocalDateTime.class), rs.getObject("end_at", LocalDateTime.class),
+                        rs.getInt("duration_minutes")));
+    }
+    @Override public List<AppointmentHistoryEntry> findHistory(Long appointmentId) {
+        return jdbc.query("SELECT status_code, source, actor_user_id, changed_at, reason FROM appointment_status_history WHERE appointment_id = :id ORDER BY changed_at, id", new MapSqlParameterSource("id", appointmentId), (rs,row) -> {
+            Number actor = (Number) rs.getObject("actor_user_id");
+            return new AppointmentHistoryEntry(AppointmentStatus.valueOf(rs.getString("status_code")), rs.getString("source"),
+                    actor == null ? null : actor.longValue(), rs.getObject("changed_at", LocalDateTime.class), rs.getString("reason"));
+        }); }
+
     private static AppointmentView toView(java.sql.ResultSet rs) throws java.sql.SQLException {
         return new AppointmentView(rs.getLong("id"), AppointmentStatus.valueOf(rs.getString("status_code")),
                 rs.getString("professional_name"), rs.getString("specialty_name"), rs.getString("site_code"),
@@ -186,6 +205,15 @@ class AppointmentPersistenceAdapter implements AppointmentRepositoryPort {
 
     private static final String PATIENT_VIEW_BY_ID = PATIENT_VIEW_COLUMNS + """
             WHERE a.id = :appointmentId AND a.patient_user_id = :patientUserId
+            """;
+
+    private static final String PROFESSIONAL_VIEWS = """
+            SELECT a.id, a.site_code, a.start_at, a.end_at, a.duration_minutes,
+                   CONCAT(pu.first_names, ' ', pu.last_names) AS patient_name, s.name AS specialty_name
+            FROM appointments a JOIN users pu ON pu.id = a.patient_user_id JOIN specialties s ON s.id = a.specialty_id
+            WHERE a.professional_id = :professionalId AND a.status_code = 'APPROVED'
+              AND a.start_at >= :from AND a.start_at < :to AND (:siteCode IS NULL OR a.site_code = :siteCode)
+            ORDER BY a.start_at, a.id
             """;
 }
 
@@ -263,7 +291,7 @@ class AppointmentStatusHistoryJpaEntity {
     @Column(name = "status_code", nullable = false, length = 20, updatable = false)
     private String statusCode;
 
-    @Column(name = "source", nullable = false, length = 10, updatable = false)
+    @Column(name = "source", nullable = false, length = 20, updatable = false)
     private String source;
 
     @Column(name = "actor_user_id", updatable = false)

@@ -156,3 +156,9 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 - Fuentes: `raw/2026-09-25-alcance-s4.md`
 - DECISIÓN (usuario): D-031 alcance de S4 (HU-016, 017, 011, 020, 021 `Aprobada`); D-032 token de recuperación de 30 min; D-033 reglas de reprogramación; D-034 cierre desde la hora de inicio e historial visible para el profesional.
 - Páginas afectadas: [[decisiones]], [[ejecucion]]
+
+## 2026-09-30 — LEARN — Evidencia técnica S4 en validación
+- HECHO: se implementaron la agenda del profesional (HU-011), el cierre `COMPLETED`/`NO_SHOW` desde el inicio (HU-020) y el historial inmutable para USER, ADMIN y PROFESSIONAL (HU-021), con migración V7.
+- HECHO: la prueba focalizada `MyAppointmentsApiIntegrationTest` terminó con 14 pruebas y 0 fallos; la verificación del frontend terminó con lint, pruebas, typecheck y build correctos.
+- PREGUNTA ABIERTA: completar la matriz Scrum/DoD antes de solicitar cierre formal de S4.
+- Páginas afectadas: [[evidencia-s4]], [[index]]

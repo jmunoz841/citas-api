@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -225,6 +226,74 @@ class MyAppointmentsApiIntegrationTest {
 
         cancelar(otroToken, ajena).andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.code").value("NOT_FOUND"));
+    }
+
+    @Test
+    void hu011_elProfesionalVeSoloSusCitasAprobadasEnElRangoYSedeSolicitados() throws Exception {
+        Escenario general = escenarioConEspecialidad(idEspecialidadGeneral());
+        long approved = idDe(reservar(userToken, general, MANANA, "08:00").andExpect(status().isCreated()));
+        Escenario specialized = escenario(30);
+        reservar(userToken, specialized, MANANA, "08:00").andExpect(status().isCreated());
+
+        mvc.perform(get("/api/v1/professional/appointments")
+                        .param("from", MANANA.toString()).param("to", MANANA.toString()).param("siteCode", "HIC")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + general.profToken()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.items.length()").value(1))
+                .andExpect(jsonPath("$.items[0].id").value(approved))
+                .andExpect(jsonPath("$.items[0].patientName").value("Ana Paciente"))
+                .andExpect(jsonPath("$.items[0].specialtyName").isNotEmpty())
+                .andExpect(jsonPath("$.items[0].siteCode").value("HIC"));
+
+        mvc.perform(get("/api/v1/professional/appointments")
+                        .param("from", PASADO_MANANA.toString()).param("to", MANANA.toString())
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + general.profToken()))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors[0].field").value("to"));
+    }
+
+    @Test
+    void hu020_hu021_elProfesionalCierraSuCitaIniciadaYElHistorialEsDeSoloLectura() throws Exception {
+        Escenario general = escenarioConEspecialidad(idEspecialidadGeneral());
+        long citaId = idDe(reservar(userToken, general, MANANA, "08:00").andExpect(status().isCreated()));
+        jdbc.update("UPDATE appointments SET start_at = ? WHERE id = ?", LocalDate.now().minusDays(1).atTime(8, 0), citaId);
+
+        mvc.perform(post("/api/v1/professional/appointments/" + citaId + "/close").param("result", "COMPLETED")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + general.profToken()))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.status").value("COMPLETED"));
+        mvc.perform(get("/api/v1/professional/appointments/" + citaId + "/history")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + general.profToken()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.items.length()").value(2))
+                .andExpect(jsonPath("$.items[1].status").value("COMPLETED"))
+                .andExpect(jsonPath("$.items[1].source").value("PROFESSIONAL"));
+        mvc.perform(get("/api/v1/appointments/" + citaId + "/history")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + userToken))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.items.length()").value(2));
+        mvc.perform(get("/api/v1/admin/appointments/" + citaId + "/history")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.items.length()").value(2));
+        String otherUser = login(registrarUsuario(), PASSWORD);
+        mvc.perform(get("/api/v1/appointments/" + citaId + "/history")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + otherUser))
+                .andExpect(status().isNotFound());
+        mvc.perform(patch("/api/v1/appointments/" + citaId + "/history")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + userToken))
+                .andExpect(status().isMethodNotAllowed());
+    }
+
+    @Test
+    void hu020_noPermiteCerrarUnaCitaFuturaONoPropia() throws Exception {
+        Escenario general = escenarioConEspecialidad(idEspecialidadGeneral());
+        long future = idDe(reservar(userToken, general, MANANA, "08:00").andExpect(status().isCreated()));
+        mvc.perform(post("/api/v1/professional/appointments/" + future + "/close").param("result", "NO_SHOW")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + general.profToken()))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors[0].field").value("appointmentId"));
+        Escenario other = escenarioConEspecialidad(idEspecialidadGeneral());
+        mvc.perform(post("/api/v1/professional/appointments/" + future + "/close").param("result", "NO_SHOW")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + other.profToken()))
+                .andExpect(status().isNotFound());
     }
 
     // ---------- Utilidades ----------

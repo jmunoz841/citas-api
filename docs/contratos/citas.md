@@ -69,6 +69,23 @@ Una cita ajena o inexistente devuelve `404 NOT_FOUND` sin revelar su existencia.
 o en estado distinto de `REQUESTED` y `APPROVED` devuelve `400 VALIDATION_ERROR` o
 `409 INVALID_STATUS_TRANSITION`, respectivamente. Una cita cancelada no se reactiva.
 
+## Historial de estados (HU-021)
+
+`GET /api/v1/appointments/{id}/history` devuelve al USER dueño los cambios inmutables, ordenados
+por fecha, con estado, fuente, actor, fecha/hora y motivo. ADMIN usa
+`/api/v1/admin/appointments/{id}/history` y el PROFESSIONAL asignado
+`/api/v1/professional/appointments/{id}/history`. Una cita ajena responde `404`; no existen
+endpoints de edición ni borrado del historial.
+
+```json
+{
+  "items": [
+    { "status": "APPROVED", "source": "USER", "actorUserId": 24,
+      "changedAt": "2026-10-01T09:00:00", "reason": null }
+  ]
+}
+```
+
 ## Buscar disponibilidad (HU-012)
 
 | Parámetro | Obligatorio | Valores |
