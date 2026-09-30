@@ -21,6 +21,7 @@ Estado: evidencia técnica preparada; las HU conservan su estado actual hasta co
 ## Verificaciones de esta sesión
 
 - Backend: `mvnw.cmd -Dtest=MyAppointmentsApiIntegrationTest test -q` con Java 21 y Testcontainers: 14 pruebas, 0 fallos.
+- Backend completo: `mvnw.cmd clean test` con Java 21 y Testcontainers: 167 pruebas, 0 fallos, 0 errores y 0 omitidas.
 - Frontend: `npm run lint`, `npm test -- --run`, `npm run typecheck`, `npm run build`: lint/typecheck/build correctos. La prueba de agenda verifica la consulta semanal; el flujo de cierre queda cubierto en la integración del backend.
 
 Pendiente antes del cierre formal: completar la matriz Scrum/DoD sin cambiar el estado de las HU.

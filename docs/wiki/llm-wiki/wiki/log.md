@@ -162,3 +162,7 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 - HECHO: la prueba focalizada `MyAppointmentsApiIntegrationTest` terminó con 14 pruebas y 0 fallos; la verificación del frontend terminó con lint, pruebas, typecheck y build correctos.
 - PREGUNTA ABIERTA: completar la matriz Scrum/DoD antes de solicitar cierre formal de S4.
 - Páginas afectadas: [[evidencia-s4]], [[index]]
+
+## 2026-09-30 — VERIFY — Suite completa S4
+- HECHO: `mvnw.cmd clean test` con Java 21 y Testcontainers finalizó con 167 pruebas, 0 fallos, 0 errores y 0 omitidas.
+- Páginas afectadas: [[evidencia-s4]]
