@@ -6,6 +6,7 @@ import com.citas.api.domain.model.agenda.AgendaSlot;
 import com.citas.api.domain.model.appointment.Appointment;
 import com.citas.api.domain.model.appointment.AppointmentStatus;
 import com.citas.api.domain.model.appointment.AppointmentSummary;
+import com.citas.api.domain.model.appointment.AppointmentView;
 import com.citas.api.domain.model.appointment.StatusChange;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -120,6 +121,33 @@ class AppointmentPersistenceAdapter implements AppointmentRepositoryPort {
         });
     }
 
+    @Override
+    public List<AppointmentView> findViewsByPatient(Long patientUserId, AppointmentStatus status,
+                                                     LocalDateTime from, LocalDateTime to) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource()
+                .addValue("patientUserId", patientUserId)
+                .addValue("status", status == null ? null : status.name())
+                .addValue("from", from)
+                .addValue("to", to);
+        return jdbc.query(PATIENT_VIEWS, parameters, (rs, row) -> toView(rs));
+    }
+
+    @Override
+    public Optional<AppointmentView> findViewByIdAndPatient(Long appointmentId, Long patientUserId) {
+        return jdbc.query(PATIENT_VIEW_BY_ID, new MapSqlParameterSource()
+                        .addValue("appointmentId", appointmentId)
+                        .addValue("patientUserId", patientUserId),
+                (rs, row) -> toView(rs)).stream().findFirst();
+    }
+
+    private static AppointmentView toView(java.sql.ResultSet rs) throws java.sql.SQLException {
+        return new AppointmentView(rs.getLong("id"), AppointmentStatus.valueOf(rs.getString("status_code")),
+                rs.getString("professional_name"), rs.getString("specialty_name"), rs.getString("site_code"),
+                rs.getString("site_name"), rs.getObject("start_at", LocalDateTime.class),
+                rs.getObject("end_at", LocalDateTime.class), rs.getInt("duration_minutes"),
+                rs.getString("rejection_reason"));
+    }
+
     private static final String SUMMARIES = """
             SELECT a.id, a.status_code, a.site_code, a.start_at, a.end_at, a.duration_minutes,
                    CONCAT(pu.first_names, ' ', pu.last_names) AS patient_name,
@@ -131,6 +159,33 @@ class AppointmentPersistenceAdapter implements AppointmentRepositoryPort {
             JOIN specialties s ON s.id = a.specialty_id
             WHERE a.status_code = :status
             ORDER BY a.start_at, a.id
+            """;
+
+    private static final String PATIENT_VIEW_COLUMNS = """
+            SELECT a.id, a.status_code, a.site_code, site.name AS site_name, a.start_at, a.end_at,
+                   a.duration_minutes, CONCAT(du.first_names, ' ', du.last_names) AS professional_name,
+                   s.name AS specialty_name,
+                   CASE WHEN a.status_code = 'REJECTED' THEN (
+                       SELECT h.reason FROM appointment_status_history h
+                       WHERE h.appointment_id = a.id AND h.status_code = 'REJECTED'
+                       ORDER BY h.id DESC LIMIT 1
+                   ) END AS rejection_reason
+            FROM appointments a
+            JOIN users du ON du.id = a.professional_id
+            JOIN specialties s ON s.id = a.specialty_id
+            JOIN sites site ON site.code = a.site_code
+            """;
+
+    private static final String PATIENT_VIEWS = PATIENT_VIEW_COLUMNS + """
+            WHERE a.patient_user_id = :patientUserId
+              AND (:status IS NULL OR a.status_code = :status)
+              AND (:from IS NULL OR a.start_at >= :from)
+              AND (:to IS NULL OR a.start_at < :to)
+            ORDER BY a.start_at, a.id
+            """;
+
+    private static final String PATIENT_VIEW_BY_ID = PATIENT_VIEW_COLUMNS + """
+            WHERE a.id = :appointmentId AND a.patient_user_id = :patientUserId
             """;
 }
 

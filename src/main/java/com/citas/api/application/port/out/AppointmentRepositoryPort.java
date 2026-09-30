@@ -4,8 +4,10 @@ import com.citas.api.domain.model.agenda.AgendaSlot;
 import com.citas.api.domain.model.appointment.Appointment;
 import com.citas.api.domain.model.appointment.AppointmentStatus;
 import com.citas.api.domain.model.appointment.AppointmentSummary;
+import com.citas.api.domain.model.appointment.AppointmentView;
 import com.citas.api.domain.model.appointment.StatusChange;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,4 +40,13 @@ public interface AppointmentRepositoryPort {
     void releaseSlots(Long appointmentId);
 
     List<AppointmentSummary> findByStatus(AppointmentStatus status);
+
+    /**
+     * Citas del paciente con inicio en [{@code from}, {@code to}), más próxima primero. Cada
+     * filtro nulo se ignora.
+     */
+    List<AppointmentView> findViewsByPatient(Long patientUserId, AppointmentStatus status, LocalDateTime from,
+                                             LocalDateTime to);
+
+    Optional<AppointmentView> findViewByIdAndPatient(Long appointmentId, Long patientUserId);
 }

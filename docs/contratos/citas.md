@@ -17,6 +17,42 @@
 | POST | `/api/v1/admin/appointments/{id}/approve` | ADMIN: aprueba → `APPROVED` |
 | POST | `/api/v1/admin/appointments/{id}/reject` | ADMIN: rechaza con motivo → `REJECTED` y libera los slots |
 
+| GET | `/api/v1/appointments?status=&from=&to=` | USER: lista sus propias citas (HU-016) |
+| GET | `/api/v1/appointments/{id}` | USER: consulta el detalle de una cita propia (HU-016) |
+
+## Mis citas (HU-016)
+
+```http
+GET /api/v1/appointments?status=APPROVED&from=2026-10-01&to=2026-10-31
+GET /api/v1/appointments/31
+```
+
+Solo un `USER` autenticado puede usar estos endpoints. La identidad del paciente viene del
+access token; no se acepta ni se expone un identificador de paciente. Todos los filtros son opcionales:
+
+| Parametro | Formato | Regla |
+|---|---|---|
+| `status` | `REQUESTED`, `APPROVED`, `REJECTED`, `CANCELLED`, `COMPLETED` o `NO_SHOW` | filtra por estado |
+| `from` | `YYYY-MM-DD` | fecha inicial inclusiva |
+| `to` | `YYYY-MM-DD` | fecha final inclusiva; no puede ser anterior a `from` |
+
+El listado devuelve `200` y `items`, ordenados por inicio ascendente. El detalle devuelve el
+mismo objeto. Ambos incluyen sede, profesional, especialidad, fecha/hora, duracion y estado:
+
+```json
+{
+  "id": 31, "status": "REJECTED", "professionalName": "Laura Gomez",
+  "specialtyName": "Cardiologia", "siteCode": "HIC",
+  "siteName": "Hospital Internacional de Colombia", "date": "2026-10-01",
+  "startTime": "09:00", "endTime": "10:00", "durationMinutes": 60,
+  "rejectionReason": "El especialista no atiende esta patologia"
+}
+```
+
+`rejectionReason` es `null` en citas no rechazadas. Una cita inexistente o de otro USER
+responde `404 NOT_FOUND`, sin revelar su existencia. Filtros invalidos responden
+`400 VALIDATION_ERROR`.
+
 ## Buscar disponibilidad (HU-012)
 
 | Parámetro | Obligatorio | Valores |
