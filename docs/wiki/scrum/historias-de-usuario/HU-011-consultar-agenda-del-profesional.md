@@ -99,16 +99,18 @@ Implementa RF-16. Incluye el dashboard PROFESSIONAL y la vista de agenda.
 
 | Elemento | Resultado | Evidencia | Observación |
 |---|---|---|---|
-| CA-01 | Pendiente | — | — |
-| CA-02 | Pendiente | — | — |
-| CA-03 | Pendiente | — | — |
-| DoD | Pendiente | — | — |
+| CA-01 | Cumple | `MyAppointmentsApiIntegrationTest#hu011_elProfesionalVeSoloSusCitasAprobadasEnElRangoYSedeSolicitados`; `AgendaPage` y `WeekCalendar` | Citas `APPROVED` propias por semana, con paciente, especialidad, sede y hora. |
+| CA-02 | Cumple | Mismo test; filtro de sede `AgendaToolbar`/`AgendaPage` | La consulta REST y la vista restringen por sede. |
+| CA-03 | Cumple | Mismo test de integración | La consulta se limita al profesional autenticado. |
+| DoD | Cumple | API `clean test` 167/167; frontend lint, 98 pruebas, typecheck y build; contrato `docs/contratos/disponibilidad.md`; confirmación manual del Product Owner el 2026-09-30 | Calendario profesional validado visualmente tras el ajuste: las citas asignadas se presentan en la agenda. |
 
 ## Historial de validación
 
 - 2026-09-16 (S2) — HU creada en estado `Borrador`.
 
 - 2026-09-25 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S4 (bloque "Ciclo de la cita", D-031).
+
+- 2026-09-30 (S4) — Matriz CA/DoD actualizada y validación visual del calendario confirmada por el Product Owner. Se conserva el estado `Aprobada` hasta una decisión explícita de cierre.
 
 ## Notas y decisiones
 

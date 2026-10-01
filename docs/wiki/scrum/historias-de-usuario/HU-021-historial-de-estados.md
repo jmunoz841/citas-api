@@ -101,10 +101,10 @@ Implementa RF-19 y RN-12. El registro del historial nace en [[HU-013-reservar-ci
 
 | Elemento | Resultado | Evidencia | Observación |
 |---|---|---|---|
-| CA-01 | Pendiente | — | — |
-| CA-02 | Pendiente | — | — |
-| CA-03 | Pendiente | — | — |
-| DoD | Pendiente | — | — |
+| CA-01 | Cumple | `MyAppointmentsApiIntegrationTest#hu020_hu021_elProfesionalCierraSuCitaIniciadaYElHistorialEsDeSoloLectura`; `AppointmentHistoryService` | Consulta ordenada con estado, fuente, actor, fecha/hora y motivo. |
+| CA-02 | Cumple | Mismo test verifica `PATCH /history` = `405`; no existe endpoint de borrado | La API no expone mutación del historial. |
+| CA-03 | Cumple | Mismo test verifica `404` para USER ajeno; `AppointmentHistoryService` valida ownership | USER no accede al historial ajeno; ADMIN y PROFESSIONAL siguen su alcance. |
+| DoD | Cumple | API `clean test` 167/167; historial visible en `MyAppointmentsPage`; contrato `docs/contratos/citas.md` | D-034 amplía consulta al profesional propio. |
 
 ## Historial de validación
 

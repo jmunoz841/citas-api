@@ -101,10 +101,10 @@ Implementa RF-14.
 
 | Elemento | Resultado | Evidencia | Observación |
 |---|---|---|---|
-| CA-01 | Pendiente | — | — |
-| CA-02 | Pendiente | — | — |
-| CA-03 | Pendiente | — | — |
-| DoD | Pendiente | — | — |
+| CA-01 | Cumple | `MyAppointmentsApiIntegrationTest#ca01_cancelarUnaCitaPropiaFuturaLaCancelaLiberaSlotsYRegistraHistorial` | Estado, liberación de slots e historial en la misma operación. |
+| CA-02 | Cumple | `MyAppointmentsApiIntegrationTest#ca02_unaCitaPasadaOTerminalNoSePuedeCancelar` | Rechaza cita pasada y estados terminales. |
+| CA-03 | Cumple | `MyAppointmentsApiIntegrationTest#ca03_unUserNoPuedeCancelarLaCitaDeOtroPaciente` | Aislamiento por ownership con `404`. |
+| DoD | Cumple | API `clean test` 167/167; `MyAppointmentsPage`; contrato `docs/contratos/citas.md` | Acción web con confirmación; evidencia consolidada en [[evidencia-s4]]. |
 
 ## Historial de validación
 

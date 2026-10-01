@@ -104,11 +104,11 @@ Implementa RF-13. Incluye listado y detalle.
 
 | Elemento | Resultado | Evidencia | Observación |
 |---|---|---|---|
-| CA-01 | Pendiente | — | — |
-| CA-02 | Pendiente | — | — |
-| CA-03 | Pendiente | — | — |
-| CA-04 | Pendiente | — | — |
-| DoD | Pendiente | — | — |
+| CA-01 | Cumple | `MyAppointmentsApiIntegrationTest#ca01_elListadoMuestraSedeProfesionalEspecialidadHorarioDuracionYEstado` | Lista datos mínimos y orden de consulta. |
+| CA-02 | Cumple | `MyAppointmentsApiIntegrationTest#ca02_losFiltrosDeEstadoYFechaDejanSoloLasQueCumplen` | Filtros de estado y fecha. |
+| CA-03 | Cumple | `MyAppointmentsApiIntegrationTest#ca03_elDetalleDeUnaCitaRechazadaMuestraElMotivo`; `MyAppointmentsPage.test.tsx` | Motivo visible en API y detalle web. |
+| CA-04 | Cumple | `MyAppointmentsApiIntegrationTest#ca04_unaCitaAjenaNoSeVeNiEnElListadoNiEnElDetalle` | Oculta existencia con `404`. |
+| DoD | Cumple | API `clean test` 167/167; `MyAppointmentsPage`; contrato `docs/contratos/citas.md` | Evidencia técnica consolidada en [[evidencia-s4]]. |
 
 ## Historial de validación
 

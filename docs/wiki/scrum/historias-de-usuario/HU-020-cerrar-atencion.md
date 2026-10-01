@@ -98,16 +98,18 @@ Implementa RF-17.
 
 | Elemento | Resultado | Evidencia | Observación |
 |---|---|---|---|
-| CA-01 | Pendiente | — | — |
-| CA-02 | Pendiente | — | — |
-| CA-03 | Pendiente | — | — |
-| DoD | Pendiente | — | — |
+| CA-01 | Cumple | `MyAppointmentsApiIntegrationTest#hu020_hu021_elProfesionalCierraSuCitaIniciadaYElHistorialEsDeSoloLectura` | Transición a `COMPLETED` e historial con actor `PROFESSIONAL`. |
+| CA-02 | Cumple | `MyAppointmentsApiIntegrationTest#hu020_noPermiteCerrarUnaCitaFuturaONoPropia`; `AgendaPage` | Backend rechaza antes del inicio y UI deshabilita la acción. |
+| CA-03 | Cumple | `MyAppointmentsApiIntegrationTest#hu020_noPermiteCerrarUnaCitaFuturaONoPropia` | Rechaza cita ajena; el dominio rechaza estados no `APPROVED`. |
+| DoD | Cumple | API `clean test` 167/167; `AgendaPage`/`WeekCalendar`; contrato `docs/contratos/disponibilidad.md`; confirmación manual del Product Owner el 2026-09-30 | La acción para cerrar una cita iniciada fue validada visualmente, incluida la actualización de la agenda. |
 
 ## Historial de validación
 
 - 2026-09-16 (S2) — HU creada en estado `Borrador`.
 
 - 2026-09-25 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S4 (bloque "Ciclo de la cita", D-031).
+
+- 2026-09-30 (S4) — Matriz CA/DoD actualizada y validación manual de cierre de atención confirmada por el Product Owner. Se conserva el estado `Aprobada` hasta una decisión explícita de cierre.
 
 ## Notas y decisiones
 
