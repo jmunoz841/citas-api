@@ -61,7 +61,7 @@ S3 cerrada el 2026-09-25: 10 HU `Completada`, merge a `main` y etiqueta `s3` en 
 
 `git pull` en los tres repos, JDK 21 portable en `%USERPROFILE%\.jdks\temurin-21`, `.env` en raíz, `citas-api` y `citas-web`. Docker Desktop está instalado **por usuario** en `%LOCALAPPDATA%\Programs\DockerDesktop\Docker Desktop.exe`, no en `Program Files`. Luego `docker compose up -d` desde `citas-api/` (MySQL en 3308).
 
-Verificar con `$env:JAVA_HOME="$env:USERPROFILE\.jdks\temurin-21"; .\mvnw.cmd clean test` → deben pasar **153** pruebas; en `citas-web`, `npm run lint`, `npm test` (96), `npm run typecheck` y `npm run build`.
+Verificar con `$env:JAVA_HOME="$env:USERPROFILE\.jdks\temurin-21"; .\mvnw.cmd clean test`; la última evidencia disponible registra **172** pruebas backend en verde. En `citas-web`, ejecutar `npm run lint`, `npm test`, `npm run typecheck` y `npm run build`; la última evidencia registra 99 pruebas en verde.
 
 **Usar `clean test`, no solo `test`.** En este equipo los archivos quedan con horas de modificación incoherentes: el editor los guarda unas 5 horas "en el futuro" y otras herramientas con la hora real. La compilación incremental de Maven puede entonces tomar una fuente por más antigua que su `.class` y ejecutar código viejo. El mismo desfase de reloj provoca a veces que MySQL de Testcontainers presente un certificado TLS "todavía no válido" (`CertificateNotYetValidException`): varias clases de integración fallan al arrancar el contexto. Se resuelve relanzando.
 
@@ -73,9 +73,9 @@ Al cerrar la clase se borra la credencial propia y la config local, para no deja
 2. Lanzar el push con los diálogos habilitados solo para ese comando: `$env:GCM_INTERACTIVE='always'; $env:GIT_TERMINAL_PROMPT='1'; git push ...`. Git Credential Manager abre su ventana y el usuario inicia sesión como `jmunoz841`. Las herramientas del agente traen `GCM_INTERACTIVE=never` y sin esto el push falla con "Cannot prompt".
 3. Al terminar: `cmdkey /delete:git:https://jmunoz841@github.com` y `git config --unset credential.https://github.com.username` en los tres repos.
 
-### 3. S4 — qué sigue
+### 3. S4 — cierre confirmado (2026-09-30)
 
-Alcance aprobado (D-031): bloque "Ciclo de la cita". Orden sugerido por dependencias:
+El alcance aprobado (D-031) está cerrado: HU-016, HU-017, HU-011, HU-020 y HU-021 están `Completada`. HU-002 y HU-003 también se completaron en S4. La evidencia de loops Builder/Verifier y las matrices CA/DoD se encuentran en [[evidencia-s4]] y en las notas Scrum.
 
 | Orden | HU | Qué pide |
 |---|---|---|
@@ -85,7 +85,7 @@ Alcance aprobado (D-031): bloque "Ciclo de la cita". Orden sugerido por dependen
 | 4 | [[HU-020-cerrar-atencion]] | Marcar `COMPLETED` / `NO_SHOW` desde la hora de inicio (D-034) |
 | 5 | [[HU-021-historial-de-estados]] | Consultar el historial (ADMIN, USER dueño y PROFESSIONAL de sus citas, D-034); inmutabilidad |
 
-La guía de S4 pide además ciclos Builder/Verifier con log por iteración y los LOOP 01 a 03 (`GUIA_SESIONES_S2_S6.md`). Siguen en `Borrador`: reprogramación (HU-018, HU-019, HU-022; reglas ya decididas en D-033), cuenta (HU-002, token de 30 min por D-032; HU-003) y EPS y planes (HU-007).
+Fuera del alcance aprobado de S4 siguen en `Borrador`: reprogramación (HU-018, HU-019, HU-022; reglas decididas en D-033) y EPS/planes (HU-007). El siguiente bloque académico es S5: automatizaciones n8n, MCP, OAuth y seguridad frente a contenido no confiable.
 
 Deuda técnica menor: en la primera carga en frío los íconos de Material Symbols se ven como texto unos segundos; conviene alojar la fuente en `citas-web` en vez de cargarla de Google Fonts.
 

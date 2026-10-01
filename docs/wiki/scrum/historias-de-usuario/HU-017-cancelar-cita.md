@@ -2,7 +2,7 @@
 id: HU-017
 tipo: historia-de-usuario
 titulo: "Cancelar cita"
-estado: Aprobada
+estado: Completada
 epica: "[[EP-007-ciclo-de-vida-de-citas]]"
 esfuerzo: "Medio"
 sprint_sugerido: "Sprint 3"
@@ -60,13 +60,13 @@ Implementa RF-14.
 
 ## Tareas de desarrollo
 
-- [ ] **T-01 — Caso de uso cancelar**  
+- [x] **T-01 — Caso de uso cancelar**
   Dificultad: Medio  
   Descripción: validaciones de estado/fecha/ownership, liberación e historial.
-- [ ] **T-02 — Acción en frontend**  
+- [x] **T-02 — Acción en frontend**
   Dificultad: Bajo  
   Descripción: confirmación de cancelación.
-- [ ] **T-03 — Pruebas**  
+- [x] **T-03 — Pruebas**
   Dificultad: Medio  
   Descripción: estados no cancelables, pasado, ajena, liberación.
 
@@ -111,6 +111,10 @@ Implementa RF-14.
 - 2026-09-16 (S2) — HU creada en estado `Borrador`.
 
 - 2026-09-25 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S4 (bloque "Ciclo de la cita", D-031).
+
+- 2026-09-30 (S4) — HU pasa a `En validación`: la matriz registra evidencia de los tres CA y la DoD en `Cumple`.
+
+- 2026-09-30 (S4) — HU `Completada` con confirmación explícita del Product Owner.
 
 ## Notas y decisiones
 

@@ -2,7 +2,7 @@
 id: HU-021
 tipo: historia-de-usuario
 titulo: "Consultar historial de estados de una cita"
-estado: Aprobada
+estado: Completada
 epica: "[[EP-007-ciclo-de-vida-de-citas]]"
 esfuerzo: "Medio"
 sprint_sugerido: "Sprint 3"
@@ -57,16 +57,16 @@ Implementa RF-19 y RN-12. El registro del historial nace en [[HU-013-reservar-ci
 
 ## Tareas de desarrollo
 
-- [ ] **T-01 — Consulta de historial**  
+- [x] **T-01 — Consulta de historial**
   Dificultad: Bajo  
   Descripción: caso de uso y endpoint con ownership.
-- [ ] **T-02 — Revisión transversal de transiciones**  
+- [x] **T-02 — Revisión transversal de transiciones**
   Dificultad: Medio  
   Descripción: confirmar registro en creación, aprobación, rechazo, cancelación, reprogramación y cierre.
-- [ ] **T-03 — Visualización en detalle de cita**  
+- [x] **T-03 — Visualización en detalle de cita**
   Dificultad: Bajo  
   Descripción: línea de tiempo de estados.
-- [ ] **T-04 — Pruebas**  
+- [x] **T-04 — Pruebas**
   Dificultad: Medio  
   Descripción: completitud por transición, inmutabilidad y ownership.
 
@@ -111,6 +111,10 @@ Implementa RF-19 y RN-12. El registro del historial nace en [[HU-013-reservar-ci
 - 2026-09-16 (S2) — HU creada en estado `Borrador`.
 
 - 2026-09-25 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S4 (bloque "Ciclo de la cita", D-031).
+
+- 2026-09-30 (S4) — HU pasa a `En validación`: la matriz registra evidencia de los tres CA y la DoD en `Cumple`.
+
+- 2026-09-30 (S4) — HU `Completada` con confirmación explícita del Product Owner.
 
 ## Notas y decisiones
 

@@ -2,7 +2,7 @@
 id: HU-020
 tipo: historia-de-usuario
 titulo: "Cerrar atención"
-estado: Aprobada
+estado: Completada
 epica: "[[EP-007-ciclo-de-vida-de-citas]]"
 esfuerzo: "Bajo"
 sprint_sugerido: "Sprint 3"
@@ -57,13 +57,13 @@ Implementa RF-17.
 
 ## Tareas de desarrollo
 
-- [ ] **T-01 — Caso de uso cerrar atención**  
+- [x] **T-01 — Caso de uso cerrar atención**
   Dificultad: Bajo  
   Descripción: validación de estado, fecha y ownership; historial.
-- [ ] **T-02 — Acción en agenda**  
+- [x] **T-02 — Acción en agenda**
   Dificultad: Bajo  
   Descripción: botones de completado/inasistencia.
-- [ ] **T-03 — Pruebas**  
+- [x] **T-03 — Pruebas**
   Dificultad: Bajo  
   Descripción: cita futura, ajena, estado inválido.
 
@@ -109,7 +109,9 @@ Implementa RF-17.
 
 - 2026-09-25 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S4 (bloque "Ciclo de la cita", D-031).
 
-- 2026-09-30 (S4) — Matriz CA/DoD actualizada y validación manual de cierre de atención confirmada por el Product Owner. Se conserva el estado `Aprobada` hasta una decisión explícita de cierre.
+- 2026-09-30 (S4) — Matriz CA/DoD actualizada y validación manual de cierre de atención confirmada por el Product Owner. HU pasa a `En validación` a la espera del cierre explícito.
+
+- 2026-09-30 (S4) — HU `Completada` con confirmación explícita del Product Owner.
 
 ## Notas y decisiones
 

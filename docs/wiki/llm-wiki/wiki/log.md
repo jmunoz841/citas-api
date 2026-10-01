@@ -172,3 +172,9 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 - HECHO: se añade Flyway V8, endpoints públicos de solicitud y restablecimiento, persistencia exclusiva del hash y pantallas React sin exponer secretos.
 - HECHO: `mvnw.cmd clean test` finalizó con 171 pruebas, sin fallos, errores u omitidas; frontend con lint, 99 pruebas, typecheck y build correctos.
 - PÁGINAS afectadas: [[decisiones]], [[evidencia-s4]], [[ejecucion]]
+
+## 2026-09-30 — INGEST — Cierre documental de S4
+- DECISIÓN (usuario): confirma el cierre de HU-011, HU-016, HU-017, HU-020 y HU-021. Todas pasan a `Completada` con matriz CA/DoD en `Cumple`.
+- HECHO: HU-002 y HU-003 también están `Completada`; la evidencia final registra 172 pruebas backend y 99 pruebas frontend en verde.
+- HECHO: los LOOP 01, 02 y 03 de S4 tienen resultado PASS en [[evidencia-s4]].
+- PÁGINAS afectadas: [[evidencia-s4]], [[ejecucion]], [[scrum/README]].

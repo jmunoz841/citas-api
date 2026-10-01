@@ -2,7 +2,7 @@
 id: HU-011
 tipo: historia-de-usuario
 titulo: "Consultar agenda del profesional"
-estado: Aprobada
+estado: Completada
 epica: "[[EP-005-agenda-del-profesional]]"
 esfuerzo: "Medio"
 sprint_sugerido: "Sprint 3"
@@ -58,13 +58,13 @@ Implementa RF-16. Incluye el dashboard PROFESSIONAL y la vista de agenda.
 
 ## Tareas de desarrollo
 
-- [ ] **T-01 — Consulta de agenda**  
+- [x] **T-01 — Consulta de agenda**
   Dificultad: Medio  
   Descripción: caso de uso por rango de fechas y sede, filtrado por profesional autenticado.
-- [ ] **T-02 — Dashboard y vista de agenda**  
+- [x] **T-02 — Dashboard y vista de agenda**
   Dificultad: Medio  
   Descripción: vista diaria/semanal según diseño aprobado.
-- [ ] **T-03 — Pruebas**  
+- [x] **T-03 — Pruebas**
   Dificultad: Medio  
   Descripción: filtros, estados excluidos y aislamiento entre profesionales.
 
@@ -110,7 +110,9 @@ Implementa RF-16. Incluye el dashboard PROFESSIONAL y la vista de agenda.
 
 - 2026-09-25 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S4 (bloque "Ciclo de la cita", D-031).
 
-- 2026-09-30 (S4) — Matriz CA/DoD actualizada y validación visual del calendario confirmada por el Product Owner. Se conserva el estado `Aprobada` hasta una decisión explícita de cierre.
+- 2026-09-30 (S4) — Matriz CA/DoD actualizada y validación visual del calendario confirmada por el Product Owner. HU pasa a `En validación` a la espera del cierre explícito.
+
+- 2026-09-30 (S4) — HU `Completada` con confirmación explícita del Product Owner.
 
 ## Notas y decisiones
 

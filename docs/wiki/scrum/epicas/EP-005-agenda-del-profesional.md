@@ -2,7 +2,7 @@
 id: EP-005
 tipo: epica
 titulo: "Agenda del profesional"
-estado: Borrador
+estado: Completada
 historias:
   - "[[HU-010-gestionar-bloques-de-disponibilidad]]"
   - "[[HU-011-consultar-agenda-del-profesional]]"
@@ -47,12 +47,12 @@ Oferta de horarios reservables y visibilidad de la atención programada.
 ## Historias de usuario
 
 - [[HU-010-gestionar-bloques-de-disponibilidad]] — Sprint 2 — Completada
-- [[HU-011-consultar-agenda-del-profesional]] — Sprint 3 — Aprobada
+- [[HU-011-consultar-agenda-del-profesional]] — Sprint 3 — Completada
 
 ## Criterio de completitud de la épica
 
-- [ ] Todas las HU obligatorias de esta épica están `Completada`.
-- [ ] No quedan dependencias bloqueantes dentro del alcance de la épica.
+- [x] Todas las HU obligatorias de esta épica están `Completada`.
+- [x] No quedan dependencias bloqueantes dentro del alcance de la épica.
 
 ## Riesgos e incógnitas
 
