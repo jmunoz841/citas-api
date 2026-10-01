@@ -62,6 +62,13 @@ final class AuthDtos {
         }
     }
 
+    record UpdateProfileRequest(@NotBlank @Size(max = 100) String firstNames,
+                                @NotBlank @Size(max = 100) String lastNames,
+                                @NotBlank @Pattern(regexp = "^[0-9+()\\- ]{7,20}$") String phone) { }
+
+    record ProfileResponse(Long id, String firstNames, String lastNames, String documentType,
+                           String documentNumber, String email, String phone) { }
+
     record UserResponse(Long id, String firstNames, String lastNames, String documentType, String documentNumber,
                         String email, String phone, List<String> roles) {
 

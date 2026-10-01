@@ -27,6 +27,7 @@ import com.citas.api.application.service.ProfessionalAgendaService;
 import com.citas.api.application.service.ProfessionalAppointmentClosureService;
 import com.citas.api.application.service.AppointmentHistoryService;
 import com.citas.api.application.service.PasswordRecoveryService;
+import com.citas.api.application.service.OwnProfileService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -60,6 +61,8 @@ class ApplicationConfig {
                                                     Clock clock) {
         return new PasswordRecoveryService(users, resetTokens, resetTokenGenerator, tokenProvider, passwordHasher, clock);
     }
+
+    @Bean OwnProfileService ownProfileService(UserRepositoryPort users) { return new OwnProfileService(users); }
 
     @Bean
     CatalogService catalogService(CatalogRepositoryPort catalogs, AffiliationRepositoryPort affiliations,

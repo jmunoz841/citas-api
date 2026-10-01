@@ -86,4 +86,8 @@ public final class User {
     public User withPasswordHash(String newPasswordHash) {
         return new User(id, firstNames, lastNames, document, email, phone, newPasswordHash, active, roles);
     }
+
+    public User withProfile(String newFirstNames, String newLastNames, String newPhone) {
+        return new User(id, newFirstNames, newLastNames, document, email, newPhone, passwordHash, active, roles);
+    }
 }

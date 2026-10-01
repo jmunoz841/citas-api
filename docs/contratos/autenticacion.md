@@ -18,6 +18,8 @@
 | POST | `/api/v1/auth/logout` | Pública (requiere refresh token) | `204` sin cuerpo |
 | POST | `/api/v1/auth/password-reset-requests` | Pública | `204` sin cuerpo |
 | POST | `/api/v1/auth/password-resets` | Pública | `204` sin cuerpo |
+| GET | `/api/v1/auth/profile` | USER | `200` + perfil propio |
+| PATCH | `/api/v1/auth/profile` | USER | `200` + perfil actualizado |
 | GET | `/api/v1/auth/session` | Access token | `200` + datos de sesión |
 | GET | `/actuator/health` | Pública | `200` |
 
@@ -117,6 +119,10 @@ Siempre responde `204`, exista o no una cuenta activa para el correo. Para una c
 ```
 
 La contraseña debe cumplir la misma política de registro. Con token vigente y no usado responde `204`, actualiza el hash BCrypt de la cuenta y consume el token. Un token inexistente, vencido, revocado o reutilizado responde `400` con `INVALID_PASSWORD_RESET_TOKEN` sin modificar la cuenta.
+
+### Perfil propio (HU-003)
+
+`GET /api/v1/auth/profile` devuelve los datos del USER autenticado sin hash de contraseña. `PATCH /api/v1/auth/profile` acepta únicamente `firstNames`, `lastNames` y `phone`; email, documento y roles no son editables ni se reciben del cliente.
 
 ### GET `/api/v1/auth/session`
 

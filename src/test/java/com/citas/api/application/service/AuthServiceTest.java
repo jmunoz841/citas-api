@@ -180,6 +180,23 @@ class AuthServiceTest {
                 .isInstanceOf(InvalidRefreshTokenException.class);
     }
 
+    @Test
+    void hu003_elUserConsultaYActualizaSoloLosCamposPermitidosDeSuPerfil() {
+        User user = service.register(command("ana@example.com", "1234"));
+        OwnProfileService profiles = new OwnProfileService(users);
+
+        var initial = profiles.view(user.getId());
+        var updated = profiles.update(user.getId(), new com.citas.api.application.port.in.ManageOwnProfileUseCase.UpdateProfileCommand(
+                "Ana María", "Actualizada", "3017654321"));
+
+        assertThat(initial.email()).isEqualTo("ana@example.com");
+        assertThat(updated.firstNames()).isEqualTo("Ana María");
+        assertThat(updated.lastNames()).isEqualTo("Actualizada");
+        assertThat(updated.phone()).isEqualTo("3017654321");
+        assertThat(updated.email()).isEqualTo(initial.email());
+        assertThat(updated.documentNumber()).isEqualTo(initial.documentNumber());
+    }
+
     // ---------- HU-004: afiliación opcional ----------
 
     @Test

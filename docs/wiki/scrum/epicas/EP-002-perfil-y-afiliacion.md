@@ -47,7 +47,7 @@ Datos de contacto y afiliación actualizados y normalizados.
 
 ## Historias de usuario
 
-- [[HU-003-consultar-y-actualizar-perfil]] — Sprint 3 — Borrador
+- [[HU-003-consultar-y-actualizar-perfil]] — Sprint 3 — Completada
 - [[HU-004-registrar-afiliacion]] — Sprint 3 — Completada
 
 ## Criterio de completitud de la épica
