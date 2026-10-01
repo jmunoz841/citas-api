@@ -50,6 +50,7 @@ Solo se registran como DECISIÓN los puntos aprobados explícitamente por el usu
 | D-032 | 2026-09-25 | El token de recuperación de contraseña (HU-002) dura 30 minutos | HU-002 | `raw/2026-09-25-alcance-s4.md` |
 | D-033 | 2026-09-25 | Reprogramación: una `PENDING` por cita; cancelar la cita cancela la solicitud; si llega la hora original con la solicitud `PENDING`, se cancela y libera su retención | HU-017, HU-018, HU-019 | `raw/2026-09-25-alcance-s4.md` |
 | D-034 | 2026-09-25 | Una cita se cierra desde su hora de inicio; el PROFESSIONAL ve el historial de sus propias citas | HU-020, HU-021 | `raw/2026-09-25-alcance-s4.md` |
+| D-035 | 2026-09-30 | El Product Owner aprueba implementar HU-002: recuperación con token de un solo uso, vigencia de 30 minutos y persistencia exclusiva del hash; no se expone ni registra el valor claro | HU-002 | Confirmación explícita del Product Owner en sesión |
 
 ## Preguntas abiertas
 

@@ -8,9 +8,15 @@ import com.citas.api.application.port.in.LogoutUseCase;
 import com.citas.api.application.port.in.RefreshSessionUseCase;
 import com.citas.api.application.port.in.RegisterUserUseCase;
 import com.citas.api.application.port.in.RegisterUserUseCase.RegisterUserCommand;
+import com.citas.api.application.port.in.RequestPasswordResetUseCase;
+import com.citas.api.application.port.in.RequestPasswordResetUseCase.RequestPasswordResetCommand;
+import com.citas.api.application.port.in.ResetPasswordUseCase;
+import com.citas.api.application.port.in.ResetPasswordUseCase.ResetPasswordCommand;
 import com.citas.api.domain.model.user.User;
 import com.citas.api.infrastructure.adapters.in.web.auth.AuthDtos.LoginRequest;
 import com.citas.api.infrastructure.adapters.in.web.auth.AuthDtos.RefreshTokenRequest;
+import com.citas.api.infrastructure.adapters.in.web.auth.AuthDtos.PasswordResetRequest;
+import com.citas.api.infrastructure.adapters.in.web.auth.AuthDtos.ResetPasswordRequest;
 import com.citas.api.infrastructure.adapters.in.web.auth.AuthDtos.RegisterRequest;
 import com.citas.api.infrastructure.adapters.in.web.auth.AuthDtos.SessionResponse;
 import com.citas.api.infrastructure.adapters.in.web.auth.AuthDtos.TokenResponse;
@@ -37,14 +43,19 @@ class AuthController {
     private final RefreshSessionUseCase refreshSession;
     private final LogoutUseCase logout;
     private final GetSessionProfileUseCase sessionProfile;
+    private final RequestPasswordResetUseCase passwordResetRequest;
+    private final ResetPasswordUseCase passwordReset;
 
     AuthController(RegisterUserUseCase registerUser, LoginUseCase login, RefreshSessionUseCase refreshSession,
-                   LogoutUseCase logout, GetSessionProfileUseCase sessionProfile) {
+                   LogoutUseCase logout, GetSessionProfileUseCase sessionProfile,
+                   RequestPasswordResetUseCase passwordResetRequest, ResetPasswordUseCase passwordReset) {
         this.registerUser = registerUser;
         this.login = login;
         this.refreshSession = refreshSession;
         this.logout = logout;
         this.sessionProfile = sessionProfile;
+        this.passwordResetRequest = passwordResetRequest;
+        this.passwordReset = passwordReset;
     }
 
     @PostMapping("/register")
@@ -70,6 +81,19 @@ class AuthController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void logout(@Valid @RequestBody RefreshTokenRequest request) {
         logout.logout(request.refreshToken());
+    }
+
+    /** Siempre responde igual para no revelar si el correo corresponde a una cuenta. */
+    @PostMapping("/password-reset-requests")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void requestPasswordReset(@Valid @RequestBody PasswordResetRequest request) {
+        passwordResetRequest.request(new RequestPasswordResetCommand(request.email()));
+    }
+
+    @PostMapping("/password-resets")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        passwordReset.reset(new ResetPasswordCommand(request.token(), request.password()));
     }
 
     /**

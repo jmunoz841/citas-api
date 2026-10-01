@@ -81,4 +81,9 @@ public final class User {
     public String getPasswordHash() { return passwordHash; }
     public boolean isActive() { return active; }
     public Set<Role> getRoles() { return roles; }
+
+    /** Conserva identidad, roles y estado; solo reemplaza el hash validado por el caso de uso. */
+    public User withPasswordHash(String newPasswordHash) {
+        return new User(id, firstNames, lastNames, document, email, phone, newPasswordHash, active, roles);
+    }
 }

@@ -166,3 +166,9 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 ## 2026-09-30 — VERIFY — Suite completa S4
 - HECHO: `mvnw.cmd clean test` con Java 21 y Testcontainers finalizó con 167 pruebas, 0 fallos, 0 errores y 0 omitidas.
 - Páginas afectadas: [[evidencia-s4]]
+
+## 2026-09-30 — LEARN — HU-002 recuperación de contraseña
+- DECISIÓN (usuario): se aprueba HU-002 con token de un solo uso de 30 minutos; se registra como D-035.
+- HECHO: se añade Flyway V8, endpoints públicos de solicitud y restablecimiento, persistencia exclusiva del hash y pantallas React sin exponer secretos.
+- HECHO: `mvnw.cmd clean test` finalizó con 171 pruebas, sin fallos, errores u omitidas; frontend con lint, 99 pruebas, typecheck y build correctos.
+- PÁGINAS afectadas: [[decisiones]], [[evidencia-s4]], [[ejecucion]]

@@ -6,6 +6,8 @@ import com.citas.api.application.port.out.AppointmentRepositoryPort;
 import com.citas.api.application.port.out.AvailabilityRepositoryPort;
 import com.citas.api.application.port.out.CatalogRepositoryPort;
 import com.citas.api.application.port.out.PasswordHasherPort;
+import com.citas.api.application.port.out.PasswordResetTokenGeneratorPort;
+import com.citas.api.application.port.out.PasswordResetTokenRepositoryPort;
 import com.citas.api.application.port.out.ProfessionalRepositoryPort;
 import com.citas.api.application.port.out.RefreshTokenRepositoryPort;
 import com.citas.api.application.port.out.SpecialtyRepositoryPort;
@@ -24,6 +26,7 @@ import com.citas.api.application.service.AppointmentCancellationService;
 import com.citas.api.application.service.ProfessionalAgendaService;
 import com.citas.api.application.service.ProfessionalAppointmentClosureService;
 import com.citas.api.application.service.AppointmentHistoryService;
+import com.citas.api.application.service.PasswordRecoveryService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -47,6 +50,15 @@ class ApplicationConfig {
                             AffiliationRepositoryPort affiliations, PasswordHasherPort passwordHasher,
                             TokenProviderPort tokenProvider, Clock clock) {
         return new AuthService(users, refreshTokens, affiliations, passwordHasher, tokenProvider, clock);
+    }
+
+    @Bean
+    PasswordRecoveryService passwordRecoveryService(UserRepositoryPort users,
+                                                    PasswordResetTokenRepositoryPort resetTokens,
+                                                    PasswordResetTokenGeneratorPort resetTokenGenerator,
+                                                    TokenProviderPort tokenProvider, PasswordHasherPort passwordHasher,
+                                                    Clock clock) {
+        return new PasswordRecoveryService(users, resetTokens, resetTokenGenerator, tokenProvider, passwordHasher, clock);
     }
 
     @Bean

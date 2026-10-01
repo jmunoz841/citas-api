@@ -9,6 +9,7 @@ Estado: evidencia técnica preparada; las HU conservan su estado actual hasta co
 | HU-011 | `MyAppointmentsApiIntegrationTest#hu011_elProfesionalVeSoloSusCitasAprobadasEnElRangoYSedeSolicitados`: agenda propia, rango, sede y validación. |
 | HU-020 | `MyAppointmentsApiIntegrationTest#hu020_hu021_elProfesionalCierraSuCitaIniciadaYElHistorialEsDeSoloLectura` y `#hu020_noPermiteCerrarUnaCitaFuturaONoPropia`: cierre desde inicio, actor profesional y aislamiento. |
 | HU-021 | Los endpoints USER, ADMIN y PROFESSIONAL devuelven historial ordenado; la prueba verifica propiedad, completitud y ausencia de `PATCH` (`405`). |
+| HU-002 | `PasswordRecoveryApiIntegrationTest`: respuesta indistinguible para solicitud, cambio con token vigente, rechazo de token reutilizado/expirado y conservación de la cuenta; UI con rutas de solicitud y restablecimiento. |
 
 ## Ciclos Builder / Verifier
 
@@ -22,6 +23,7 @@ Estado: evidencia técnica preparada; las HU conservan su estado actual hasta co
 
 - Backend: `mvnw.cmd -Dtest=MyAppointmentsApiIntegrationTest test -q` con Java 21 y Testcontainers: 14 pruebas, 0 fallos.
 - Backend completo: `mvnw.cmd clean test` con Java 21 y Testcontainers: 167 pruebas, 0 fallos, 0 errores y 0 omitidas.
+- HU-002: backend completo posterior a V8: 171 pruebas, 0 fallos, 0 errores y 0 omitidas; frontend: lint, 99 pruebas, typecheck y build correctos.
 - Frontend: `npm run lint`, `npm test -- --run`, `npm run typecheck`, `npm run build`: lint/typecheck/build correctos. La prueba de agenda verifica la consulta semanal; el flujo de cierre queda cubierto en la integración del backend.
 
 Pendiente antes del cierre formal: completar la matriz Scrum/DoD sin cambiar el estado de las HU.

@@ -16,6 +16,8 @@
 | POST | `/api/v1/auth/login` | Pública | `200` + tokens |
 | POST | `/api/v1/auth/refresh` | Pública (requiere refresh token) | `200` + tokens nuevos |
 | POST | `/api/v1/auth/logout` | Pública (requiere refresh token) | `204` sin cuerpo |
+| POST | `/api/v1/auth/password-reset-requests` | Pública | `204` sin cuerpo |
+| POST | `/api/v1/auth/password-resets` | Pública | `204` sin cuerpo |
 | GET | `/api/v1/auth/session` | Access token | `200` + datos de sesión |
 | GET | `/actuator/health` | Pública | `200` |
 
@@ -100,6 +102,22 @@ Rotación: devuelve un par nuevo y revoca el refresh token recibido. Reutilizar 
 
 Revoca el refresh token. Idempotente: responde `204` aunque el token no exista o ya esté revocado. El access token emitido sigue siendo válido hasta su expiración (máx. `JWT_ACCESS_MINUTES`); el cliente debe descartarlo.
 
+### POST `/api/v1/auth/password-reset-requests`
+
+```json
+{ "email": "ana@example.com" }
+```
+
+Siempre responde `204`, exista o no una cuenta activa para el correo. Para una cuenta existente crea un token aleatorio de un único uso, con vigencia de 30 minutos (D-032), y persiste exclusivamente su hash SHA-256. Una solicitud nueva invalida los tokens anteriores aún activos. El valor claro no se registra ni se devuelve por la API.
+
+### POST `/api/v1/auth/password-resets`
+
+```json
+{ "token": "codigo-recibido-por-canal-seguro", "password": "NuevaClave123" }
+```
+
+La contraseña debe cumplir la misma política de registro. Con token vigente y no usado responde `204`, actualiza el hash BCrypt de la cuenta y consume el token. Un token inexistente, vencido, revocado o reutilizado responde `400` con `INVALID_PASSWORD_RESET_TOKEN` sin modificar la cuenta.
+
 ### GET `/api/v1/auth/session`
 
 Respuesta `200`:
@@ -128,6 +146,7 @@ Respuesta `200`:
 |---|---|---|
 | 400 | `VALIDATION_ERROR` | Campos faltantes o inválidos (`errors` por campo) |
 | 400 | `MALFORMED_REQUEST` | Cuerpo que no es JSON válido |
+| 400 | `INVALID_PASSWORD_RESET_TOKEN` | Token de recuperación inexistente, vencido, revocado o ya usado |
 | 401 | `INVALID_CREDENTIALS` | Email inexistente, contraseña incorrecta o cuenta inactiva (mismo mensaje) |
 | 401 | `INVALID_REFRESH_TOKEN` | Refresh token inexistente, expirado, revocado, rotado o de tipo access |
 | 401 | `UNAUTHORIZED` | Ruta protegida sin access token válido |

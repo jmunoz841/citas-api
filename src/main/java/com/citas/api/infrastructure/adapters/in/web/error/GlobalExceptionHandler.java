@@ -8,6 +8,7 @@ import com.citas.api.domain.exception.EmailAlreadyRegisteredException;
 import com.citas.api.domain.exception.InvalidCredentialsException;
 import com.citas.api.domain.exception.InvalidFieldException;
 import com.citas.api.domain.exception.InvalidRefreshTokenException;
+import com.citas.api.domain.exception.InvalidPasswordResetTokenException;
 import com.citas.api.domain.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,6 +74,11 @@ class GlobalExceptionHandler {
     @ExceptionHandler({InvalidCredentialsException.class, InvalidRefreshTokenException.class})
     ProblemDetail unauthorized(DomainException e) {
         return ApiProblems.of(HttpStatus.UNAUTHORIZED, e.getCode(), e.getMessage());
+    }
+
+    @ExceptionHandler(InvalidPasswordResetTokenException.class)
+    ProblemDetail invalidPasswordResetToken(InvalidPasswordResetTokenException e) {
+        return ApiProblems.of(HttpStatus.BAD_REQUEST, e.getCode(), e.getMessage());
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
