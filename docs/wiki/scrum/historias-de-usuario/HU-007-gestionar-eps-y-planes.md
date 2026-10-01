@@ -2,7 +2,7 @@
 id: HU-007
 tipo: historia-de-usuario
 titulo: "Gestionar EPS y planes"
-estado: Borrador
+estado: Aprobada
 epica: "[[EP-003-catalogos]]"
 esfuerzo: "Medio"
 sprint_sugerido: "Sprint 3"
@@ -118,6 +118,8 @@ Implementa RF-06 para EPS y planes de EPS. Los datos son sintéticos.
 ## Historial de validación
 
 - 2026-09-16 (S2) — HU creada en estado `Borrador`.
+
+- 2026-09-30 (S4) — HU `Aprobada` explícitamente por el Product Owner para completar el CRUD administrativo de EPS y planes antes de S5.
 
 ## Notas y decisiones
 

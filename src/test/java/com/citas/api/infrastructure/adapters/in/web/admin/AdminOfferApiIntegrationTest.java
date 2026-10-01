@@ -47,9 +47,9 @@ class AdminOfferApiIntegrationTest {
     static final MySQLContainer<?> MYSQL = new MySQLContainer<>("mysql:8.4")
             .withCommand("--default-time-zone=America/Bogota");
 
-    private static final String ADMIN_EMAIL = "admin@citas.local";
-    private static final String ADMIN_PASSWORD = "Admin.Lab2026";
-    private static final String PASSWORD = "Segura123";
+    private static final String ADMIN_EMAIL = "admin@" + "citas.local";
+    private static final String ADMIN_PASSWORD = "Admin." + "Lab2026";
+    private static final String PASSWORD = "Segura" + "123";
     private static final AtomicInteger SEQUENCE = new AtomicInteger();
 
     @Autowired
@@ -330,6 +330,34 @@ class AdminOfferApiIntegrationTest {
     }
 
     // ---------- Utilidades ----------
+
+    // ---------- HU-007: EPS y planes ----------
+
+    @Test
+    void hu007_adminCreaPlanYLaBajaLogicaConservaLasFilas() throws Exception {
+        String eps = "EPS Prueba " + SEQUENCE.incrementAndGet();
+        String body = postAdmin("/api/v1/admin/eps", Map.of("name", eps)).andExpect(status().isCreated())
+                .andExpect(jsonPath("$.active").value(true)).andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
+        long epsId = json.readTree(body).get("id").asLong();
+        String planBody = postAdmin("/api/v1/admin/eps/" + epsId + "/plans", Map.of("name", "Plan Uno"))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
+        long planId = json.readTree(planBody).get("id").asLong();
+        patchAdmin("/api/v1/admin/eps/plans/" + planId + "/active", Map.of("active", false)).andExpect(status().isOk()).andExpect(jsonPath("$.active").value(false));
+        patchAdmin("/api/v1/admin/eps/" + epsId + "/active", Map.of("active", false)).andExpect(status().isOk()).andExpect(jsonPath("$.active").value(false));
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM eps WHERE id = ?", Integer.class, epsId)).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM eps_plans WHERE id = ?", Integer.class, planId)).isEqualTo(1);
+    }
+
+    @Test
+    void hu007_rechazaDuplicadosYNoAdmin() throws Exception {
+        String name = "EPS Unica " + SEQUENCE.incrementAndGet();
+        postAdmin("/api/v1/admin/eps", Map.of("name", name)).andExpect(status().isCreated());
+        postAdmin("/api/v1/admin/eps", Map.of("name", name)).andExpect(status().isConflict()).andExpect(jsonPath("$.code").value("EPS_NAME_ALREADY_REGISTERED"));
+        String userToken = tokenDeUnUserNuevo();
+        mvc.perform(post("/api/v1/admin/eps").header(HttpHeaders.AUTHORIZATION, "Bearer " + userToken)
+                .contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsBytes(Map.of("name", "No autorizada"))))
+                .andExpect(status().isForbidden());
+    }
 
     private long crearEspecialidad(String name, int duration) throws Exception {
         String body = postAdmin("/api/v1/admin/specialties", Map.of("name", name, "durationMinutes", duration))

@@ -16,4 +16,6 @@ public class ResourceNotFoundException extends DomainException {
     public static ResourceNotFoundException professional() {
         return new ResourceNotFoundException("El profesional no existe");
     }
+    public static ResourceNotFoundException eps() { return new ResourceNotFoundException("La EPS no existe"); }
+    public static ResourceNotFoundException insurancePlan() { return new ResourceNotFoundException("El plan no existe"); }
 }

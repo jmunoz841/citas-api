@@ -13,6 +13,8 @@ import jakarta.validation.constraints.Size;
 
 import java.util.List;
 import java.util.Set;
+import com.citas.api.domain.model.affiliation.InsuranceProvider;
+import com.citas.api.domain.model.affiliation.ManagedInsurancePlan;
 
 /**
  * DTOs de administración (HU-006, HU-008, HU-009). La contraseña temporal del profesional solo
@@ -33,6 +35,14 @@ final class AdminDtos {
     }
 
     record ActiveRequest(@NotNull Boolean active) {
+    }
+
+    record NameRequest(@NotBlank @Size(max = 120) String name) { }
+    record InsuranceProviderResponse(Long id, String name, boolean active) {
+        static InsuranceProviderResponse from(InsuranceProvider value) { return new InsuranceProviderResponse(value.id(), value.name(), value.active()); }
+    }
+    record InsurancePlanResponse(Long id, Long epsId, String name, boolean active) {
+        static InsurancePlanResponse from(ManagedInsurancePlan value) { return new InsurancePlanResponse(value.id(), value.epsId(), value.name(), value.active()); }
     }
 
     record SpecialtyResponse(Long id, String name, int durationMinutes, boolean general, boolean active) {

@@ -2,7 +2,7 @@
 id: HU-018
 tipo: historia-de-usuario
 titulo: "Solicitar reprogramación"
-estado: Borrador
+estado: Aprobada
 epica: "[[EP-007-ciclo-de-vida-de-citas]]"
 esfuerzo: "Alto"
 sprint_sugerido: "Sprint 3"
@@ -122,6 +122,8 @@ Implementa la solicitud de RF-15. La reprogramación conserva profesional y espe
 ## Historial de validación
 
 - 2026-09-16 (S2) — HU creada en estado `Borrador`.
+
+- 2026-09-30 (S4) — HU `Aprobada` explícitamente por el Product Owner para completar reprogramación antes de S5.
 
 ## Notas y decisiones
 

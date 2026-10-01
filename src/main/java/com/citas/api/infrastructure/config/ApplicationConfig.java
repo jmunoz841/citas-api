@@ -13,6 +13,7 @@ import com.citas.api.application.port.out.RefreshTokenRepositoryPort;
 import com.citas.api.application.port.out.SpecialtyRepositoryPort;
 import com.citas.api.application.port.out.TokenProviderPort;
 import com.citas.api.application.port.out.UserRepositoryPort;
+import com.citas.api.application.port.out.InsuranceCatalogRepositoryPort;
 import com.citas.api.application.service.AppointmentBookingService;
 import com.citas.api.application.service.AppointmentRequestService;
 import com.citas.api.application.service.AuthService;
@@ -28,6 +29,7 @@ import com.citas.api.application.service.ProfessionalAppointmentClosureService;
 import com.citas.api.application.service.AppointmentHistoryService;
 import com.citas.api.application.service.PasswordRecoveryService;
 import com.citas.api.application.service.OwnProfileService;
+import com.citas.api.application.service.InsuranceCatalogService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -63,6 +65,7 @@ class ApplicationConfig {
     }
 
     @Bean OwnProfileService ownProfileService(UserRepositoryPort users) { return new OwnProfileService(users); }
+    @Bean InsuranceCatalogService insuranceCatalogService(InsuranceCatalogRepositoryPort catalogs) { return new InsuranceCatalogService(catalogs); }
 
     @Bean
     CatalogService catalogService(CatalogRepositoryPort catalogs, AffiliationRepositoryPort affiliations,

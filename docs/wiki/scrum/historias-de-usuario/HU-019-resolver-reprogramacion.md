@@ -2,7 +2,7 @@
 id: HU-019
 tipo: historia-de-usuario
 titulo: "Aprobar o rechazar reprogramación"
-estado: Borrador
+estado: Aprobada
 epica: "[[EP-007-ciclo-de-vida-de-citas]]"
 esfuerzo: "Alto"
 sprint_sugerido: "Sprint 3"
@@ -115,6 +115,8 @@ Implementa la resolución de RF-15.
 ## Historial de validación
 
 - 2026-09-16 (S2) — HU creada en estado `Borrador`.
+
+- 2026-09-30 (S4) — HU `Aprobada` explícitamente por el Product Owner para completar reprogramación antes de S5.
 
 ## Notas y decisiones
 
