@@ -342,6 +342,8 @@ class AdminOfferApiIntegrationTest {
         String planBody = postAdmin("/api/v1/admin/eps/" + epsId + "/plans", Map.of("name", "Plan Uno"))
                 .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
         long planId = json.readTree(planBody).get("id").asLong();
+        postAdmin("/api/v1/admin/eps/" + epsId + "/plans", Map.of("name", "Plan Uno"))
+                .andExpect(status().isConflict()).andExpect(jsonPath("$.code").value("EPS_PLAN_NAME_ALREADY_REGISTERED"));
         patchAdmin("/api/v1/admin/eps/plans/" + planId + "/active", Map.of("active", false)).andExpect(status().isOk()).andExpect(jsonPath("$.active").value(false));
         patchAdmin("/api/v1/admin/eps/" + epsId + "/active", Map.of("active", false)).andExpect(status().isOk()).andExpect(jsonPath("$.active").value(false));
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM eps WHERE id = ?", Integer.class, epsId)).isEqualTo(1);
