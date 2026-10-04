@@ -4,10 +4,16 @@ import com.citas.api.domain.exception.InvalidFieldException;
 
 /**
  * Registro del historial de estados de una cita (RF-19). El historial solo crece: nunca se
- * edita ni se borra.
+ * edita ni se borra. {@code rescheduleRequestId} enlaza el registro que mueve la cita con la
+ * reprogramación aprobada (HU-019); en los demás es nulo.
  */
 public record StatusChange(Long appointmentId, AppointmentStatus status, Source source, Long actorUserId,
-                           String reason) {
+                           String reason, Long rescheduleRequestId) {
+
+    public StatusChange(Long appointmentId, AppointmentStatus status, Source source, Long actorUserId,
+                        String reason) {
+        this(appointmentId, status, source, actorUserId, reason, null);
+    }
 
     /** Quién provocó el cambio. {@code SYSTEM} es el único que puede no tener actor. */
     public enum Source {

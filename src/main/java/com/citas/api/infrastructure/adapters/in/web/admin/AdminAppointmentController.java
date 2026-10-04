@@ -3,18 +3,22 @@ package com.citas.api.infrastructure.adapters.in.web.admin;
 import com.citas.api.application.port.in.ResolveAppointmentRequestUseCase;
 import com.citas.api.domain.model.appointment.Appointment;
 import com.citas.api.domain.model.appointment.AppointmentSummary;
+import com.citas.api.domain.model.appointment.InboxFilter;
 import com.citas.api.infrastructure.adapters.out.security.AuthenticatedUser;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -31,9 +35,16 @@ class AdminAppointmentController {
         this.requests = requests;
     }
 
+    /** HU-022: filtros opcionales y combinables; las fechas son inclusivas. */
     @GetMapping("/requests")
-    ItemsResponse<RequestResponse> listRequested() {
-        return new ItemsResponse<>(requests.listRequested().stream().map(RequestResponse::from).toList());
+    ItemsResponse<RequestResponse> listRequested(
+            @RequestParam(required = false) String siteCode,
+            @RequestParam(required = false) Long professionalId,
+            @RequestParam(required = false) Long specialtyId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+        InboxFilter filter = new InboxFilter(siteCode, professionalId, specialtyId, from, to);
+        return new ItemsResponse<>(requests.listRequested(filter).stream().map(RequestResponse::from).toList());
     }
 
     @PostMapping("/{id}/approve")

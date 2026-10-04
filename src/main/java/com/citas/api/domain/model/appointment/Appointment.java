@@ -93,6 +93,18 @@ public final class Appointment {
         return new Appointment(id, patientUserId, professionalId, specialtyId, siteCode, startAt, durationMinutes, result);
     }
 
+    /**
+     * Una reprogramación aprobada mueve la cita a la nueva franja. Conserva profesional,
+     * especialidad, duración y estado (HU-019 CA-01).
+     */
+    public Appointment reschedule(LocalDateTime newStartAt, String newSiteCode) {
+        if (status != AppointmentStatus.APPROVED) {
+            throw BusinessConflictException.appointmentNotReschedulable();
+        }
+        return new Appointment(id, patientUserId, professionalId, specialtyId, newSiteCode, newStartAt,
+                durationMinutes, status);
+    }
+
     /** Solo una cita {@code REQUESTED} se aprueba o se rechaza (RN-11, HU-015 CA-04). */
     private Appointment resolve(AppointmentStatus target) {
         if (status != AppointmentStatus.REQUESTED) {

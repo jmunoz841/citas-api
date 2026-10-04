@@ -2,10 +2,12 @@ package com.citas.api.application.service;
 
 import com.citas.api.application.port.in.ResolveAppointmentRequestUseCase;
 import com.citas.api.application.port.out.AppointmentRepositoryPort;
+import com.citas.api.domain.exception.InvalidFieldException;
 import com.citas.api.domain.exception.ResourceNotFoundException;
 import com.citas.api.domain.model.appointment.Appointment;
 import com.citas.api.domain.model.appointment.AppointmentStatus;
 import com.citas.api.domain.model.appointment.AppointmentSummary;
+import com.citas.api.domain.model.appointment.InboxFilter;
 import com.citas.api.domain.model.appointment.StatusChange;
 import com.citas.api.domain.model.appointment.StatusChange.Source;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,8 +31,11 @@ public class AppointmentRequestService implements ResolveAppointmentRequestUseCa
 
     @Override
     @Transactional(readOnly = true)
-    public List<AppointmentSummary> listRequested() {
-        return appointments.findByStatus(AppointmentStatus.REQUESTED);
+    public List<AppointmentSummary> listRequested(InboxFilter filter) {
+        if (filter.from() != null && filter.to() != null && filter.from().isAfter(filter.to())) {
+            throw new InvalidFieldException("to", "La fecha final debe ser igual o posterior a la inicial");
+        }
+        return appointments.findRequested(filter);
     }
 
     @Override

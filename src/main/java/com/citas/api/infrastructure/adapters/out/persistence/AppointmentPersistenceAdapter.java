@@ -7,8 +7,11 @@ import com.citas.api.domain.model.appointment.Appointment;
 import com.citas.api.domain.model.appointment.AppointmentStatus;
 import com.citas.api.domain.model.appointment.AppointmentSummary;
 import com.citas.api.domain.model.appointment.AppointmentView;
+import com.citas.api.domain.model.appointment.InboxFilter;
 import com.citas.api.domain.model.appointment.ProfessionalAppointmentView;
 import com.citas.api.domain.model.appointment.AppointmentHistoryEntry;
+import com.citas.api.domain.model.appointment.RescheduleInfo;
+import com.citas.api.domain.model.appointment.RescheduleStatus;
 import com.citas.api.domain.model.appointment.StatusChange;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -84,7 +87,7 @@ class AppointmentPersistenceAdapter implements AppointmentRepositoryPort {
     @Override
     public void recordStatus(StatusChange change) {
         history.save(new AppointmentStatusHistoryJpaEntity(change.appointmentId(), change.status().name(),
-                change.source().name(), change.actorUserId(), change.reason()));
+                change.source().name(), change.actorUserId(), change.reason(), change.rescheduleRequestId()));
     }
 
     @Override
@@ -112,9 +115,18 @@ class AppointmentPersistenceAdapter implements AppointmentRepositoryPort {
         appointments.deleteSlotReservations(appointmentId);
     }
 
+    /** UPDATE condicionado a que la cita siga aprobada: una cancelación simultánea gana. */
     @Override
-    public List<AppointmentSummary> findByStatus(AppointmentStatus status) {
-        return jdbc.query(SUMMARIES, new MapSqlParameterSource("status", status.name()), (rs, row) -> {
+    public void updateSchedule(Appointment moved) {
+        int rows = appointments.updateScheduleIfApproved(moved.getId(), moved.getStartAt(), moved.getSiteCode());
+        if (rows == 0) {
+            throw BusinessConflictException.appointmentNotReschedulable();
+        }
+    }
+
+    @Override
+    public List<AppointmentSummary> findRequested(InboxFilter filter) {
+        return jdbc.query(SUMMARIES, InboxParameters.of(filter), (rs, row) -> {
             LocalDateTime startAt = rs.getObject("start_at", LocalDateTime.class);
             return new AppointmentSummary(rs.getLong("id"), AppointmentStatus.valueOf(rs.getString("status_code")),
                     rs.getString("patient_name"), rs.getString("professional_name"),
@@ -160,11 +172,17 @@ class AppointmentPersistenceAdapter implements AppointmentRepositoryPort {
         }); }
 
     private static AppointmentView toView(java.sql.ResultSet rs) throws java.sql.SQLException {
+        Number rescheduleId = (Number) rs.getObject("rr_id");
+        RescheduleInfo reschedule = rescheduleId == null ? null : new RescheduleInfo(rescheduleId.longValue(),
+                RescheduleStatus.valueOf(rs.getString("rr_status")),
+                rs.getObject("rr_requested_start_at", LocalDateTime.class), rs.getString("rr_requested_site_code"),
+                rs.getString("rr_decision_reason"));
         return new AppointmentView(rs.getLong("id"), AppointmentStatus.valueOf(rs.getString("status_code")),
                 rs.getString("professional_name"), rs.getString("specialty_name"), rs.getString("site_code"),
                 rs.getString("site_name"), rs.getObject("start_at", LocalDateTime.class),
                 rs.getObject("end_at", LocalDateTime.class), rs.getInt("duration_minutes"),
-                rs.getString("rejection_reason"));
+                rs.getString("rejection_reason"), rs.getLong("professional_id"), rs.getLong("specialty_id"),
+                reschedule);
     }
 
     private static final String SUMMARIES = """
@@ -176,23 +194,34 @@ class AppointmentPersistenceAdapter implements AppointmentRepositoryPort {
             JOIN users pu ON pu.id = a.patient_user_id
             JOIN users du ON du.id = a.professional_id
             JOIN specialties s ON s.id = a.specialty_id
-            WHERE a.status_code = :status
+            WHERE a.status_code = 'REQUESTED'
+              AND (:siteCode IS NULL OR a.site_code = :siteCode)
+              AND (:professionalId IS NULL OR a.professional_id = :professionalId)
+              AND (:specialtyId IS NULL OR a.specialty_id = :specialtyId)
+              AND (:from IS NULL OR a.start_at >= :from)
+              AND (:to IS NULL OR a.start_at < :to)
             ORDER BY a.start_at, a.id
             """;
 
+    /** La última reprogramación de la cita viaja con la vista del paciente (HU-018, HU-019). */
     private static final String PATIENT_VIEW_COLUMNS = """
             SELECT a.id, a.status_code, a.site_code, site.name AS site_name, a.start_at, a.end_at,
-                   a.duration_minutes, CONCAT(du.first_names, ' ', du.last_names) AS professional_name,
+                   a.duration_minutes, a.professional_id, a.specialty_id,
+                   CONCAT(du.first_names, ' ', du.last_names) AS professional_name,
                    s.name AS specialty_name,
                    CASE WHEN a.status_code = 'REJECTED' THEN (
                        SELECT h.reason FROM appointment_status_history h
                        WHERE h.appointment_id = a.id AND h.status_code = 'REJECTED'
                        ORDER BY h.id DESC LIMIT 1
-                   ) END AS rejection_reason
+                   ) END AS rejection_reason,
+                   rr.id AS rr_id, rr.status_code AS rr_status, rr.requested_start_at AS rr_requested_start_at,
+                   rr.requested_site_code AS rr_requested_site_code, rr.decision_reason AS rr_decision_reason
             FROM appointments a
             JOIN users du ON du.id = a.professional_id
             JOIN specialties s ON s.id = a.specialty_id
             JOIN sites site ON site.code = a.site_code
+            LEFT JOIN reschedule_requests rr ON rr.id = (
+                SELECT MAX(r2.id) FROM reschedule_requests r2 WHERE r2.appointment_id = a.id)
             """;
 
     private static final String PATIENT_VIEWS = PATIENT_VIEW_COLUMNS + """
@@ -300,16 +329,21 @@ class AppointmentStatusHistoryJpaEntity {
     @Column(name = "reason", length = 500, updatable = false)
     private String reason;
 
+    /** Reprogramación aprobada que originó el registro (V9); nulo en los demás. */
+    @Column(name = "reschedule_request_id", updatable = false)
+    private Long rescheduleRequestId;
+
     protected AppointmentStatusHistoryJpaEntity() {
     }
 
     AppointmentStatusHistoryJpaEntity(Long appointmentId, String statusCode, String source, Long actorUserId,
-                                      String reason) {
+                                      String reason, Long rescheduleRequestId) {
         this.appointmentId = appointmentId;
         this.statusCode = statusCode;
         this.source = source;
         this.actorUserId = actorUserId;
         this.reason = reason;
+        this.rescheduleRequestId = rescheduleRequestId;
     }
 
     Long getId() { return id; }
@@ -334,6 +368,13 @@ interface AppointmentJpaRepository extends JpaRepository<AppointmentJpaEntity, L
     @Modifying
     @Query(value = "DELETE FROM slot_reservations WHERE appointment_id = :appointmentId", nativeQuery = true)
     void deleteSlotReservations(Long appointmentId);
+
+    @Modifying(clearAutomatically = true)
+    @Query(value = """
+            UPDATE appointments SET start_at = :startAt, site_code = :siteCode, version = version + 1
+            WHERE id = :id AND status_code = 'APPROVED'
+            """, nativeQuery = true)
+    int updateScheduleIfApproved(Long id, LocalDateTime startAt, String siteCode);
 }
 
 interface AppointmentStatusHistoryJpaRepository extends JpaRepository<AppointmentStatusHistoryJpaEntity, Long> {

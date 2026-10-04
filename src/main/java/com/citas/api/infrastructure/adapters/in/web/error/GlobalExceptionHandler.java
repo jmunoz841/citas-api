@@ -12,6 +12,7 @@ import com.citas.api.domain.exception.InvalidPasswordResetTokenException;
 import com.citas.api.domain.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -64,6 +65,16 @@ class GlobalExceptionHandler {
             DuplicateValueException.class, BusinessConflictException.class})
     ProblemDetail conflict(DomainException e) {
         return ApiProblems.of(HttpStatus.CONFLICT, e.getCode(), e.getMessage());
+    }
+
+    /**
+     * Dos transacciones se bloquearon entre sí (p. ej. aprobar y cancelar la misma cita a la vez):
+     * InnoDB deshace una y los datos quedan consistentes. Se responde 409 para que el cliente recargue.
+     */
+    @ExceptionHandler(PessimisticLockingFailureException.class)
+    ProblemDetail concurrentUpdate(PessimisticLockingFailureException e) {
+        return ApiProblems.of(HttpStatus.CONFLICT, "CONCURRENT_UPDATE",
+                "Otra operación modificó el mismo registro al mismo tiempo. Actualiza e inténtalo de nuevo.");
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)

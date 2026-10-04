@@ -14,6 +14,9 @@ import com.citas.api.application.port.out.SpecialtyRepositoryPort;
 import com.citas.api.application.port.out.TokenProviderPort;
 import com.citas.api.application.port.out.UserRepositoryPort;
 import com.citas.api.application.port.out.InsuranceCatalogRepositoryPort;
+import com.citas.api.application.port.out.RescheduleRepositoryPort;
+import com.citas.api.application.service.RescheduleRequestService;
+import com.citas.api.application.service.RescheduleResolutionService;
 import com.citas.api.application.service.AppointmentBookingService;
 import com.citas.api.application.service.AppointmentRequestService;
 import com.citas.api.application.service.AuthService;
@@ -115,10 +118,24 @@ class ApplicationConfig {
     }
 
     @Bean
-    AppointmentCancellationService appointmentCancellationService(AppointmentRepositoryPort appointments, Clock clock) {
-        return new AppointmentCancellationService(appointments, clock);
+    AppointmentCancellationService appointmentCancellationService(AppointmentRepositoryPort appointments,
+                                                                  RescheduleRepositoryPort reschedules, Clock clock) {
+        return new AppointmentCancellationService(appointments, reschedules, clock);
+    }
+
+    @Bean
+    RescheduleRequestService rescheduleRequestService(AppointmentRepositoryPort appointments,
+                                                      RescheduleRepositoryPort reschedules, AgendaQueryPort agenda,
+                                                      Clock clock) {
+        return new RescheduleRequestService(appointments, reschedules, agenda, clock);
+    }
+
+    @Bean
+    RescheduleResolutionService rescheduleResolutionService(RescheduleRepositoryPort reschedules,
+                                                            AppointmentRepositoryPort appointments, Clock clock) {
+        return new RescheduleResolutionService(reschedules, appointments, clock);
     }
     @Bean ProfessionalAgendaService professionalAgendaService(AppointmentRepositoryPort appointments) { return new ProfessionalAgendaService(appointments); }
-    @Bean ProfessionalAppointmentClosureService professionalAppointmentClosureService(AppointmentRepositoryPort appointments, Clock clock) { return new ProfessionalAppointmentClosureService(appointments, clock); }
+    @Bean ProfessionalAppointmentClosureService professionalAppointmentClosureService(AppointmentRepositoryPort appointments, RescheduleRepositoryPort reschedules, Clock clock) { return new ProfessionalAppointmentClosureService(appointments, reschedules, clock); }
     @Bean AppointmentHistoryService appointmentHistoryService(AppointmentRepositoryPort appointments) { return new AppointmentHistoryService(appointments); }
 }
