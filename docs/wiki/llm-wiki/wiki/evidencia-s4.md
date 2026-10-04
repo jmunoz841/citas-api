@@ -19,6 +19,22 @@ Estado: cierre confirmado por el Product Owner el 2026-09-30. HU-002, HU-003, HU
 | LOOP-01 guiado | Se reutilizó la reserva concurrente ya protegida por `pk_slot_reservations` (S3). | Prueba de integración de reservas existente. | PASS (evidencia S3). |
 | LOOP-02 equivalente | Se implementó transición profesional `APPROVED → COMPLETED/NO_SHOW`, con migración V7 y fuente `PROFESSIONAL`. | Integración focalizada: 14 pruebas, 0 fallos. | PASS. |
 | LOOP-03 propio | Se incorporó consulta inmutable de historial para los tres actores, con autorización por propiedad. | Integración focalizada: actor, orden, 404 ajeno y `PATCH` 405. | PASS. |
+| **LOOP-02 guiado (reprogramación, 2026-10-04)** | HU-018, HU-019 y HU-022 en ambos repos, migración V9. Registro por iteración en `docs/loops/LOOP-02-reprogramacion/`. | Iteración 1: BLOCKED (sin Docker, escalado al humano). Iteración 2: subagente aislado, PASS con 3 hallazgos menores ya corregidos. | **COMPLETED** en 2 de 4 iteraciones. |
+| **LOOP-03 rediseñado** | Reconciliación del contrato REST entre DTO Java y tipos TS, con los 10 elementos de la guía (`docs/loops/LOOP-03-reconciliacion-contrato/`). | — | Diseñado; pendiente de ejecutar. |
+
+## Retoma del 2026-10-04 (equipo nuevo)
+
+| HU | Estado de la matriz | Evidencia |
+|---|---|---|
+| HU-007 | CA-01..04 y DoD en `Cumple` | `AdminOfferApiIntegrationTest.hu007_*` (4) |
+| HU-018 | CA-01..04 y DoD en `Cumple` | `RescheduleApiIntegrationTest.hu018_*`, `RescheduleRequestTest`, `MyAppointmentsPage.reschedule.test.tsx` |
+| HU-019 | CA-01..04 y DoD en `Cumple` | `RescheduleApiIntegrationTest.hu019_*` y `d033_*`, `RequestsPage.inbox.test.tsx` |
+| HU-022 | CA-01..03 y DoD en `Cumple` | `RescheduleApiIntegrationTest.hu022_*`, `RequestsPage.inbox.test.tsx` |
+
+- Backend: `mvnw clean test` con JDK 21 y Docker 29.8.1, **197 pruebas, 0 fallos, 0 errores**. Se ejecutó antes y después de las correcciones del Verifier.
+- Frontend: lint, **113 pruebas**, typecheck y build en verde.
+- Prueba de humo HTTP contra la API real y la base `jmunoz-citas-mysql`, con migraciones V1–V9 aplicadas: el ciclo completo de reprogramación funciona.
+- El Product Owner confirmó el cierre el 2026-10-04: las cuatro HU están `Completada` y P-036 a P-039 pasan a ser D-036 a D-039.
 
 ## Verificaciones de esta sesión
 

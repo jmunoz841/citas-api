@@ -2,7 +2,7 @@
 id: EP-004
 tipo: epica
 titulo: "Gestión de profesionales"
-estado: Borrador
+estado: Completada
 historias:
   - "[[HU-008-crear-profesional]]"
   - "[[HU-009-activar-desactivar-profesional]]"

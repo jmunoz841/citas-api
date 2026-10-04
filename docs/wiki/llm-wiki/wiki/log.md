@@ -178,3 +178,25 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 - HECHO: HU-002 y HU-003 también están `Completada`; la evidencia final registra 172 pruebas backend y 99 pruebas frontend en verde.
 - HECHO: los LOOP 01, 02 y 03 de S4 tienen resultado PASS en [[evidencia-s4]].
 - PÁGINAS afectadas: [[evidencia-s4]], [[ejecucion]], [[scrum/README]].
+
+## 2026-10-04 — LEARN — Reprogramación, bandeja y cierre de HU-007 (equipo nuevo)
+- HECHO: el trabajo se retomó en otro equipo. En el clon local faltaban `.githooks/*` y `.mvn/wrapper/maven-wrapper.properties` (borrados sin commit); se restauraron con `git restore`. El equipo tiene JDK 21 en `C:\Program Files\Java\jdk-21`, no en `%USERPROFILE%\.jdks\temurin-21`, y **no tiene Docker Desktop**.
+- HECHO: HU-018, HU-019 y HU-022 se implementaron en ambos repos (LOOP-02 iteración 1, `docs/loops/LOOP-02-reprogramacion/`). Migración V9 desde el diseño 3FN propio.
+- HECHO: frontend con lint, 112 pruebas, typecheck y build en verde. Backend: compila; 37 pruebas unitarias y ArchUnit en verde; las pruebas de integración están escritas pero **no se ejecutaron** porque falta Docker.
+- HECHO: se añadieron pruebas de HU-007 para CA-04 (plan usado en una afiliación) y para la edición con unicidad.
+- HECHO: el LOOP-03 se rediseñó con los 10 elementos de la guía (`docs/loops/LOOP-03-reconciliacion-contrato/`); falta ejecutarlo.
+- PREGUNTA ABIERTA: P-036 a P-039 en [[decisiones]].
+- PÁGINAS afectadas: [[decisiones]], [[ejecucion]], [[scrum/README]], HU-007, HU-018, HU-019, HU-022.
+
+## 2026-10-04 — VERIFY — Suite completa con Docker y Verifier del LOOP-02
+- HECHO: se instalaron WSL2 y Docker Desktop. Para que arrancara hubo que activar SVM en la BIOS y reiniciar.
+- HECHO: `mvnw clean test` 197/197 en verde. V9 se aplicó en Testcontainers y en `jmunoz-citas-mysql`. La prueba de humo HTTP contra la API real pasó.
+- HECHO: el Verifier aislado dio PASS con 3 hallazgos menores. La iteración 2 los corrigió: mismo orden de bloqueo al aprobar y al cancelar, `409 CONCURRENT_UPDATE` ante un interbloqueo, aviso de solicitud `CANCELLED` en la UI y regla de no solapamiento en el contrato. Después de las correcciones: 197/197 en backend y 113/113 en frontend.
+- HECHO: las matrices CA/DoD de HU-007, HU-018, HU-019 y HU-022 están en `Cumple`. Siguen `Aprobada` en espera de la confirmación del Product Owner.
+- PÁGINAS afectadas: [[evidencia-s4]], HU-007, HU-018, HU-019, HU-022.
+
+## 2026-10-04 — INGEST — Cierre de HU-007, HU-018, HU-019 y HU-022
+- DECISIÓN (usuario): el Product Owner confirma el cierre de las cuatro HU (`Completada`) y aprueba P-036 a P-039 como D-036 a D-039.
+- HECHO: EP-001 a EP-007 quedan `Completada`; solo EP-008 (n8n) sigue en `Borrador`. Se alineó el frontmatter de las épicas con el README Scrum.
+- PREFERENCIA (usuario): los commits no mencionan herramientas de IA y se suben con la cuenta de GitHub `jmunoz841`.
+- PÁGINAS afectadas: [[decisiones]], [[evidencia-s4]], [[scrum/README]], épicas EP-001 a EP-007.

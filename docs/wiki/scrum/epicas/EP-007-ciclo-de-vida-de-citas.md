@@ -2,7 +2,7 @@
 id: EP-007
 tipo: epica
 titulo: "Ciclo de vida de citas"
-estado: Borrador
+estado: Completada
 historias:
   - "[[HU-016-consultar-mis-citas]]"
   - "[[HU-017-cancelar-cita]]"
@@ -55,8 +55,8 @@ MVP completo con transiciones explícitas, verificables y auditadas.
 
 - [[HU-016-consultar-mis-citas]] — Sprint 3 — Completada
 - [[HU-017-cancelar-cita]] — Sprint 3 — Completada
-- [[HU-018-solicitar-reprogramacion]] — Sprint 3 — Borrador
-- [[HU-019-resolver-reprogramacion]] — Sprint 3 — Borrador
+- [[HU-018-solicitar-reprogramacion]] — Sprint 3 — Completada
+- [[HU-019-resolver-reprogramacion]] — Sprint 3 — Completada
 - [[HU-020-cerrar-atencion]] — Sprint 3 — Completada
 - [[HU-021-historial-de-estados]] — Sprint 3 — Completada
 

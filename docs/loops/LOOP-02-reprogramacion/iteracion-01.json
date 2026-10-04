@@ -1,0 +1,38 @@
+{
+  "loop": "LOOP-02",
+  "goal": "reschedule appointment (HU-018, HU-019) + admin inbox (HU-022)",
+  "iteration": 1,
+  "maxIterations": 4,
+  "date": "2026-10-04",
+  "builder": {
+    "status": "completed",
+    "backend": [
+      "src/main/resources/db/migration/V9__reprogramacion_hu018_hu019.sql",
+      "domain: RescheduleRequest, RescheduleStatus, RescheduleSummary, RescheduleInfo, InboxFilter, Appointment.reschedule",
+      "application: RequestRescheduleUseCase, ResolveRescheduleUseCase, RescheduleRequestService, RescheduleResolutionService, PendingReschedules",
+      "infrastructure: ReschedulePersistenceAdapter, InboxParameters, AdminRescheduleController, RescheduleExpirationJob",
+      "docs/contratos/citas.md"
+    ],
+    "frontend": [
+      "src/features/booking/components/RescheduleForm.tsx",
+      "src/features/booking/pages/MyAppointmentsPage.tsx",
+      "src/features/admin/pages/RequestsPage.tsx",
+      "src/features/admin/components/RequestDialogs.tsx",
+      "src/features/admin/api/adminApi.ts",
+      "src/features/booking/api/bookingApi.ts",
+      "src/shared/layout/AppShell.tsx"
+    ]
+  },
+  "backendCompile": "pass",
+  "backendUnitTests": "pass (37: RescheduleRequestTest 7, AppointmentTest 4, SlotPlannerTest 8, AuthServiceTest 16, HexagonalArchitectureTest 2)",
+  "backendIntegrationTests": "not-run: Docker Desktop no instalado en el equipo; Testcontainers no puede levantar MySQL 8.4",
+  "frontendLint": "pass",
+  "frontendTests": "pass (112/112, 12 nuevas)",
+  "frontendTypecheck": "pass",
+  "frontendBuild": "pass",
+  "contract": "updated: docs/contratos/citas.md",
+  "verifier": "BLOCKED",
+  "verifierNotes": "Los CA de HU-018/019/022 tienen pruebas escritas (RescheduleApiIntegrationTest) pero sin ejecutar; PASS exige evidencia ejecutada.",
+  "escalation": "human: instalar Docker Desktop y reanudar",
+  "result": "ESCALATED"
+}

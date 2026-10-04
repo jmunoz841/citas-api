@@ -51,6 +51,10 @@ Solo se registran como DECISIÓN los puntos aprobados explícitamente por el usu
 | D-033 | 2026-09-25 | Reprogramación: una `PENDING` por cita; cancelar la cita cancela la solicitud; si llega la hora original con la solicitud `PENDING`, se cancela y libera su retención | HU-017, HU-018, HU-019 | `raw/2026-09-25-alcance-s4.md` |
 | D-034 | 2026-09-25 | Una cita se cierra desde su hora de inicio; el PROFESSIONAL ve el historial de sus propias citas | HU-020, HU-021 | `raw/2026-09-25-alcance-s4.md` |
 | D-035 | 2026-09-30 | El Product Owner aprueba implementar HU-002: recuperación con token de un solo uso, vigencia de 30 minutos y persistencia exclusiva del hash; no se expone ni registra el valor claro | HU-002 | Confirmación explícita del Product Owner en sesión |
+| D-036 | 2026-10-04 | Para solicitar una reprogramación, profesional, especialidad y asociación deben seguir activos (`400`, `field: appointmentId`), igual que al reservar | HU-018 | Confirmación explícita del Product Owner en sesión |
+| D-037 | 2026-10-04 | Amplía D-033: la reprogramación también vence al llegar la hora **pedida**; aprobar una vencida → `409 RESCHEDULE_EXPIRED`. La bandeja al listar y un job cada 5 min (`citas.reschedule.expiration-delay`) cierran las vencidas | HU-019 | Confirmación explícita del Product Owner en sesión |
+| D-038 | 2026-10-04 | En la bandeja, los filtros de sede y fecha de las reprogramaciones se aplican a la franja **solicitada** | HU-022 | Confirmación explícita del Product Owner en sesión |
+| D-039 | 2026-10-04 | La bandeja y la vista de reprogramación reutilizan componentes aprobados de Stitch v4, sin nueva iteración de diseño | HU-018, HU-019, HU-022 | Confirmación explícita del Product Owner en sesión |
 
 ## Preguntas abiertas
 
@@ -64,6 +68,7 @@ Solo se registran como DECISIÓN los puntos aprobados explícitamente por el usu
 - ~~Retirar una especialidad o sede con agenda~~ → resuelta por D-028.
 - ~~Desactivar un profesional con citas~~ → resuelta por D-029.
 - ~~Expiración de solicitudes `REQUESTED`~~ → resuelta por D-030.
+- ~~Propuestas P-036 a P-039 de la reprogramación~~ → aprobadas por el Product Owner como D-036 a D-039 (2026-10-04).
 
 ## Relacionadas
 

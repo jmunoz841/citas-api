@@ -22,11 +22,11 @@ Aplicación web de agendamiento de citas (USER, PROFESSIONAL, ADMIN) en dos sede
 |---|---|---|
 | [[EP-001-identidad-y-acceso]] | HU-001, HU-002 | Completada |
 | [[EP-002-perfil-y-afiliacion]] | HU-003, HU-004 | Completada |
-| [[EP-003-catalogos]] | HU-005, HU-006, HU-007 | En curso (HU-007 sigue en Borrador) |
+| [[EP-003-catalogos]] | HU-005, HU-006, HU-007 | Completada |
 | [[EP-004-gestion-de-profesionales]] | HU-008, HU-009 | Completada |
 | [[EP-005-agenda-del-profesional]] | HU-010, HU-011 | Completada |
-| [[EP-006-reserva-de-citas]] | HU-012, HU-013, HU-014, HU-015, HU-022 | En curso (HU-022 sigue en Borrador) |
-| [[EP-007-ciclo-de-vida-de-citas]] | HU-016 a HU-021 | En curso (HU-016, HU-017, HU-020 y HU-021 Completadas; HU-018 y HU-019 en Borrador) |
+| [[EP-006-reserva-de-citas]] | HU-012, HU-013, HU-014, HU-015, HU-022 | Completada |
+| [[EP-007-ciclo-de-vida-de-citas]] | HU-016 a HU-021 | Completada |
 | [[EP-008-automatizaciones-n8n]] | HU-023, HU-024, HU-025 | Borrador |
 
 ## Sprints sugeridos (incrementos funcionales, sin duración)
@@ -58,15 +58,15 @@ Incremento: un ADMIN configura profesionales, el profesional publica agenda y el
 
 - [[HU-002-recuperar-contrasena]] — Medio — **Completada**
 - [[HU-003-consultar-y-actualizar-perfil]] — Bajo — **Completada**
-- [[HU-007-gestionar-eps-y-planes]] — Medio — Borrador
+- [[HU-007-gestionar-eps-y-planes]] — Medio — **Completada**
 - [[HU-011-consultar-agenda-del-profesional]] — Medio — **Completada**
 - [[HU-016-consultar-mis-citas]] — Medio — **Completada**
 - [[HU-017-cancelar-cita]] — Medio — **Completada**
-- [[HU-018-solicitar-reprogramacion]] — Alto
-- [[HU-019-resolver-reprogramacion]] — Alto
+- [[HU-018-solicitar-reprogramacion]] — Alto — **Completada**
+- [[HU-019-resolver-reprogramacion]] — Alto — **Completada**
 - [[HU-020-cerrar-atencion]] — Bajo — **Completada**
 - [[HU-021-historial-de-estados]] — Medio — **Completada**
-- [[HU-022-bandeja-administrativa]] — Medio — Borrador
+- [[HU-022-bandeja-administrativa]] — Medio — **Completada**
 
 Incremento: ciclo de vida completo de la cita y todas las pantallas obligatorias del PRD.
 

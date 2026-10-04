@@ -85,7 +85,7 @@ El alcance aprobado (D-031) está cerrado: HU-016, HU-017, HU-011, HU-020 y HU-0
 | 4 | [[HU-020-cerrar-atencion]] | Marcar `COMPLETED` / `NO_SHOW` desde la hora de inicio (D-034) |
 | 5 | [[HU-021-historial-de-estados]] | Consultar el historial (ADMIN, USER dueño y PROFESSIONAL de sus citas, D-034); inmutabilidad |
 
-Fuera del alcance aprobado de S4 siguen en `Borrador`: reprogramación (HU-018, HU-019, HU-022; reglas decididas en D-033) y EPS/planes (HU-007). El siguiente bloque académico es S5: automatizaciones n8n, MCP, OAuth y seguridad frente a contenido no confiable.
+El Product Owner aprobó el 2026-09-30 completar antes de S5 la reprogramación (HU-018, HU-019, HU-022; reglas de D-033) y EPS/planes (HU-007). Estado al 2026-10-04: las cuatro están implementadas en ambos repos. Con Docker instalado, `mvnw clean test` dio 197/197 y el Verifier del LOOP-02 dio PASS: las matrices CA/DoD están en `Cumple`. El Product Owner confirmó el cierre el mismo día: las cuatro HU están `Completada` (ver [[evidencia-s4]]). Después viene S5: automatizaciones n8n, MCP, OAuth y seguridad frente a contenido no confiable.
 
 Deuda técnica menor: en la primera carga en frío los íconos de Material Symbols se ven como texto unos segundos; conviene alojar la fuente en `citas-web` en vez de cargarla de Google Fonts.
 

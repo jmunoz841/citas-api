@@ -2,7 +2,7 @@
 id: EP-001
 tipo: epica
 titulo: "Identidad y acceso"
-estado: Pendiente de aprobación
+estado: Completada
 historias:
   - "[[HU-001-registro-e-inicio-de-sesion-jwt]]"
   - "[[HU-002-recuperar-contrasena]]"

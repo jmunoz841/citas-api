@@ -2,7 +2,7 @@
 id: EP-003
 tipo: epica
 titulo: "Catálogos"
-estado: Borrador
+estado: Completada
 historias:
   - "[[HU-005-consultar-catalogos-fijos]]"
   - "[[HU-006-gestionar-especialidades]]"
@@ -49,7 +49,7 @@ Datos de referencia consistentes y normalizados para profesionales, agenda, cita
 
 - [[HU-005-consultar-catalogos-fijos]] — Sprint 2 — Completada
 - [[HU-006-gestionar-especialidades]] — Sprint 2 — Completada
-- [[HU-007-gestionar-eps-y-planes]] — Sprint 3 — Borrador
+- [[HU-007-gestionar-eps-y-planes]] — Sprint 3 — Completada
 
 ## Criterio de completitud de la épica
 
