@@ -359,6 +359,72 @@ class AdminOfferApiIntegrationTest {
         mvc.perform(post("/api/v1/admin/eps").header(HttpHeaders.AUTHORIZATION, "Bearer " + userToken)
                 .contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsBytes(Map.of("name", "No autorizada"))))
                 .andExpect(status().isForbidden());
+        mvc.perform(patch("/api/v1/admin/eps/plans/1/active").header(HttpHeaders.AUTHORIZATION, "Bearer " + userToken)
+                .contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsBytes(Map.of("active", false))))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void hu007_ca04_unPlanUsadoEnAfiliacionesNoSeBorraYSePuedeDesactivar() throws Exception {
+        String eps = "EPS Referenciada " + SEQUENCE.incrementAndGet();
+        long epsId = json.readTree(postAdmin("/api/v1/admin/eps", Map.of("name", eps)).andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8)).get("id").asLong();
+        long planId = json.readTree(postAdmin("/api/v1/admin/eps/" + epsId + "/plans", Map.of("name", "Plan Usado"))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8))
+                .get("id").asLong();
+        // Un paciente se afilia a ese plan al registrarse (HU-004).
+        int n = SEQUENCE.incrementAndGet();
+        Map<String, Object> registro = new LinkedHashMap<>();
+        registro.put("firstNames", "Ana");
+        registro.put("lastNames", "Afiliada");
+        registro.put("documentType", "CC");
+        registro.put("documentNumber", "510" + String.format("%05d", n));
+        registro.put("email", "afiliada" + n + "@test.local");
+        registro.put("phone", "3001234567");
+        registro.put("password", PASSWORD);
+        registro.put("insurancePlanId", planId);
+        registro.put("regimeCode", "CONTRIBUTIVO");
+        mvc.perform(post("/api/v1/auth/register").contentType(MediaType.APPLICATION_JSON)
+                .content(json.writeValueAsBytes(registro))).andExpect(status().isCreated());
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM user_affiliations WHERE plan_id = ?", Integer.class, planId)).isEqualTo(1);
+
+        // No existe borrado físico: DELETE no está expuesto.
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete("/api/v1/admin/eps/plans/" + planId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken))
+                .andExpect(status().isMethodNotAllowed());
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete("/api/v1/admin/eps/" + epsId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken))
+                .andExpect(status().isMethodNotAllowed());
+        // Se desactiva y deja de ofrecerse, pero la afiliación existente se conserva.
+        patchAdmin("/api/v1/admin/eps/plans/" + planId + "/active", Map.of("active", false))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.active").value(false));
+        patchAdmin("/api/v1/admin/eps/" + epsId + "/active", Map.of("active", false))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.active").value(false));
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM user_affiliations WHERE plan_id = ?", Integer.class, planId)).isEqualTo(1);
+        mvc.perform(get("/api/v1/catalogs/insurance-plans")).andExpect(status().isOk())
+                .andExpect(jsonPath("$.items[?(@.id == " + planId + ")]").isEmpty());
+    }
+
+    @Test
+    void hu007_editarNombresRespetaLaUnicidad() throws Exception {
+        String base = "EPS Editable " + SEQUENCE.incrementAndGet();
+        long epsId = json.readTree(postAdmin("/api/v1/admin/eps", Map.of("name", base)).andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8)).get("id").asLong();
+        String otra = base + " B";
+        postAdmin("/api/v1/admin/eps", Map.of("name", otra)).andExpect(status().isCreated());
+
+        patchAdmin("/api/v1/admin/eps/" + epsId, Map.of("name", base + " Renombrada"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.name").value(base + " Renombrada"));
+        patchAdmin("/api/v1/admin/eps/" + epsId, Map.of("name", otra))
+                .andExpect(status().isConflict()).andExpect(jsonPath("$.code").value("EPS_NAME_ALREADY_REGISTERED"));
+
+        long planA = json.readTree(postAdmin("/api/v1/admin/eps/" + epsId + "/plans", Map.of("name", "Plan A"))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8)).get("id").asLong();
+        postAdmin("/api/v1/admin/eps/" + epsId + "/plans", Map.of("name", "Plan B")).andExpect(status().isCreated());
+        patchAdmin("/api/v1/admin/eps/plans/" + planA, Map.of("name", "Plan B"))
+                .andExpect(status().isConflict()).andExpect(jsonPath("$.code").value("EPS_PLAN_NAME_ALREADY_REGISTERED"));
+        mvc.perform(get("/api/v1/admin/eps/" + epsId + "/plans").header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.items.length()").value(2));
     }
 
     private long crearEspecialidad(String name, int duration) throws Exception {
