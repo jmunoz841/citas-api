@@ -2,7 +2,7 @@
 id: EP-001
 tipo: epica
 titulo: "Identidad y acceso"
-estado: Pendiente de aprobación
+estado: Completada
 historias:
   - "[[HU-001-registro-e-inicio-de-sesion-jwt]]"
   - "[[HU-002-recuperar-contrasena]]"
@@ -49,7 +49,7 @@ Base de identidad y autorización por rol sobre la que se construyen todas las d
 ## Historias de usuario
 
 - [[HU-001-registro-e-inicio-de-sesion-jwt]] — Sprint 1 — Completada
-- [[HU-002-recuperar-contrasena]] — Sprint 3 — Borrador
+- [[HU-002-recuperar-contrasena]] — Sprint 3 — Completada
 
 ## Criterio de completitud de la épica
 

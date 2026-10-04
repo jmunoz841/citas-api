@@ -34,7 +34,9 @@ class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/register", "/api/v1/auth/login",
-                                "/api/v1/auth/refresh", "/api/v1/auth/logout").permitAll()
+                                "/api/v1/auth/refresh", "/api/v1/auth/logout", "/api/v1/auth/password-reset-requests",
+                                "/api/v1/auth/password-resets").permitAll()
+                        .requestMatchers("/api/v1/auth/profile/**").hasRole("USER")
                         // Catálogos fijos: solo lectura y públicos, porque el formulario de
                         // registro los necesita antes de que exista una sesión (HU-005).
                         .requestMatchers(HttpMethod.GET, "/api/v1/catalogs/**").permitAll()

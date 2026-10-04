@@ -2,7 +2,7 @@
 id: HU-002
 tipo: historia-de-usuario
 titulo: "Recuperar contraseña"
-estado: Borrador
+estado: Completada
 epica: "[[EP-001-identidad-y-acceso]]"
 esfuerzo: "Medio"
 sprint_sugerido: "Sprint 3"
@@ -59,19 +59,19 @@ Implementa RF-03. El envío real de correo es opcional; en desarrollo el token p
 
 ## Tareas de desarrollo
 
-- [ ] **T-01 — Migración de tokens de recuperación**  
+- [x] **T-01 — Migración de tokens de recuperación**
   Dificultad: Bajo  
   Descripción: almacenamiento del token (hash), expiración y marca de uso.
-- [ ] **T-02 — Casos de uso de solicitud y cambio**  
+- [x] **T-02 — Casos de uso de solicitud y cambio**
   Dificultad: Medio  
   Descripción: generación, validación, consumo del token y actualización de contraseña.
-- [ ] **T-03 — Adaptador de entrega del token**  
+- [x] **T-03 — Entrega del token sin exposición insegura**
   Dificultad: Bajo  
-  Descripción: exposición controlada en desarrollo; puerto preparado para correo.
-- [ ] **T-04 — Vistas frontend de recuperación y cambio**  
+  Descripción: no se registra ni retorna el valor claro; SMTP permanece fuera de alcance y el formulario admite el código recibido por un canal seguro.
+- [x] **T-04 — Vistas frontend de recuperación y cambio**
   Dificultad: Medio  
   Descripción: formularios según diseño aprobado, integrados con la API.
-- [ ] **T-05 — Pruebas**  
+- [x] **T-05 — Pruebas**
   Dificultad: Medio  
   Descripción: token válido, expirado, reutilizado e inexistente.
 
@@ -103,26 +103,30 @@ Implementa RF-03. El envío real de correo es opcional; en desarrollo el token p
 
 ## Definition of Done
 
-- [ ] Todos los criterios de aceptación obligatorios están validados con evidencia.
-- [ ] Migración Flyway del token de recuperación presente.
-- [ ] Pruebas de backend de los casos CA-01 a CA-04 en verde.
-- [ ] Vistas de recuperación/cambio de contraseña funcionales en `citas-web`.
-- [ ] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
+- [x] Todos los criterios de aceptación obligatorios están validados con evidencia.
+- [x] Migración Flyway del token de recuperación presente.
+- [x] Pruebas de backend de los casos CA-01 a CA-04 en verde.
+- [x] Vistas de recuperación/cambio de contraseña funcionales en `citas-web`.
+- [x] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
 
 ## Evidencia de validación
 
 | Elemento | Resultado | Evidencia | Observación |
 |---|---|---|---|
-| CA-01 | Pendiente | — | — |
-| CA-02 | Pendiente | — | — |
-| CA-03 | Pendiente | — | — |
-| CA-04 | Pendiente | — | — |
-| DoD | Pendiente | — | — |
+| CA-01 | Cumple | `PasswordRecoveryApiIntegrationTest#ca01_laSolicitudTieneLaMismaRespuestaConEmailExistenteOInexistente`; prueba manual `204` el 2026-09-30 | La respuesta no revela la existencia de la cuenta. |
+| CA-02 | Cumple | `PasswordRecoveryApiIntegrationTest#ca02_conTokenVigenteCambiaLaContrasenaYConsumeElToken` | Cambia el hash BCrypt, consume el token y permite el nuevo inicio de sesión. |
+| CA-03 | Cumple | `PasswordRecoveryApiIntegrationTest#ca03_unTokenYaUsadoNoSePuedeReutilizar` | Un segundo uso recibe `INVALID_PASSWORD_RESET_TOKEN`. |
+| CA-04 | Cumple | `PasswordRecoveryApiIntegrationTest#ca04_tokenExpiradoOInexistenteNoModificaLaCuenta` | Rechaza token vencido o inexistente y conserva la contraseña anterior. |
+| DoD | Cumple | Flyway `V8__password_reset_tokens_hu002.sql`; backend 171/171; frontend lint, 99 pruebas, typecheck y build; `PasswordRecoveryPage`; `docs/contratos/autenticacion.md` | Token hash-only de 30 minutos, sin exponer su valor claro; SMTP no es obligatorio. |
 
 ## Historial de validación
 
 - 2026-09-16 (S2) — HU creada en estado `Borrador`.
 
+- 2026-09-30 (S4) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para implementar RF-03 con token de un solo uso de 30 minutos (D-032).
+
+- 2026-09-30 (S4) — Evidencia CA/DoD verificada y cierre `Completada` aprobado explícitamente por el Product Owner.
+
 ## Notas y decisiones
 
-- Incógnita: duración de vigencia del token (a definir al aprobar).
+- Resuelto (D-032): el token de recuperación dura 30 minutos, es de un solo uso y se guarda como hash.

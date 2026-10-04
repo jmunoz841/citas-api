@@ -2,7 +2,7 @@
 id: HU-020
 tipo: historia-de-usuario
 titulo: "Cerrar atención"
-estado: Borrador
+estado: Completada
 epica: "[[EP-007-ciclo-de-vida-de-citas]]"
 esfuerzo: "Bajo"
 sprint_sugerido: "Sprint 3"
@@ -57,13 +57,13 @@ Implementa RF-17.
 
 ## Tareas de desarrollo
 
-- [ ] **T-01 — Caso de uso cerrar atención**  
+- [x] **T-01 — Caso de uso cerrar atención**
   Dificultad: Bajo  
   Descripción: validación de estado, fecha y ownership; historial.
-- [ ] **T-02 — Acción en agenda**  
+- [x] **T-02 — Acción en agenda**
   Dificultad: Bajo  
   Descripción: botones de completado/inasistencia.
-- [ ] **T-03 — Pruebas**  
+- [x] **T-03 — Pruebas**
   Dificultad: Bajo  
   Descripción: cita futura, ajena, estado inválido.
 
@@ -98,15 +98,21 @@ Implementa RF-17.
 
 | Elemento | Resultado | Evidencia | Observación |
 |---|---|---|---|
-| CA-01 | Pendiente | — | — |
-| CA-02 | Pendiente | — | — |
-| CA-03 | Pendiente | — | — |
-| DoD | Pendiente | — | — |
+| CA-01 | Cumple | `MyAppointmentsApiIntegrationTest#hu020_hu021_elProfesionalCierraSuCitaIniciadaYElHistorialEsDeSoloLectura` | Transición a `COMPLETED` e historial con actor `PROFESSIONAL`. |
+| CA-02 | Cumple | `MyAppointmentsApiIntegrationTest#hu020_noPermiteCerrarUnaCitaFuturaONoPropia`; `AgendaPage` | Backend rechaza antes del inicio y UI deshabilita la acción. |
+| CA-03 | Cumple | `MyAppointmentsApiIntegrationTest#hu020_noPermiteCerrarUnaCitaFuturaONoPropia` | Rechaza cita ajena; el dominio rechaza estados no `APPROVED`. |
+| DoD | Cumple | API `clean test` 167/167; `AgendaPage`/`WeekCalendar`; contrato `docs/contratos/disponibilidad.md`; confirmación manual del Product Owner el 2026-09-30 | La acción para cerrar una cita iniciada fue validada visualmente, incluida la actualización de la agenda. |
 
 ## Historial de validación
 
 - 2026-09-16 (S2) — HU creada en estado `Borrador`.
 
+- 2026-09-25 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S4 (bloque "Ciclo de la cita", D-031).
+
+- 2026-09-30 (S4) — Matriz CA/DoD actualizada y validación manual de cierre de atención confirmada por el Product Owner. HU pasa a `En validación` a la espera del cierre explícito.
+
+- 2026-09-30 (S4) — HU `Completada` con confirmación explícita del Product Owner.
+
 ## Notas y decisiones
 
-- Supuesto: la cita es cerrable desde su hora de inicio (no desde su fin).
+- Resuelto (D-034): la cita es cerrable desde su hora de inicio (no desde su fin).

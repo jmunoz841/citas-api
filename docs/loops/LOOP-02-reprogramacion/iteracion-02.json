@@ -1,0 +1,37 @@
+{
+  "loop": "LOOP-02",
+  "goal": "reschedule appointment (HU-018, HU-019) + admin inbox (HU-022)",
+  "iteration": 2,
+  "maxIterations": 4,
+  "date": "2026-10-04",
+  "trigger": "Docker Desktop disponible tras habilitar SVM y reiniciar; se reanuda el escalamiento de la iteración 1",
+  "verificationBeforeFixes": {
+    "backendTests": "pass (197/197, mvnw clean test, Testcontainers mysql:8.4)",
+    "migrationV9": "aplicada en Testcontainers y en la base local jmunoz-citas-mysql (Flyway v9)",
+    "smokeTest": "pass: reservar -> solicitar -> retención -> bandeja filtrada -> 403 USER -> aprobar -> franja original liberada -> historial con motivo"
+  },
+  "verifier": {
+    "isolation": "subagente independiente, sin permisos de edición en la práctica (no modificó archivos)",
+    "verdict": "PASS",
+    "findings": [
+      "menor: orden de bloqueo distinto entre aprobar (solicitud -> cita) y cancelar (cita -> solicitud) con posible interbloqueo respondido como 500",
+      "menor: la UI del paciente no mostraba una reprogramación CANCELLED",
+      "menor: no documentado que la nueva franja no puede solaparse con la actual"
+    ]
+  },
+  "builder": {
+    "status": "completed",
+    "changes": [
+      "AppointmentCancellationService y ProfessionalAppointmentClosureService cierran la reprogramación antes de cambiar la cita (mismo orden de bloqueo que aprobar)",
+      "GlobalExceptionHandler: PessimisticLockingFailureException -> 409 CONCURRENT_UPDATE",
+      "MyAppointmentsPage: aviso 'Reprogramación cerrada' para CANCELLED + prueba",
+      "docs/contratos/citas.md: regla de no solapamiento y código CONCURRENT_UPDATE"
+    ]
+  },
+  "backendTests": "pass (197/197)",
+  "frontendLint": "pass",
+  "frontendTests": "pass (113/113)",
+  "frontendTypecheck": "pass",
+  "frontendBuild": "pass",
+  "result": "COMPLETED"
+}

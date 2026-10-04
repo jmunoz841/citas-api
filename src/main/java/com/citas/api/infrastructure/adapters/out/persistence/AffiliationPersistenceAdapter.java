@@ -72,6 +72,11 @@ interface SelectablePlan {
 
 interface EpsPlanJpaRepository extends JpaRepository<EpsPlanJpaEntity, Long> {
 
+    List<EpsPlanJpaEntity> findAllByEpsIdOrderByNameAsc(Long epsId);
+    List<EpsPlanJpaEntity> findAllByEpsIdAndActiveTrueOrderByNameAsc(Long epsId);
+    boolean existsByEpsIdAndNameIgnoreCaseAndIdNot(Long epsId, String name, Long id);
+    boolean existsByEpsIdAndNameIgnoreCase(Long epsId, String name);
+
     @Query("""
             SELECT p.id AS id, p.name AS name, e.id AS epsId, e.name AS epsName
             FROM EpsPlanJpaEntity p JOIN EpsJpaEntity e ON e.id = p.epsId
@@ -86,6 +91,13 @@ interface EpsPlanJpaRepository extends JpaRepository<EpsPlanJpaEntity, Long> {
             WHERE p.id = :planId AND p.active = true AND e.active = true
             """)
     Optional<SelectablePlan> findSelectableById(Long planId);
+}
+
+interface EpsJpaRepository extends JpaRepository<EpsJpaEntity, Long> {
+    List<EpsJpaEntity> findAllByOrderByNameAsc();
+    List<EpsJpaEntity> findAllByActiveTrueOrderByNameAsc();
+    boolean existsByNameIgnoreCase(String name);
+    boolean existsByNameIgnoreCaseAndIdNot(String name, Long id);
 }
 
 interface UserAffiliationJpaRepository extends JpaRepository<UserAffiliationJpaEntity, Long> {

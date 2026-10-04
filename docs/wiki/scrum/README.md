@@ -20,13 +20,13 @@ Aplicación web de agendamiento de citas (USER, PROFESSIONAL, ADMIN) en dos sede
 
 | Épica | HU | Estado |
 |---|---|---|
-| [[EP-001-identidad-y-acceso]] | HU-001, HU-002 | En curso (HU-001 Completada; HU-002 en S4) |
-| [[EP-002-perfil-y-afiliacion]] | HU-003, HU-004 | En curso (HU-004 Aprobada para S3) |
-| [[EP-003-catalogos]] | HU-005, HU-006, HU-007 | En curso (HU-005 y HU-006 Aprobadas; HU-007 en S4) |
-| [[EP-004-gestion-de-profesionales]] | HU-008, HU-009 | Aprobada para S3 |
-| [[EP-005-agenda-del-profesional]] | HU-010, HU-011 | En curso (HU-010 Aprobada; HU-011 en S4) |
-| [[EP-006-reserva-de-citas]] | HU-012, HU-013, HU-014, HU-015, HU-022 | En curso (HU-012 a HU-015 Aprobadas; HU-022 en S4) |
-| [[EP-007-ciclo-de-vida-de-citas]] | HU-016 a HU-021 | Borrador |
+| [[EP-001-identidad-y-acceso]] | HU-001, HU-002 | Completada |
+| [[EP-002-perfil-y-afiliacion]] | HU-003, HU-004 | Completada |
+| [[EP-003-catalogos]] | HU-005, HU-006, HU-007 | Completada |
+| [[EP-004-gestion-de-profesionales]] | HU-008, HU-009 | Completada |
+| [[EP-005-agenda-del-profesional]] | HU-010, HU-011 | Completada |
+| [[EP-006-reserva-de-citas]] | HU-012, HU-013, HU-014, HU-015, HU-022 | Completada |
+| [[EP-007-ciclo-de-vida-de-citas]] | HU-016 a HU-021 | Completada |
 | [[EP-008-automatizaciones-n8n]] | HU-023, HU-024, HU-025 | Borrador |
 
 ## Sprints sugeridos (incrementos funcionales, sin duración)
@@ -56,17 +56,17 @@ Incremento: un ADMIN configura profesionales, el profesional publica agenda y el
 
 ### Sprint 3 — MVP completo (S4)
 
-- [[HU-002-recuperar-contrasena]] — Medio
-- [[HU-003-consultar-y-actualizar-perfil]] — Bajo
-- [[HU-007-gestionar-eps-y-planes]] — Medio
-- [[HU-011-consultar-agenda-del-profesional]] — Medio
-- [[HU-016-consultar-mis-citas]] — Medio
-- [[HU-017-cancelar-cita]] — Medio
-- [[HU-018-solicitar-reprogramacion]] — Alto
-- [[HU-019-resolver-reprogramacion]] — Alto
-- [[HU-020-cerrar-atencion]] — Bajo
-- [[HU-021-historial-de-estados]] — Medio
-- [[HU-022-bandeja-administrativa]] — Medio
+- [[HU-002-recuperar-contrasena]] — Medio — **Completada**
+- [[HU-003-consultar-y-actualizar-perfil]] — Bajo — **Completada**
+- [[HU-007-gestionar-eps-y-planes]] — Medio — **Completada**
+- [[HU-011-consultar-agenda-del-profesional]] — Medio — **Completada**
+- [[HU-016-consultar-mis-citas]] — Medio — **Completada**
+- [[HU-017-cancelar-cita]] — Medio — **Completada**
+- [[HU-018-solicitar-reprogramacion]] — Alto — **Completada**
+- [[HU-019-resolver-reprogramacion]] — Alto — **Completada**
+- [[HU-020-cerrar-atencion]] — Bajo — **Completada**
+- [[HU-021-historial-de-estados]] — Medio — **Completada**
+- [[HU-022-bandeja-administrativa]] — Medio — **Completada**
 
 Incremento: ciclo de vida completo de la cita y todas las pantallas obligatorias del PRD.
 

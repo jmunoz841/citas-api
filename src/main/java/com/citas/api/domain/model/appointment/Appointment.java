@@ -77,6 +77,34 @@ public final class Appointment {
         return resolve(AppointmentStatus.REJECTED);
     }
 
+    /** El paciente puede cancelar solo una cita pendiente o aprobada (HU-017). */
+    public Appointment cancel() {
+        if (status != AppointmentStatus.REQUESTED && status != AppointmentStatus.APPROVED) {
+            throw BusinessConflictException.invalidStatusTransition();
+        }
+        return new Appointment(id, patientUserId, professionalId, specialtyId, siteCode, startAt, durationMinutes,
+                AppointmentStatus.CANCELLED);
+    }
+
+    public Appointment close(AppointmentStatus result) {
+        if (status != AppointmentStatus.APPROVED || (result != AppointmentStatus.COMPLETED && result != AppointmentStatus.NO_SHOW)) {
+            throw BusinessConflictException.invalidStatusTransition();
+        }
+        return new Appointment(id, patientUserId, professionalId, specialtyId, siteCode, startAt, durationMinutes, result);
+    }
+
+    /**
+     * Una reprogramación aprobada mueve la cita a la nueva franja. Conserva profesional,
+     * especialidad, duración y estado (HU-019 CA-01).
+     */
+    public Appointment reschedule(LocalDateTime newStartAt, String newSiteCode) {
+        if (status != AppointmentStatus.APPROVED) {
+            throw BusinessConflictException.appointmentNotReschedulable();
+        }
+        return new Appointment(id, patientUserId, professionalId, specialtyId, newSiteCode, newStartAt,
+                durationMinutes, status);
+    }
+
     /** Solo una cita {@code REQUESTED} se aprueba o se rechaza (RN-11, HU-015 CA-04). */
     private Appointment resolve(AppointmentStatus target) {
         if (status != AppointmentStatus.REQUESTED) {

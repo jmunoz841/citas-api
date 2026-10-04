@@ -8,9 +8,19 @@ import com.citas.api.application.port.in.LogoutUseCase;
 import com.citas.api.application.port.in.RefreshSessionUseCase;
 import com.citas.api.application.port.in.RegisterUserUseCase;
 import com.citas.api.application.port.in.RegisterUserUseCase.RegisterUserCommand;
+import com.citas.api.application.port.in.RequestPasswordResetUseCase;
+import com.citas.api.application.port.in.RequestPasswordResetUseCase.RequestPasswordResetCommand;
+import com.citas.api.application.port.in.ResetPasswordUseCase;
+import com.citas.api.application.port.in.ResetPasswordUseCase.ResetPasswordCommand;
+import com.citas.api.application.port.in.ManageOwnProfileUseCase;
+import com.citas.api.application.port.in.ManageOwnProfileUseCase.UpdateProfileCommand;
 import com.citas.api.domain.model.user.User;
 import com.citas.api.infrastructure.adapters.in.web.auth.AuthDtos.LoginRequest;
 import com.citas.api.infrastructure.adapters.in.web.auth.AuthDtos.RefreshTokenRequest;
+import com.citas.api.infrastructure.adapters.in.web.auth.AuthDtos.PasswordResetRequest;
+import com.citas.api.infrastructure.adapters.in.web.auth.AuthDtos.ResetPasswordRequest;
+import com.citas.api.infrastructure.adapters.in.web.auth.AuthDtos.UpdateProfileRequest;
+import com.citas.api.infrastructure.adapters.in.web.auth.AuthDtos.ProfileResponse;
 import com.citas.api.infrastructure.adapters.in.web.auth.AuthDtos.RegisterRequest;
 import com.citas.api.infrastructure.adapters.in.web.auth.AuthDtos.SessionResponse;
 import com.citas.api.infrastructure.adapters.in.web.auth.AuthDtos.TokenResponse;
@@ -21,6 +31,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -37,14 +48,22 @@ class AuthController {
     private final RefreshSessionUseCase refreshSession;
     private final LogoutUseCase logout;
     private final GetSessionProfileUseCase sessionProfile;
+    private final RequestPasswordResetUseCase passwordResetRequest;
+    private final ResetPasswordUseCase passwordReset;
+    private final ManageOwnProfileUseCase ownProfile;
 
     AuthController(RegisterUserUseCase registerUser, LoginUseCase login, RefreshSessionUseCase refreshSession,
-                   LogoutUseCase logout, GetSessionProfileUseCase sessionProfile) {
+                   LogoutUseCase logout, GetSessionProfileUseCase sessionProfile,
+                   RequestPasswordResetUseCase passwordResetRequest, ResetPasswordUseCase passwordReset,
+                   ManageOwnProfileUseCase ownProfile) {
         this.registerUser = registerUser;
         this.login = login;
         this.refreshSession = refreshSession;
         this.logout = logout;
         this.sessionProfile = sessionProfile;
+        this.passwordResetRequest = passwordResetRequest;
+        this.passwordReset = passwordReset;
+        this.ownProfile = ownProfile;
     }
 
     @PostMapping("/register")
@@ -72,6 +91,31 @@ class AuthController {
         logout.logout(request.refreshToken());
     }
 
+    /** Siempre responde igual para no revelar si el correo corresponde a una cuenta. */
+    @PostMapping("/password-reset-requests")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void requestPasswordReset(@Valid @RequestBody PasswordResetRequest request) {
+        passwordResetRequest.request(new RequestPasswordResetCommand(request.email()));
+    }
+
+    @PostMapping("/password-resets")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        passwordReset.reset(new ResetPasswordCommand(request.token(), request.password()));
+    }
+
+    @GetMapping("/profile")
+    ProfileResponse profile(@AuthenticationPrincipal AuthenticatedUser user) {
+        return profileResponse(ownProfile.view(user.userId()));
+    }
+
+    @PatchMapping("/profile")
+    ProfileResponse updateProfile(@AuthenticationPrincipal AuthenticatedUser user,
+                                  @Valid @RequestBody UpdateProfileRequest request) {
+        return profileResponse(ownProfile.update(user.userId(), new UpdateProfileCommand(request.firstNames(),
+                request.lastNames(), request.phone())));
+    }
+
     /**
      * Recurso protegido mínimo (CA-08): id, email y roles salen del access token; los nombres,
      * de la base, para que el cliente pueda saludar y mostrar al usuario en la cabecera.
@@ -81,5 +125,10 @@ class AuthController {
         SessionProfile profile = sessionProfile.profile(user.userId());
         return new SessionResponse(user.userId(), user.email(), profile.firstNames(), profile.lastNames(),
                 List.copyOf(user.roles().stream().sorted().toList()));
+    }
+
+    private static ProfileResponse profileResponse(ManageOwnProfileUseCase.Profile profile) {
+        return new ProfileResponse(profile.id(), profile.firstNames(), profile.lastNames(), profile.documentType(),
+                profile.documentNumber(), profile.email(), profile.phone());
     }
 }

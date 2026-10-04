@@ -2,7 +2,7 @@
 id: HU-016
 tipo: historia-de-usuario
 titulo: "Consultar mis citas"
-estado: Borrador
+estado: Completada
 epica: "[[EP-007-ciclo-de-vida-de-citas]]"
 esfuerzo: "Medio"
 sprint_sugerido: "Sprint 3"
@@ -57,13 +57,13 @@ Implementa RF-13. Incluye listado y detalle.
 
 ## Tareas de desarrollo
 
-- [ ] **T-01 — Consulta de citas del usuario**  
+- [x] **T-01 — Consulta de citas del usuario**
   Dificultad: Medio  
   Descripción: listado paginable/filtrable y detalle.
-- [ ] **T-02 — Vistas de listado y detalle**  
+- [x] **T-02 — Vistas de listado y detalle**
   Dificultad: Medio  
   Descripción: según diseño aprobado.
-- [ ] **T-03 — Pruebas**  
+- [x] **T-03 — Pruebas**
   Dificultad: Medio  
   Descripción: filtros, campos mínimos y acceso a citas ajenas.
 
@@ -104,15 +104,21 @@ Implementa RF-13. Incluye listado y detalle.
 
 | Elemento | Resultado | Evidencia | Observación |
 |---|---|---|---|
-| CA-01 | Pendiente | — | — |
-| CA-02 | Pendiente | — | — |
-| CA-03 | Pendiente | — | — |
-| CA-04 | Pendiente | — | — |
-| DoD | Pendiente | — | — |
+| CA-01 | Cumple | `MyAppointmentsApiIntegrationTest#ca01_elListadoMuestraSedeProfesionalEspecialidadHorarioDuracionYEstado` | Lista datos mínimos y orden de consulta. |
+| CA-02 | Cumple | `MyAppointmentsApiIntegrationTest#ca02_losFiltrosDeEstadoYFechaDejanSoloLasQueCumplen` | Filtros de estado y fecha. |
+| CA-03 | Cumple | `MyAppointmentsApiIntegrationTest#ca03_elDetalleDeUnaCitaRechazadaMuestraElMotivo`; `MyAppointmentsPage.test.tsx` | Motivo visible en API y detalle web. |
+| CA-04 | Cumple | `MyAppointmentsApiIntegrationTest#ca04_unaCitaAjenaNoSeVeNiEnElListadoNiEnElDetalle` | Oculta existencia con `404`. |
+| DoD | Cumple | API `clean test` 167/167; `MyAppointmentsPage`; contrato `docs/contratos/citas.md` | Evidencia técnica consolidada en [[evidencia-s4]]. |
 
 ## Historial de validación
 
 - 2026-09-16 (S2) — HU creada en estado `Borrador`.
+
+- 2026-09-25 (S3) — HU `Aprobada` explícitamente por el Product Owner (Juan Muñoz) para el alcance de S4 (bloque "Ciclo de la cita", D-031).
+
+- 2026-09-30 (S4) — HU pasa a `En validación`: la matriz registra evidencia de los cuatro CA y la DoD en `Cumple`.
+
+- 2026-09-30 (S4) — HU `Completada` con confirmación explícita del Product Owner.
 
 ## Notas y decisiones
 

@@ -12,6 +12,7 @@ Punto de entrada de la memoria global. Convenciones: [SCHEMA](../schema/SCHEMA.m
 | [[ejecucion]] | ejecucion | Plan S2, estado de avance y evidencia por sesión |
 | [[evidencia-s2]] | ejecucion | Registro de evidencia S2 por repositorio (plantilla del curso) |
 | [[evidencia-s3]] | ejecucion | Registro de evidencia S3: plantilla por repo, matriz resumida de las 10 HU y demo del hook FAIL/PASS |
+| [[evidencia-s4]] | ejecucion | Evidencia técnica, Builder/Verifier y loops de S4 |
 
 ## Fuentes (`raw/`)
 
@@ -29,6 +30,7 @@ Punto de entrada de la memoria global. Convenciones: [SCHEMA](../schema/SCHEMA.m
 | `raw/2026-09-25-decisiones-reserva.md` | Plan de HU-012/013/014: V6, doble reserva por PK, historial sin triggers, LOOP por HTTP |
 | `raw/2026-09-25-aprobacion-diseno-s3.md` | Aprobación del diseño Stitch v4 de las áreas autenticadas de S3 |
 | `raw/2026-09-25-decisiones-abiertas-s3.md` | Endpoint único de reserva, 409 por asignación en uso, citas de profesional desactivado, sin expiración |
+| `raw/2026-09-25-alcance-s4.md` | Alcance de S4 (ciclo de la cita) y supuestos de HU-002, reprogramación y profesional |
 
 ## Diseño de base de datos
 

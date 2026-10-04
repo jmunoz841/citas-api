@@ -16,4 +16,14 @@ public class ResourceNotFoundException extends DomainException {
     public static ResourceNotFoundException professional() {
         return new ResourceNotFoundException("El profesional no existe");
     }
+    public static ResourceNotFoundException eps() { return new ResourceNotFoundException("La EPS no existe"); }
+    public static ResourceNotFoundException insurancePlan() { return new ResourceNotFoundException("El plan no existe"); }
+
+    public static ResourceNotFoundException appointment() {
+        return new ResourceNotFoundException("La cita no existe");
+    }
+
+    public static ResourceNotFoundException rescheduleRequest() {
+        return new ResourceNotFoundException("La reprogramación no existe");
+    }
 }

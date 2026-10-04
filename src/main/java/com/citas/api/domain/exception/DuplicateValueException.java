@@ -27,6 +27,8 @@ public class DuplicateValueException extends DomainException {
         return new DuplicateValueException("SPECIALTY_NAME_ALREADY_REGISTERED", "name",
                 "Ya existe una especialidad con ese nombre");
     }
+    public static DuplicateValueException epsName() { return new DuplicateValueException("EPS_NAME_ALREADY_REGISTERED", "name", "Ya existe una EPS con ese nombre"); }
+    public static DuplicateValueException planName() { return new DuplicateValueException("EPS_PLAN_NAME_ALREADY_REGISTERED", "name", "Ya existe un plan con ese nombre para la EPS"); }
 
     public String getField() {
         return field;

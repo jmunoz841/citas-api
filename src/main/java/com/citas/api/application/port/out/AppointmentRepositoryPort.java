@@ -4,8 +4,13 @@ import com.citas.api.domain.model.agenda.AgendaSlot;
 import com.citas.api.domain.model.appointment.Appointment;
 import com.citas.api.domain.model.appointment.AppointmentStatus;
 import com.citas.api.domain.model.appointment.AppointmentSummary;
+import com.citas.api.domain.model.appointment.AppointmentView;
+import com.citas.api.domain.model.appointment.InboxFilter;
+import com.citas.api.domain.model.appointment.ProfessionalAppointmentView;
+import com.citas.api.domain.model.appointment.AppointmentHistoryEntry;
 import com.citas.api.domain.model.appointment.StatusChange;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,5 +42,26 @@ public interface AppointmentRepositoryPort {
     /** Libera los slots de la cita: vuelven a estar disponibles (RN-09). */
     void releaseSlots(Long appointmentId);
 
-    List<AppointmentSummary> findByStatus(AppointmentStatus status);
+    /**
+     * Mueve la cita a su nueva sede y horario solo si sigue {@code APPROVED}; si no, lanza
+     * {@link com.citas.api.domain.exception.BusinessConflictException#appointmentNotReschedulable()}
+     * (HU-019 CA-01).
+     */
+    void updateSchedule(Appointment moved);
+
+    /** Citas {@code REQUESTED} que cumplen los filtros, las más próximas primero (HU-015, HU-022). */
+    List<AppointmentSummary> findRequested(InboxFilter filter);
+
+    /**
+     * Citas del paciente con inicio en [{@code from}, {@code to}), más próxima primero. Cada
+     * filtro nulo se ignora.
+     */
+    List<AppointmentView> findViewsByPatient(Long patientUserId, AppointmentStatus status, LocalDateTime from,
+                                             LocalDateTime to);
+
+    Optional<AppointmentView> findViewByIdAndPatient(Long appointmentId, Long patientUserId);
+
+    List<ProfessionalAppointmentView> findApprovedViewsByProfessional(Long professionalId, LocalDateTime from,
+                                                                       LocalDateTime to, String siteCode);
+    List<AppointmentHistoryEntry> findHistory(Long appointmentId);
 }

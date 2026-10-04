@@ -2,7 +2,7 @@
 id: HU-022
 tipo: historia-de-usuario
 titulo: "Bandeja administrativa con filtros"
-estado: Borrador
+estado: Completada
 epica: "[[EP-006-reserva-de-citas]]"
 esfuerzo: "Medio"
 sprint_sugerido: "Sprint 3"
@@ -55,15 +55,15 @@ Implementa RF-18 de forma completa sobre las capacidades de resolución ya exist
 
 ## Tareas de desarrollo
 
-- [ ] **T-01 — Consultas filtradas**  
+- [x] **T-01 — Consultas filtradas**  
   Dificultad: Medio  
-  Descripción: citas `REQUESTED` y reprogramaciones `PENDING` con filtros e índices.
-- [ ] **T-02 — Vista de bandeja**  
+  Descripción: citas `REQUESTED` y reprogramaciones `PENDING` con filtros e índices. Parámetros `siteCode`, `professionalId`, `specialtyId`, `from`, `to` en ambos listados; índices de V6 y V9.
+- [x] **T-02 — Vista de bandeja**  
   Dificultad: Medio  
-  Descripción: según diseño aprobado.
-- [ ] **T-03 — Pruebas**  
+  Descripción: según diseño aprobado. "Solicitudes pendientes" pasa a tener filtros y pestañas (citas especializadas / reprogramaciones) con los componentes ya aprobados de Stitch v4; el badge suma ambas.
+- [x] **T-03 — Pruebas**  
   Dificultad: Bajo  
-  Descripción: combinaciones de filtros y autorización.
+  Descripción: combinaciones de filtros y autorización. `RescheduleApiIntegrationTest.hu022_*`, `RequestsPage.inbox.test.tsx`.
 
 ## Criterios de aceptación
 
@@ -96,15 +96,24 @@ Implementa RF-18 de forma completa sobre las capacidades de resolución ya exist
 
 | Elemento | Resultado | Evidencia | Observación |
 |---|---|---|---|
-| CA-01 | Pendiente | — | — |
-| CA-02 | Pendiente | — | — |
-| CA-03 | Pendiente | — | — |
-| DoD | Pendiente | — | — |
+| CA-01 | Cumple | `hu022_ca01_laBandejaMuestraSolicitudesYReprogramacionesPendientesYNoLasResueltas`; `RequestsPage.inbox.test.tsx` CA-01 | Solo `REQUESTED` y `PENDING`; las rechazadas no aparecen |
+| CA-02 | Cumple | `hu022_ca02_losFiltrosSonCombinablesYTodosSeCumplen`; pruebas de frontend CA-02 | Sede, profesional, especialidad y rango combinados; rango invertido → `400` (API) y aviso sin consultar (UI) |
+| CA-03 | Cumple | `hu022_ca03_soloAdminAccedeALaBandeja` | Sin token `401`; USER y PROFESSIONAL `403` en ambos listados |
+| DoD | Cumple | `mvnw clean test` 197/197; bandeja con filtros y pestañas en `citas-web` (112 pruebas en verde) | Trazabilidad Scrum y épica actualizadas |
 
 ## Historial de validación
 
 - 2026-09-16 (S2) — HU creada en estado `Borrador`.
 
+- 2026-09-30 (S4) — HU `Aprobada` explícitamente por el Product Owner para completar la bandeja administrativa antes de S5.
+
+- 2026-10-04 (S4) — Implementada junto con HU-019 (LOOP-02 iteración 1). Integración escrita pero no ejecutada (sin Docker). Queda `Aprobada`.
+
+- 2026-10-04 (S4) — `mvnw clean test` 197/197; Verifier PASS; filtros comprobados contra la API real. Matriz CA/DoD en `Cumple`. Pendiente la confirmación del Product Owner.
+
+- 2026-10-04 (S4) — Cierre confirmado por el Product Owner: HU `Completada`.
+
 ## Notas y decisiones
 
-- Ninguna.
+- Aprobado (D-038): en reprogramaciones, los filtros de sede y fecha se aplican a la franja **solicitada**, que es la que el ADMIN decide.
+- La bandeja reutiliza los componentes aprobados en Stitch v4 (tabla, `SiteBadge`, diálogos); no se hizo una nueva iteración de diseño; el Product Owner lo aprobó (D-039).

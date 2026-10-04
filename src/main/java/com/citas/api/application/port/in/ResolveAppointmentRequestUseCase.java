@@ -2,6 +2,7 @@ package com.citas.api.application.port.in;
 
 import com.citas.api.domain.model.appointment.Appointment;
 import com.citas.api.domain.model.appointment.AppointmentSummary;
+import com.citas.api.domain.model.appointment.InboxFilter;
 
 import java.util.List;
 
@@ -11,8 +12,8 @@ import java.util.List;
  */
 public interface ResolveAppointmentRequestUseCase {
 
-    /** Citas {@code REQUESTED}, las más próximas primero. */
-    List<AppointmentSummary> listRequested();
+    /** Citas {@code REQUESTED} que cumplen los filtros de la bandeja, las más próximas primero (HU-022). */
+    List<AppointmentSummary> listRequested(InboxFilter filter);
 
     Appointment approve(Long adminUserId, Long appointmentId);
 

@@ -7,6 +7,12 @@
 
 ## Endpoints
 
+### EPS y planes (HU-007)
+
+Todos exigen rol `ADMIN`. `GET /api/v1/admin/eps?onlyActive=false` lista EPS; `POST /api/v1/admin/eps` crea con `{ "name" }`; `PATCH /api/v1/admin/eps/{id}` edita el nombre y `PATCH /api/v1/admin/eps/{id}/active` cambia su estado con `{ "active" }`.
+
+`GET /api/v1/admin/eps/{id}/plans?onlyActive=false` lista planes de una EPS; `POST /api/v1/admin/eps/{id}/plans` crea un plan; `PATCH /api/v1/admin/eps/plans/{planId}` edita su nombre y `PATCH /api/v1/admin/eps/plans/{planId}/active` cambia su estado. No hay `DELETE`: los catálogos referenciados se conservan y se desactivan. Los duplicados responden `409` con `EPS_NAME_ALREADY_REGISTERED` o `EPS_PLAN_NAME_ALREADY_REGISTERED`.
+
 | Método | Ruta | Qué hace |
 |---|---|---|
 | GET | `/api/v1/admin/specialties?onlyActive=` | Lista especialidades; por defecto incluye las inactivas |

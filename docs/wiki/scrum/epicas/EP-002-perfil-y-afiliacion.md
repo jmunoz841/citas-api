@@ -2,7 +2,7 @@
 id: EP-002
 tipo: epica
 titulo: "Perfil y afiliación"
-estado: Borrador
+estado: Completada
 historias:
   - "[[HU-003-consultar-y-actualizar-perfil]]"
   - "[[HU-004-registrar-afiliacion]]"
@@ -47,7 +47,7 @@ Datos de contacto y afiliación actualizados y normalizados.
 
 ## Historias de usuario
 
-- [[HU-003-consultar-y-actualizar-perfil]] — Sprint 3 — Borrador
+- [[HU-003-consultar-y-actualizar-perfil]] — Sprint 3 — Completada
 - [[HU-004-registrar-afiliacion]] — Sprint 3 — Completada
 
 ## Criterio de completitud de la épica

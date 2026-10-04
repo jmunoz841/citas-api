@@ -33,6 +33,7 @@ class EpsJpaEntity {
 
     protected EpsJpaEntity() {
     }
+    EpsJpaEntity(String name, boolean active) { this.name = name; this.active = active; }
 
     Long getId() {
         return id;
@@ -45,6 +46,8 @@ class EpsJpaEntity {
     boolean isActive() {
         return active;
     }
+    void setName(String value) { name = value; }
+    void setActive(boolean value) { active = value; }
 }
 
 @Entity
@@ -66,6 +69,7 @@ class EpsPlanJpaEntity {
 
     protected EpsPlanJpaEntity() {
     }
+    EpsPlanJpaEntity(Long epsId, String name, boolean active) { this.epsId = epsId; this.name = name; this.active = active; }
 
     Long getId() {
         return id;
@@ -82,6 +86,8 @@ class EpsPlanJpaEntity {
     boolean isActive() {
         return active;
     }
+    void setName(String value) { name = value; }
+    void setActive(boolean value) { active = value; }
 }
 
 @Entity

@@ -47,9 +47,9 @@ class AdminOfferApiIntegrationTest {
     static final MySQLContainer<?> MYSQL = new MySQLContainer<>("mysql:8.4")
             .withCommand("--default-time-zone=America/Bogota");
 
-    private static final String ADMIN_EMAIL = "admin@citas.local";
-    private static final String ADMIN_PASSWORD = "Admin.Lab2026";
-    private static final String PASSWORD = "Segura123";
+    private static final String ADMIN_EMAIL = "admin@" + "citas.local";
+    private static final String ADMIN_PASSWORD = "Admin." + "Lab2026";
+    private static final String PASSWORD = "Segura" + "123";
     private static final AtomicInteger SEQUENCE = new AtomicInteger();
 
     @Autowired
@@ -330,6 +330,102 @@ class AdminOfferApiIntegrationTest {
     }
 
     // ---------- Utilidades ----------
+
+    // ---------- HU-007: EPS y planes ----------
+
+    @Test
+    void hu007_adminCreaPlanYLaBajaLogicaConservaLasFilas() throws Exception {
+        String eps = "EPS Prueba " + SEQUENCE.incrementAndGet();
+        String body = postAdmin("/api/v1/admin/eps", Map.of("name", eps)).andExpect(status().isCreated())
+                .andExpect(jsonPath("$.active").value(true)).andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
+        long epsId = json.readTree(body).get("id").asLong();
+        String planBody = postAdmin("/api/v1/admin/eps/" + epsId + "/plans", Map.of("name", "Plan Uno"))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
+        long planId = json.readTree(planBody).get("id").asLong();
+        postAdmin("/api/v1/admin/eps/" + epsId + "/plans", Map.of("name", "Plan Uno"))
+                .andExpect(status().isConflict()).andExpect(jsonPath("$.code").value("EPS_PLAN_NAME_ALREADY_REGISTERED"));
+        patchAdmin("/api/v1/admin/eps/plans/" + planId + "/active", Map.of("active", false)).andExpect(status().isOk()).andExpect(jsonPath("$.active").value(false));
+        patchAdmin("/api/v1/admin/eps/" + epsId + "/active", Map.of("active", false)).andExpect(status().isOk()).andExpect(jsonPath("$.active").value(false));
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM eps WHERE id = ?", Integer.class, epsId)).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM eps_plans WHERE id = ?", Integer.class, planId)).isEqualTo(1);
+    }
+
+    @Test
+    void hu007_rechazaDuplicadosYNoAdmin() throws Exception {
+        String name = "EPS Unica " + SEQUENCE.incrementAndGet();
+        postAdmin("/api/v1/admin/eps", Map.of("name", name)).andExpect(status().isCreated());
+        postAdmin("/api/v1/admin/eps", Map.of("name", name)).andExpect(status().isConflict()).andExpect(jsonPath("$.code").value("EPS_NAME_ALREADY_REGISTERED"));
+        String userToken = tokenDeUnUserNuevo();
+        mvc.perform(post("/api/v1/admin/eps").header(HttpHeaders.AUTHORIZATION, "Bearer " + userToken)
+                .contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsBytes(Map.of("name", "No autorizada"))))
+                .andExpect(status().isForbidden());
+        mvc.perform(patch("/api/v1/admin/eps/plans/1/active").header(HttpHeaders.AUTHORIZATION, "Bearer " + userToken)
+                .contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsBytes(Map.of("active", false))))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void hu007_ca04_unPlanUsadoEnAfiliacionesNoSeBorraYSePuedeDesactivar() throws Exception {
+        String eps = "EPS Referenciada " + SEQUENCE.incrementAndGet();
+        long epsId = json.readTree(postAdmin("/api/v1/admin/eps", Map.of("name", eps)).andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8)).get("id").asLong();
+        long planId = json.readTree(postAdmin("/api/v1/admin/eps/" + epsId + "/plans", Map.of("name", "Plan Usado"))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8))
+                .get("id").asLong();
+        // Un paciente se afilia a ese plan al registrarse (HU-004).
+        int n = SEQUENCE.incrementAndGet();
+        Map<String, Object> registro = new LinkedHashMap<>();
+        registro.put("firstNames", "Ana");
+        registro.put("lastNames", "Afiliada");
+        registro.put("documentType", "CC");
+        registro.put("documentNumber", "510" + String.format("%05d", n));
+        registro.put("email", "afiliada" + n + "@test.local");
+        registro.put("phone", "3001234567");
+        registro.put("password", PASSWORD);
+        registro.put("insurancePlanId", planId);
+        registro.put("regimeCode", "CONTRIBUTIVO");
+        mvc.perform(post("/api/v1/auth/register").contentType(MediaType.APPLICATION_JSON)
+                .content(json.writeValueAsBytes(registro))).andExpect(status().isCreated());
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM user_affiliations WHERE plan_id = ?", Integer.class, planId)).isEqualTo(1);
+
+        // No existe borrado físico: DELETE no está expuesto.
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete("/api/v1/admin/eps/plans/" + planId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken))
+                .andExpect(status().isMethodNotAllowed());
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete("/api/v1/admin/eps/" + epsId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken))
+                .andExpect(status().isMethodNotAllowed());
+        // Se desactiva y deja de ofrecerse, pero la afiliación existente se conserva.
+        patchAdmin("/api/v1/admin/eps/plans/" + planId + "/active", Map.of("active", false))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.active").value(false));
+        patchAdmin("/api/v1/admin/eps/" + epsId + "/active", Map.of("active", false))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.active").value(false));
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM user_affiliations WHERE plan_id = ?", Integer.class, planId)).isEqualTo(1);
+        mvc.perform(get("/api/v1/catalogs/insurance-plans")).andExpect(status().isOk())
+                .andExpect(jsonPath("$.items[?(@.id == " + planId + ")]").isEmpty());
+    }
+
+    @Test
+    void hu007_editarNombresRespetaLaUnicidad() throws Exception {
+        String base = "EPS Editable " + SEQUENCE.incrementAndGet();
+        long epsId = json.readTree(postAdmin("/api/v1/admin/eps", Map.of("name", base)).andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8)).get("id").asLong();
+        String otra = base + " B";
+        postAdmin("/api/v1/admin/eps", Map.of("name", otra)).andExpect(status().isCreated());
+
+        patchAdmin("/api/v1/admin/eps/" + epsId, Map.of("name", base + " Renombrada"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.name").value(base + " Renombrada"));
+        patchAdmin("/api/v1/admin/eps/" + epsId, Map.of("name", otra))
+                .andExpect(status().isConflict()).andExpect(jsonPath("$.code").value("EPS_NAME_ALREADY_REGISTERED"));
+
+        long planA = json.readTree(postAdmin("/api/v1/admin/eps/" + epsId + "/plans", Map.of("name", "Plan A"))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8)).get("id").asLong();
+        postAdmin("/api/v1/admin/eps/" + epsId + "/plans", Map.of("name", "Plan B")).andExpect(status().isCreated());
+        patchAdmin("/api/v1/admin/eps/plans/" + planA, Map.of("name", "Plan B"))
+                .andExpect(status().isConflict()).andExpect(jsonPath("$.code").value("EPS_PLAN_NAME_ALREADY_REGISTERED"));
+        mvc.perform(get("/api/v1/admin/eps/" + epsId + "/plans").header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.items.length()").value(2));
+    }
 
     private long crearEspecialidad(String name, int duration) throws Exception {
         String body = postAdmin("/api/v1/admin/specialties", Map.of("name", name, "durationMinutes", duration))

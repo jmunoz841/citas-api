@@ -2,7 +2,7 @@
 id: HU-007
 tipo: historia-de-usuario
 titulo: "Gestionar EPS y planes"
-estado: Borrador
+estado: Completada
 epica: "[[EP-003-catalogos]]"
 esfuerzo: "Medio"
 sprint_sugerido: "Sprint 3"
@@ -58,18 +58,18 @@ Implementa RF-06 para EPS y planes de EPS. Los datos son sintéticos.
 
 ## Tareas de desarrollo
 
-- [ ] **T-01 — Migración EPS y planes**  
+- [x] **T-01 — Migración EPS y planes**  
   Dificultad: Bajo  
-  Descripción: tablas relacionadas con restricciones únicas y estado activo.
-- [ ] **T-02 — Casos de uso CRUD**  
+  Descripción: tablas relacionadas con restricciones únicas y estado activo. Ya existían desde `V3__afiliacion_hu004.sql` (`eps`, `eps_plans` con `is_active` y unicidad); HU-007 no necesitó migración nueva.
+- [x] **T-02 — Casos de uso CRUD**  
   Dificultad: Medio  
-  Descripción: validaciones, unicidad y desactivación.
-- [ ] **T-03 — Vista CRUD EPS/planes**  
+  Descripción: validaciones, unicidad y desactivación. `InsuranceCatalogService`, `/api/v1/admin/eps/**` (commit `ee338a6`).
+- [x] **T-03 — Vista CRUD EPS/planes**  
   Dificultad: Medio  
-  Descripción: según diseño aprobado.
-- [ ] **T-04 — Pruebas**  
+  Descripción: según diseño aprobado. `InsuranceCatalogPage` en `citas-web` (commit `9c9d57b`).
+- [x] **T-04 — Pruebas**  
   Dificultad: Medio  
-  Descripción: duplicados, autorización y catálogo referenciado.
+  Descripción: duplicados, autorización y catálogo referenciado. `AdminOfferApiIntegrationTest.hu007_*` (4 pruebas) e `InsuranceCatalogPage.test.tsx`.
 
 ## Criterios de aceptación
 
@@ -109,15 +109,23 @@ Implementa RF-06 para EPS y planes de EPS. Los datos son sintéticos.
 
 | Elemento | Resultado | Evidencia | Observación |
 |---|---|---|---|
-| CA-01 | Pendiente | — | — |
-| CA-02 | Pendiente | — | — |
-| CA-03 | Pendiente | — | — |
-| CA-04 | Pendiente | — | — |
-| DoD | Pendiente | — | — |
+| CA-01 | Cumple | `hu007_adminCreaPlanYLaBajaLogicaConservaLasFilas` | EPS y plan quedan activos al crearse |
+| CA-02 | Cumple | `hu007_rechazaDuplicadosYNoAdmin`, `hu007_editarNombresRespetaLaUnicidad` | `409 EPS_NAME_ALREADY_REGISTERED` / `EPS_PLAN_NAME_ALREADY_REGISTERED`, también al renombrar |
+| CA-03 | Cumple | `hu007_rechazaDuplicadosYNoAdmin` | USER → `403` al crear EPS y al desactivar un plan |
+| CA-04 | Cumple | `hu007_ca04_unPlanUsadoEnAfiliacionesNoSeBorraYSePuedeDesactivar` | Plan usado por una afiliación real: `DELETE` → `405`, se desactiva, la afiliación se conserva y sale del catálogo público |
+| DoD | Cumple | Migración V3 (tablas `eps`/`eps_plans`); vista `InsuranceCatalogPage`; `mvnw clean test` 197/197; frontend lint, 112 pruebas, typecheck y build | Trazabilidad Scrum y épica actualizadas |
 
 ## Historial de validación
 
 - 2026-09-16 (S2) — HU creada en estado `Borrador`.
+
+- 2026-09-30 (S4) — HU `Aprobada` explícitamente por el Product Owner para completar el CRUD administrativo de EPS y planes antes de S5.
+
+- 2026-10-04 (S4) — Retomado en otro equipo. Se añadieron las pruebas de CA-04 (plan referenciado por una afiliación real) y de edición con unicidad. Frontend en verde (lint, 112 pruebas, typecheck, build). Las pruebas de integración del backend no se ejecutaron: el equipo no tiene Docker Desktop. Queda `Aprobada` hasta ejecutarlas.
+
+- 2026-10-04 (S4) — Con Docker instalado: `mvnw clean test` 197/197 en verde (4 pruebas HU-007). Matriz CA/DoD en `Cumple`. Pendiente la confirmación del Product Owner para pasar a `Completada`.
+
+- 2026-10-04 (S4) — Cierre confirmado por el Product Owner: HU `Completada`.
 
 ## Notas y decisiones
 

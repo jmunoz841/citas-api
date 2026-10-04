@@ -8,9 +8,11 @@ import com.citas.api.domain.exception.EmailAlreadyRegisteredException;
 import com.citas.api.domain.exception.InvalidCredentialsException;
 import com.citas.api.domain.exception.InvalidFieldException;
 import com.citas.api.domain.exception.InvalidRefreshTokenException;
+import com.citas.api.domain.exception.InvalidPasswordResetTokenException;
 import com.citas.api.domain.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -65,6 +67,16 @@ class GlobalExceptionHandler {
         return ApiProblems.of(HttpStatus.CONFLICT, e.getCode(), e.getMessage());
     }
 
+    /**
+     * Dos transacciones se bloquearon entre sí (p. ej. aprobar y cancelar la misma cita a la vez):
+     * InnoDB deshace una y los datos quedan consistentes. Se responde 409 para que el cliente recargue.
+     */
+    @ExceptionHandler(PessimisticLockingFailureException.class)
+    ProblemDetail concurrentUpdate(PessimisticLockingFailureException e) {
+        return ApiProblems.of(HttpStatus.CONFLICT, "CONCURRENT_UPDATE",
+                "Otra operación modificó el mismo registro al mismo tiempo. Actualiza e inténtalo de nuevo.");
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
     ProblemDetail domainNotFound(ResourceNotFoundException e) {
         return ApiProblems.of(HttpStatus.NOT_FOUND, e.getCode(), e.getMessage());
@@ -73,6 +85,11 @@ class GlobalExceptionHandler {
     @ExceptionHandler({InvalidCredentialsException.class, InvalidRefreshTokenException.class})
     ProblemDetail unauthorized(DomainException e) {
         return ApiProblems.of(HttpStatus.UNAUTHORIZED, e.getCode(), e.getMessage());
+    }
+
+    @ExceptionHandler(InvalidPasswordResetTokenException.class)
+    ProblemDetail invalidPasswordResetToken(InvalidPasswordResetTokenException e) {
+        return ApiProblems.of(HttpStatus.BAD_REQUEST, e.getCode(), e.getMessage());
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)

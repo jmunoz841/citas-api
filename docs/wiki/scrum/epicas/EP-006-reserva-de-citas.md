@@ -2,7 +2,7 @@
 id: EP-006
 tipo: epica
 titulo: "Reserva de citas"
-estado: Borrador
+estado: Completada
 historias:
   - "[[HU-012-consultar-disponibilidad]]"
   - "[[HU-013-reservar-cita-general]]"
@@ -54,7 +54,7 @@ Flujo central del producto: de la disponibilidad a una cita confirmada o solicit
 - [[HU-013-reservar-cita-general]] — Sprint 2 — Completada
 - [[HU-014-solicitar-cita-especializada]] — Sprint 2 — Completada
 - [[HU-015-resolver-cita-especializada]] — Sprint 2 — Completada
-- [[HU-022-bandeja-administrativa]] — Sprint 3 — Borrador
+- [[HU-022-bandeja-administrativa]] — Sprint 3 — Completada
 
 ## Criterio de completitud de la épica
 
