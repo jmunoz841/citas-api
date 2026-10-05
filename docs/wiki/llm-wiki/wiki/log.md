@@ -221,3 +221,21 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 - DECISIÓN (usuario): el Product Owner confirma el cierre de HU-023 (`Completada`) y el merge de S5 a `main` con el tag `s5`.
 - HECHO: EP-008 pasa a `En desarrollo`. HU-024 y HU-025 siguen `Aprobada`, con el backend listo y los workflows pendientes para S6.
 - PÁGINAS afectadas: HU-023, EP-008, [[scrum/README]].
+
+## 2026-10-04 — LEARN — WF-002 por MCP (S6)
+- HECHO: se creó por MCP `WF-002 Notificación de cambio de estado — JuanCarlos Muñoz` (12 nodos, ruta `jcmunoz-citas-status`, Header Auth `X-Citas-Token`). En la ejecución 385, un evento real `SPECIALIZED_APPROVED` llegó desde la API por la URL de test → Gmail → 200.
+- HECHO: el control de permisos del agente bloquea activar workflows por MCP. La activación la hace el estudiante en la interfaz.
+- HECHO: para probar con la URL de test, la API se lanzó con `N8N_WEBHOOK_URL` como variable de proceso, que tiene prioridad sobre el `.env`. El `.env` quedó con la URL de producción, cambiando solo esa línea y sin leer ni mostrar el resto.
+- HECHO: CA-02 en vivo. Con el webhook inactivo, la cita 7 queda `REJECTED` y la API registra solo el `404` con el id y el tipo del evento.
+- DECISIÓN (usuario): los 4 envíos restantes se dan por confirmados con las pruebas de backend y la prueba offline de las plantillas, sin repetirlos en vivo.
+- PÁGINAS afectadas: HU-024, EP-008.
+
+## 2026-10-04 — LEARN — WF-003 por MCP (S6, bonus)
+- HECHO: se creó por MCP `WF-003 Resumen operativo diario — JuanCarlos Muñoz` (9 nodos, diario a las 06:30). La ejecución 386, con fecha fijada en 2026-10-05, envió al ADMIN un resumen que coincide con las 5 citas sintéticas de ese día. La ejecución 387, con el túnel cortado, envió el aviso "Resumen no disponible".
+- DECISIÓN: el `adminEmail` de prueba es el buzón del estudiante. En el JSON exportado quedan marcadores para la URL y el correo, y `date` vacío.
+- PÁGINAS afectadas: HU-025, EP-008.
+
+## 2026-10-04 — INGEST — Cierre de HU-024, HU-025 y EP-008
+- DECISIÓN (usuario): el Product Owner confirma el cierre de HU-024 y HU-025 (`Completada`) y el merge de S6 a `main` con el tag `s6`.
+- HECHO: EP-008 queda `Completada`, igual que las épicas EP-001 a EP-007.
+- PÁGINAS afectadas: HU-024, HU-025, EP-008, [[scrum/README]].
