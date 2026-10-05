@@ -48,9 +48,9 @@ Comunicación proactiva con usuarios y visibilidad operativa para ADMIN.
 
 ## Historias de usuario
 
-- [[HU-023-recordatorios-de-citas]] — Sprint 4 — Borrador
-- [[HU-024-notificacion-cambio-de-estado]] — Sprint 5 — Borrador
-- [[HU-025-resumen-operativo-diario]] — Sprint 5 — Borrador
+- [[HU-023-recordatorios-de-citas]] — Sprint 4 — Aprobada (S5: evidencia CA/DoD completa, pendiente de cierre por el Product Owner)
+- [[HU-024-notificacion-cambio-de-estado]] — Sprint 5 — Aprobada (backend listo; workflow en S6)
+- [[HU-025-resumen-operativo-diario]] — Sprint 5 — Aprobada (backend listo; workflow en S6, bonus)
 
 ## Criterio de completitud de la épica
 
@@ -60,4 +60,4 @@ Comunicación proactiva con usuarios y visibilidad operativa para ADMIN.
 ## Riesgos e incógnitas
 
 - Depende de la instancia n8n del trainer y del MCP operativo.
-- Contenido no confiable en respuestas MCP (análisis de riesgos residuales en S5).
+- Contenido no confiable en respuestas MCP: análisis, demo de issue envenenado y riesgos residuales R-01 a R-08 en `automations/n8n/SEGURIDAD_S5.md`.

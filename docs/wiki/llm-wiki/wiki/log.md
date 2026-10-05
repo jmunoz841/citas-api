@@ -200,3 +200,19 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 - HECHO: EP-001 a EP-007 quedan `Completada`; solo EP-008 (n8n) sigue en `Borrador`. Se alineó el frontmatter de las épicas con el README Scrum.
 - PREFERENCIA (usuario): los commits no mencionan herramientas de IA y se suben con la cuenta de GitHub `jmunoz841`.
 - PÁGINAS afectadas: [[decisiones]], [[evidencia-s4]], [[scrum/README]], épicas EP-001 a EP-007.
+
+## 2026-10-04 — LEARN — Apertura de S5: backend de integración n8n
+- DECISIÓN (usuario): HU-023, HU-024 y HU-025 aprobadas; n8n en la instancia del profesor; paciente de prueba con el Gmail del estudiante; workflows con "JuanCarlos Muñoz" en el nombre (D-040).
+- DECISIÓN: credencial de servicio `X-Api-Key` limitada a `/api/v1/integrations/**`, webhook firmado con HMAC después del commit y tres variables en `.env` (D-041 a D-043).
+- HECHO: se implementaron `GET /api/v1/integrations/reminders`, `POST …/reminders/{id}/sent`, `GET …/daily-summary` y el webhook saliente con cinco eventos (migración V10). `mvnw clean test`: 210/210. Contrato en `docs/contratos/integraciones.md`.
+- HECHO: se agregaron a `citas-api/.env` las variables `INTEGRATION_API_KEY` y `N8N_WEBHOOK_SECRET` (aleatorias, sin mostrarse) y `N8N_WEBHOOK_URL` (vacía hasta crear WF-002).
+- HECHO: el plan y los tres prompts por MCP están en `automations/n8n/PLAN_S5_S6.md` y `automations/n8n/prompts/`.
+- PÁGINAS afectadas: [[decisiones]], HU-023, HU-024, HU-025.
+
+## 2026-10-04 — LEARN — WF-001 por MCP y bloque de seguridad S5
+- HECHO: el MCP `n8n-mcp` lista, crea, valida y lee ejecuciones en la instancia del curso. No puede ejecutar workflows con Schedule Trigger porque la instancia no tiene el MCP de nivel de instancia: la ejecución manual la lanza el estudiante desde la interfaz.
+- HECHO: se creó por MCP `WF-001 Recordatorios de citas — JuanCarlos Muñoz` (inactivo). Ejecuciones 378 (envío y marcado), 379 (sin duplicado) y 380 (API caída → "API no disponible"). JSON exportado sin IDs de credencial ni URL del túnel.
+- HECHO: n8n llega a la API por un quick tunnel de Cloudflare. Su URL cambia en cada arranque, así que hay que actualizar el nodo `Config`. El agente no puede abrir el túnel (bloqueo de permisos): lo abre el estudiante.
+- DECISIÓN (usuario): el destinatario de prueba es `jmunoz841@unab.edu.co` y no un alias de Gmail. Las citas y el profesional siguen siendo sintéticos.
+- HECHO: el análisis de contenido no confiable, la demo de issue envenenado y los riesgos residuales R-01 a R-08 están en `automations/n8n/SEGURIDAD_S5.md`.
+- PÁGINAS afectadas: HU-023, EP-008.
