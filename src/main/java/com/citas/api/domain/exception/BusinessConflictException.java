@@ -57,6 +57,12 @@ public class BusinessConflictException extends DomainException {
                 "La reprogramación ya no está pendiente");
     }
 
+    /** HU-023: solo una cita APPROVED lleva recordatorio. */
+    public static BusinessConflictException reminderNotApplicable() {
+        return new BusinessConflictException("REMINDER_NOT_APPLICABLE",
+                "Solo las citas aprobadas llevan recordatorio");
+    }
+
     /** D-033: llegó la hora de la cita original o de la franja pedida antes de decidir. */
     public static BusinessConflictException rescheduleExpired() {
         return new BusinessConflictException("RESCHEDULE_EXPIRED",

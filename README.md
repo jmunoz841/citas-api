@@ -32,6 +32,11 @@ La configuración vive en un único archivo **`.env`** en esta carpeta. Es local
 | `JWT_REFRESH_DAYS` | `7` | Vigencia del refresh token |
 | `FRONTEND_ORIGIN` | `http://localhost:5174` | Origen permitido por CORS (`citas-web`) |
 | `API_PORT` | `8081` | Puerto HTTP de la API |
+| `INTEGRATION_API_KEY` | *(secreto, ≥ 32 bytes; vacío = deshabilitado)* | Clave que n8n envía en `X-Api-Key` para `/api/v1/integrations/**` (WF-001, WF-003) |
+| `N8N_WEBHOOK_URL` | *(URL de producción del webhook de WF-002; vacío = deshabilitado)* | Destino de los eventos de cambio de estado (HU-024) |
+| `N8N_WEBHOOK_SECRET` | *(secreto, ≥ 32 bytes)* | Firma HMAC-SHA256 de cada evento (`X-Citas-Signature`) |
+
+Contrato de la integración: [`docs/contratos/integraciones.md`](docs/contratos/integraciones.md).
 
 Para generar secretos aleatorios en PowerShell:
 

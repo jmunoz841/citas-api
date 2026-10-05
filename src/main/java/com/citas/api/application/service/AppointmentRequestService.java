@@ -10,6 +10,7 @@ import com.citas.api.domain.model.appointment.AppointmentSummary;
 import com.citas.api.domain.model.appointment.InboxFilter;
 import com.citas.api.domain.model.appointment.StatusChange;
 import com.citas.api.domain.model.appointment.StatusChange.Source;
+import com.citas.api.domain.model.integration.StatusNotification.Type;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -24,9 +25,11 @@ import java.util.List;
 public class AppointmentRequestService implements ResolveAppointmentRequestUseCase {
 
     private final AppointmentRepositoryPort appointments;
+    private final StatusNotifier notifier;
 
-    public AppointmentRequestService(AppointmentRepositoryPort appointments) {
+    public AppointmentRequestService(AppointmentRepositoryPort appointments, StatusNotifier notifier) {
         this.appointments = appointments;
+        this.notifier = notifier;
     }
 
     @Override
@@ -45,6 +48,7 @@ public class AppointmentRequestService implements ResolveAppointmentRequestUseCa
         appointments.changeStatus(approved, AppointmentStatus.REQUESTED);
         appointments.recordStatus(new StatusChange(appointmentId, approved.getStatus(), Source.ADMIN, adminUserId,
                 null));
+        notifier.notify(Type.SPECIALIZED_APPROVED, appointmentId, null);
         return approved;
     }
 
@@ -56,6 +60,7 @@ public class AppointmentRequestService implements ResolveAppointmentRequestUseCa
         appointments.releaseSlots(appointmentId);
         appointments.recordStatus(new StatusChange(appointmentId, rejected.getStatus(), Source.ADMIN, adminUserId,
                 reason.trim()));
+        notifier.notify(Type.SPECIALIZED_REJECTED, appointmentId, reason.trim());
         return rejected;
     }
 

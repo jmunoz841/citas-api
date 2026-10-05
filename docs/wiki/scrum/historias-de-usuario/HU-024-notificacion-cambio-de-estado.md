@@ -2,7 +2,7 @@
 id: HU-024
 tipo: historia-de-usuario
 titulo: "Notificación de cambio de estado"
-estado: Borrador
+estado: Aprobada
 epica: "[[EP-008-automatizaciones-n8n]]"
 esfuerzo: "Medio"
 sprint_sugerido: "Sprint 5"
@@ -58,9 +58,9 @@ PRD §10, automatización 2 (S6). Flujo: webhook desde Spring → n8n → Gmail 
 
 ## Tareas de desarrollo
 
-- [ ] **T-01 — Puerto y adaptador de notificación**  
+- [x] **T-01 — Puerto y adaptador de notificación**  
   Dificultad: Medio  
-  Descripción: publicación de eventos tras confirmación de la transacción.
+  Descripción: publicación de eventos tras confirmación de la transacción. `StatusNotificationPort` + `N8nWebhookNotificationAdapter` (firma HMAC); `IntegrationApiIntegrationTest.hu024_*`, `N8nWebhookNotificationAdapterTest`.
 - [ ] **T-02 — Workflow n8n**  
   Dificultad: Medio  
   Descripción: webhook, plantilla de correo y registro.
@@ -100,6 +100,8 @@ PRD §10, automatización 2 (S6). Flujo: webhook desde Spring → n8n → Gmail 
 ## Historial de validación
 
 - 2026-09-16 (S2) — HU creada en estado `Borrador`.
+
+- 2026-10-04 (S5) — HU `Aprobada` explícitamente por el Product Owner. Webhook firmado con HMAC tras confirmar la transacción (D-042).
 
 ## Notas y decisiones
 

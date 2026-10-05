@@ -2,7 +2,7 @@
 id: HU-025
 tipo: historia-de-usuario
 titulo: "Resumen operativo diario"
-estado: Borrador
+estado: Aprobada
 epica: "[[EP-008-automatizaciones-n8n]]"
 esfuerzo: "Medio"
 sprint_sugerido: "Sprint 5"
@@ -55,9 +55,9 @@ PRD §10, automatización 3. Opcional/bonus en S6. Flujo: Schedule → API resum
 
 ## Tareas de desarrollo
 
-- [ ] **T-01 — Consulta agregada del día**  
+- [x] **T-01 — Consulta agregada del día**  
   Dificultad: Medio  
-  Descripción: conteos por sede y estado.
+  Descripción: conteos por sede y estado. `GET /api/v1/integrations/daily-summary`; `IntegrationApiIntegrationTest.hu025_*`.
 - [ ] **T-02 — Workflow n8n y exportación**  
   Dificultad: Medio  
   Descripción: trigger programado, formato y envío.
@@ -93,6 +93,8 @@ PRD §10, automatización 3. Opcional/bonus en S6. Flujo: Schedule → API resum
 ## Historial de validación
 
 - 2026-09-16 (S2) — HU creada en estado `Borrador`.
+
+- 2026-10-04 (S5) — HU `Aprobada` explícitamente por el Product Owner como bonus de S6.
 
 ## Notas y decisiones
 

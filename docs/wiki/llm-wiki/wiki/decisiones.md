@@ -55,6 +55,10 @@ Solo se registran como DECISIÓN los puntos aprobados explícitamente por el usu
 | D-037 | 2026-10-04 | Amplía D-033: la reprogramación también vence al llegar la hora **pedida**; aprobar una vencida → `409 RESCHEDULE_EXPIRED`. La bandeja al listar y un job cada 5 min (`citas.reschedule.expiration-delay`) cierran las vencidas | HU-019 | Confirmación explícita del Product Owner en sesión |
 | D-038 | 2026-10-04 | En la bandeja, los filtros de sede y fecha de las reprogramaciones se aplican a la franja **solicitada** | HU-022 | Confirmación explícita del Product Owner en sesión |
 | D-039 | 2026-10-04 | La bandeja y la vista de reprogramación reutilizan componentes aprobados de Stitch v4, sin nueva iteración de diseño | HU-018, HU-019, HU-022 | Confirmación explícita del Product Owner en sesión |
+| D-040 | 2026-10-04 | Alcance S5/S6: HU-023, HU-024 y HU-025 (bonus) aprobadas. n8n = instancia del profesor; n8n → API por túnel HTTPS; paciente de prueba sintético con el Gmail del estudiante (alias) | HU-023, HU-024, HU-025 | Confirmación explícita del Product Owner en sesión |
+| D-041 | 2026-10-04 | Recordatorios: ventana por defecto de 24 h (máx. 72 h); se registra cada recordatorio enviado por cita y horario para no duplicar; reprogramar habilita uno nuevo | HU-023 | Plan S5 (`automations/n8n/PLAN_S5_S6.md`) |
+| D-042 | 2026-10-04 | n8n accede a `/api/v1/integrations/**` con `X-Api-Key` (`INTEGRATION_API_KEY`, rol `INTEGRATION`, sin acceso al resto de la API). La API notifica a WF-002 tras confirmar la transacción con cuerpo firmado (`X-Citas-Signature`, HMAC-SHA256 con `N8N_WEBHOOK_SECRET`); un fallo se registra sin datos personales y no revierte nada | HU-023, HU-024, HU-025 | Plan S5 |
+| D-043 | 2026-10-04 | Variables de integración en `citas-api/.env`: `INTEGRATION_API_KEY`, `N8N_WEBHOOK_URL`, `N8N_WEBHOOK_SECRET`. Vacías = integración deshabilitada | HU-023, HU-024, HU-025 | Indicación del profesor + plan S5 |
 
 ## Preguntas abiertas
 

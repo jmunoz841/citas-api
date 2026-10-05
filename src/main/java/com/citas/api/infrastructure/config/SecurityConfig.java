@@ -1,6 +1,7 @@
 package com.citas.api.infrastructure.config;
 
 import com.citas.api.infrastructure.adapters.in.web.error.SecurityProblemHandlers;
+import com.citas.api.infrastructure.adapters.out.security.ApiKeyAuthenticationFilter;
 import com.citas.api.infrastructure.adapters.out.security.JwtAuthenticationFilter;
 import com.citas.api.infrastructure.adapters.out.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +24,8 @@ class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http, JwtTokenProvider tokenProvider,
-                                            SecurityProblemHandlers problemHandlers) throws Exception {
+                                            SecurityProblemHandlers problemHandlers,
+                                            IntegrationProperties integration) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> {
@@ -51,11 +53,15 @@ class SecurityConfig {
                         // access token (HU-012, HU-013, HU-014).
                         .requestMatchers("/api/v1/availability", "/api/v1/availability/**",
                                 "/api/v1/appointments", "/api/v1/appointments/**").hasRole("USER")
+                        // Automatizaciones n8n: solo la credencial de servicio (D-042). Ningún
+                        // access token de persona tiene el rol INTEGRATION.
+                        .requestMatchers("/api/v1/integrations/**").hasRole(ApiKeyAuthenticationFilter.ROLE)
                         .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(problemHandlers.authenticationEntryPoint())
                         .accessDeniedHandler(problemHandlers.accessDeniedHandler()))
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new ApiKeyAuthenticationFilter(integration.apiKey()), JwtAuthenticationFilter.class)
                 .build();
     }
 

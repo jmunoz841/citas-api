@@ -27,7 +27,7 @@ Aplicación web de agendamiento de citas (USER, PROFESSIONAL, ADMIN) en dos sede
 | [[EP-005-agenda-del-profesional]] | HU-010, HU-011 | Completada |
 | [[EP-006-reserva-de-citas]] | HU-012, HU-013, HU-014, HU-015, HU-022 | Completada |
 | [[EP-007-ciclo-de-vida-de-citas]] | HU-016 a HU-021 | Completada |
-| [[EP-008-automatizaciones-n8n]] | HU-023, HU-024, HU-025 | Borrador |
+| [[EP-008-automatizaciones-n8n]] | HU-023, HU-024, HU-025 | En desarrollo |
 
 ## Sprints sugeridos (incrementos funcionales, sin duración)
 
@@ -72,7 +72,7 @@ Incremento: ciclo de vida completo de la cita y todas las pantallas obligatorias
 
 ### Sprint 4 — Recordatorios n8n (S5)
 
-- [[HU-023-recordatorios-de-citas]] — Medio
+- [[HU-023-recordatorios-de-citas]] — Medio — **Completada**
 
 ### Sprint 5 — Notificaciones y cierre (S6)
 

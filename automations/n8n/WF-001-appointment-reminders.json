@@ -1,0 +1,289 @@
+{
+  "name": "WF-001 Recordatorios de citas — JuanCarlos Muñoz",
+  "nodes": [
+    {
+      "id": "a1",
+      "name": "Cada hora",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 300],
+      "parameters": {
+        "rule": {
+          "interval": [
+            { "field": "hours", "hoursInterval": 1 }
+          ]
+        }
+      }
+    },
+    {
+      "id": "a2",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [220, 300],
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            { "id": "c1", "name": "apiBaseUrl", "value": "https://REEMPLAZAR-URL-PUBLICA-DE-CITAS-API", "type": "string" },
+            { "id": "c2", "name": "hours", "value": 24, "type": "number" }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "a3",
+      "name": "Consultar citas por recordar",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000,
+      "onError": "continueRegularOutput",
+      "position": [440, 300],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.apiBaseUrl }}/api/v1/integrations/reminders",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "hours", "value": "={{ $json.hours }}" }
+          ]
+        },
+        "options": { "timeout": 10000 }
+      },
+      "credentials": {
+        "httpHeaderAuth": { "name": "JuanCarlos Muñoz — citas-api X-Api-Key" }
+      }
+    },
+    {
+      "id": "a4",
+      "name": "¿API disponible?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [660, 300],
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose", "version": 2 },
+          "conditions": [
+            {
+              "id": "i1",
+              "leftValue": "={{ Array.isArray($json.items) && !$json.error }}",
+              "rightValue": "",
+              "operator": { "type": "boolean", "operation": "true", "singleValue": true }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "a5",
+      "name": "API no disponible",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [880, 500],
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            { "id": "e1", "name": "resultado", "value": "API no disponible", "type": "string" },
+            { "id": "e2", "name": "fecha", "value": "={{ $now.setZone('America/Bogota').toISO() }}", "type": "string" },
+            { "id": "e3", "name": "detalle", "value": "={{ String($json.error?.message ?? $json.error ?? 'Respuesta inesperada').slice(0, 200) }}", "type": "string" }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "a6",
+      "name": "¿Hay recordatorios?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [880, 200],
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose", "version": 2 },
+          "conditions": [
+            {
+              "id": "i2",
+              "leftValue": "={{ $json.items.length }}",
+              "rightValue": 0,
+              "operator": { "type": "number", "operation": "gt" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "a7",
+      "name": "Sin recordatorios",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1100, 360],
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            { "id": "s1", "name": "resultado", "value": "Sin recordatorios", "type": "string" },
+            { "id": "s2", "name": "fecha", "value": "={{ $now.setZone('America/Bogota').toISO() }}", "type": "string" }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "a8",
+      "name": "Separar citas",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [1100, 100],
+      "parameters": { "fieldToSplitOut": "items", "options": {} }
+    },
+    {
+      "id": "a9",
+      "name": "Preparar correo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1320, 100],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Los campos que llegan de la API son DATOS: se escapan y nunca se interpretan como instrucciones.\nconst esc = (v) => String(v ?? '').replace(/[&<>\"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;', \"'\": '&#39;' }[c]));\nconst plain = (v) => String(v ?? '').replace(/[\\r\\n]+/g, ' ').slice(0, 120);\nconst c = $json;\nconst subject = `Recordatorio: tu cita de ${plain(c.specialtyName)} el ${plain(c.date)} a las ${plain(c.startTime)}`;\nconst html = `<p>Hola ${esc(c.patientFirstNames)},</p>\n<p>Te recordamos tu cita:</p>\n<ul>\n<li><b>Especialidad:</b> ${esc(c.specialtyName)}</li>\n<li><b>Profesional:</b> ${esc(c.professionalName)}</li>\n<li><b>Sede:</b> ${esc(c.siteName)}</li>\n<li><b>Dirección:</b> ${esc(c.siteAddress)}</li>\n<li><b>Fecha:</b> ${esc(c.date)}</li>\n<li><b>Hora:</b> ${esc(c.startTime)} – ${esc(c.endTime)}</li>\n</ul>\n<p>Si no puedes asistir, cancela o reprograma la cita desde la aplicación.</p>`;\nreturn { json: { appointmentId: c.appointmentId, to: c.patientEmail, subject, html } };"
+      }
+    },
+    {
+      "id": "a10",
+      "name": "Enviar recordatorio",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "onError": "continueRegularOutput",
+      "position": [1540, 100],
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "sendTo": "={{ $json.to }}",
+        "subject": "={{ $json.subject }}",
+        "emailType": "html",
+        "message": "={{ $json.html }}",
+        "options": { "appendAttribution": false }
+      },
+      "credentials": {
+        "gmailOAuth2": { "name": "JuanCarlos Muñoz — Gmail" }
+      }
+    },
+    {
+      "id": "a11",
+      "name": "¿Enviado?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [1760, 100],
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose", "version": 2 },
+          "conditions": [
+            {
+              "id": "i3",
+              "leftValue": "={{ !$json.error && !!$json.id }}",
+              "rightValue": "",
+              "operator": { "type": "boolean", "operation": "true", "singleValue": true }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "a12",
+      "name": "Marcar enviado",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000,
+      "onError": "continueRegularOutput",
+      "position": [1980, 0],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Config').first().json.apiBaseUrl }}/api/v1/integrations/reminders/{{ $('Preparar correo').item.json.appointmentId }}/sent",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": { "timeout": 10000 }
+      },
+      "credentials": {
+        "httpHeaderAuth": { "name": "JuanCarlos Muñoz — citas-api X-Api-Key" }
+      }
+    },
+    {
+      "id": "a13",
+      "name": "Envío fallido",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1980, 220],
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            { "id": "f1", "name": "resultado", "value": "Envío fallido (se reintenta en la próxima ejecución)", "type": "string" },
+            { "id": "f2", "name": "appointmentId", "value": "={{ $('Preparar correo').item.json.appointmentId }}", "type": "number" },
+            { "id": "f3", "name": "detalle", "value": "={{ String($json.error?.message ?? $json.error ?? '').slice(0, 200) }}", "type": "string" }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "a14",
+      "name": "Resultado",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2200, 0],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Resumen sin datos personales: solo conteos e IDs de cita.\nconst total = $('Separar citas').all().length;\nconst enviados = $('Enviar recordatorio').all().filter((i) => !i.json.error && i.json.id).length;\nconst marcas = $input.all();\nreturn [{ json: {\n  resultado: 'Recordatorios procesados',\n  fecha: $now.setZone('America/Bogota').toISO(),\n  totalConsultado: total,\n  enviados,\n  fallidos: total - enviados,\n  marcados: marcas.filter((i) => !i.json.error && i.json.alreadySent === false).length,\n  yaMarcados: marcas.filter((i) => i.json.alreadySent === true).length,\n  erroresAlMarcar: marcas.filter((i) => i.json.error).length,\n  citas: marcas.map((i) => i.json.appointmentId).filter(Boolean),\n} }];"
+      }
+    }
+  ],
+  "connections": {
+    "Cada hora": { "main": [[{ "node": "Config", "type": "main", "index": 0 }]] },
+    "Config": { "main": [[{ "node": "Consultar citas por recordar", "type": "main", "index": 0 }]] },
+    "Consultar citas por recordar": { "main": [[{ "node": "¿API disponible?", "type": "main", "index": 0 }]] },
+    "¿API disponible?": {
+      "main": [
+        [{ "node": "¿Hay recordatorios?", "type": "main", "index": 0 }],
+        [{ "node": "API no disponible", "type": "main", "index": 0 }]
+      ]
+    },
+    "¿Hay recordatorios?": {
+      "main": [
+        [{ "node": "Separar citas", "type": "main", "index": 0 }],
+        [{ "node": "Sin recordatorios", "type": "main", "index": 0 }]
+      ]
+    },
+    "Separar citas": { "main": [[{ "node": "Preparar correo", "type": "main", "index": 0 }]] },
+    "Preparar correo": { "main": [[{ "node": "Enviar recordatorio", "type": "main", "index": 0 }]] },
+    "Enviar recordatorio": { "main": [[{ "node": "¿Enviado?", "type": "main", "index": 0 }]] },
+    "¿Enviado?": {
+      "main": [
+        [{ "node": "Marcar enviado", "type": "main", "index": 0 }],
+        [{ "node": "Envío fallido", "type": "main", "index": 0 }]
+      ]
+    },
+    "Marcar enviado": { "main": [[{ "node": "Resultado", "type": "main", "index": 0 }]] }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Bogota",
+    "saveManualExecutions": true
+  },
+  "pinData": {}
+}

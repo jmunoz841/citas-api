@@ -8,6 +8,7 @@ import com.citas.api.domain.exception.ResourceNotFoundException;
 import com.citas.api.domain.model.appointment.Appointment;
 import com.citas.api.domain.model.appointment.AppointmentStatus;
 import com.citas.api.domain.model.appointment.StatusChange;
+import com.citas.api.domain.model.integration.StatusNotification;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
@@ -20,12 +21,15 @@ import java.time.LocalDateTime;
 public class AppointmentCancellationService implements CancelOwnAppointmentUseCase {
     private final AppointmentRepositoryPort appointments;
     private final RescheduleRepositoryPort reschedules;
+    private final StatusNotifier notifier;
     private final Clock clock;
 
     public AppointmentCancellationService(AppointmentRepositoryPort appointments,
-                                          RescheduleRepositoryPort reschedules, Clock clock) {
+                                          RescheduleRepositoryPort reschedules, StatusNotifier notifier,
+                                          Clock clock) {
         this.appointments = appointments;
         this.reschedules = reschedules;
+        this.notifier = notifier;
         this.clock = clock;
     }
 
@@ -47,6 +51,7 @@ public class AppointmentCancellationService implements CancelOwnAppointmentUseCa
         appointments.releaseSlots(appointmentId);
         appointments.recordStatus(new StatusChange(appointmentId, AppointmentStatus.CANCELLED,
                 StatusChange.Source.USER, patientUserId, null));
+        notifier.notify(StatusNotification.Type.APPOINTMENT_CANCELLED, appointmentId, null);
         return cancelled;
     }
 }
