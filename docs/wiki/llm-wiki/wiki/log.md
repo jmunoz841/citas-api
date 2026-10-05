@@ -234,3 +234,8 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 - HECHO: se creó por MCP `WF-003 Resumen operativo diario — JuanCarlos Muñoz` (9 nodos, diario a las 06:30). La ejecución 386, con fecha fijada en 2026-10-05, envió al ADMIN un resumen que coincide con las 5 citas sintéticas de ese día. La ejecución 387, con el túnel cortado, envió el aviso "Resumen no disponible".
 - DECISIÓN: el `adminEmail` de prueba es el buzón del estudiante. En el JSON exportado quedan marcadores para la URL y el correo, y `date` vacío.
 - PÁGINAS afectadas: HU-025, EP-008.
+
+## 2026-10-04 — INGEST — Cierre de HU-024, HU-025 y EP-008
+- DECISIÓN (usuario): el Product Owner confirma el cierre de HU-024 y HU-025 (`Completada`) y el merge de S6 a `main` con el tag `s6`.
+- HECHO: EP-008 queda `Completada`, igual que las épicas EP-001 a EP-007.
+- PÁGINAS afectadas: HU-024, HU-025, EP-008, [[scrum/README]].

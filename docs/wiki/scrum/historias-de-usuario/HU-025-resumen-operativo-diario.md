@@ -2,7 +2,7 @@
 id: HU-025
 tipo: historia-de-usuario
 titulo: "Resumen operativo diario"
-estado: Aprobada
+estado: Completada
 epica: "[[EP-008-automatizaciones-n8n]]"
 esfuerzo: "Medio"
 sprint_sugerido: "Sprint 5"
@@ -97,6 +97,8 @@ PRD §10, automatización 3. Opcional/bonus en S6. Flujo: Schedule → API resum
 
 - 2026-10-04 (S5) — HU `Aprobada` explícitamente por el Product Owner como bonus de S6.
 - 2026-10-04 (S6) — WF-003 creado por MCP y validado con las ejecuciones manuales 386 (resumen) y 387 (API caída). JSON exportado y revisado. El ADMIN de prueba recibe el correo en el buzón del estudiante.
+
+- 2026-10-04 (S6) — HU `Completada`: cierre confirmado explícitamente por el Product Owner, con la evidencia de cada CA y del DoD.
 
 ## Notas y decisiones
 

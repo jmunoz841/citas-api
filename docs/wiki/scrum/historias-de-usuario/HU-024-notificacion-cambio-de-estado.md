@@ -2,7 +2,7 @@
 id: HU-024
 tipo: historia-de-usuario
 titulo: "Notificación de cambio de estado"
-estado: Aprobada
+estado: Completada
 epica: "[[EP-008-automatizaciones-n8n]]"
 esfuerzo: "Medio"
 sprint_sugerido: "Sprint 5"
@@ -95,7 +95,7 @@ PRD §10, automatización 2 (S6). Flujo: webhook desde Spring → n8n → Gmail 
 |---|---|---|---|
 | CA-01 | Cumple | Ejecución n8n 385; `hu024_ca01_aprobarYRechazarUnaCitaEspecializadaEnviaEventosFirmados`, `hu024_ca01_reprogramacionYCancelacionTambienSeNotifican`; prueba offline de las 5 plantillas | En vivo, extremo a extremo: evento real `SPECIALIZED_APPROVED` (cita 6) desde la API → webhook con `X-Citas-Token` → Gmail enviado → `Responder 200`. Los otros 4 eventos: emisión firmada cubierta por las pruebas de backend y plantillas verificadas ejecutando el código exportado (rechazo con motivo, reprogramación con franja anterior/pedida, cancelación). El Product Owner dio por confirmados los 4 envíos restantes sin repetirlos en vivo |
 | CA-02 | Cumple | `hu024_ca02_siN8nFallaLaTransicionSeCompletaIgual`, `N8nWebhookNotificationAdapterTest.ca02_n8nInalcanzableNoLanzaNingunaExcepcion`; demostración en vivo | Con el webhook de producción inactivo, rechazar la cita 7 la deja `REJECTED`; la API registra solo `El webhook de n8n respondió 404 al evento <uuid> (SPECIALIZED_REJECTED)`, sin datos personales |
-| DoD | Cumple | `WF-002-status-notifications.json`; `mvnw clean test` 210/210; EP-008 | JSON sin IDs de credencial, `webhookId`, URLs de instancia ni emails. Payload incompleto → rama 400 verificada offline (falta `eventId`, `appointment.id`, `patient.email`). Pendiente operativo: activar el workflow en n8n (la activación por MCP la bloquea el control de permisos del agente) |
+| DoD | Cumple | `WF-002-status-notifications.json`; `mvnw clean test` 210/210; EP-008 | JSON sin IDs de credencial, `webhookId`, URLs de instancia ni emails. Payload incompleto → rama 400 verificada offline (falta `eventId`, `appointment.id`, `patient.email`). La activación en n8n la hace el estudiante en la interfaz (el control de permisos del agente bloquea activar por MCP) |
 
 ## Historial de validación
 
@@ -104,6 +104,8 @@ PRD §10, automatización 2 (S6). Flujo: webhook desde Spring → n8n → Gmail 
 - 2026-10-04 (S5) — HU `Aprobada` explícitamente por el Product Owner. Webhook firmado con HMAC tras confirmar la transacción (D-042).
 
 - 2026-10-04 (S6) — WF-002 creado por MCP; ejecución controlada 385 con la URL de test; CA-02 demostrado en vivo; JSON exportado. `N8N_WEBHOOK_URL` apunta a la URL de producción del webhook.
+
+- 2026-10-04 (S6) — HU `Completada`: cierre confirmado explícitamente por el Product Owner, con la evidencia de cada CA y del DoD.
 
 ## Notas y decisiones
 
