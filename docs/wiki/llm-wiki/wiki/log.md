@@ -221,3 +221,11 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 - DECISIÓN (usuario): el Product Owner confirma el cierre de HU-023 (`Completada`) y el merge de S5 a `main` con el tag `s5`.
 - HECHO: EP-008 pasa a `En desarrollo`. HU-024 y HU-025 siguen `Aprobada`, con el backend listo y los workflows pendientes para S6.
 - PÁGINAS afectadas: HU-023, EP-008, [[scrum/README]].
+
+## 2026-10-04 — LEARN — WF-002 por MCP (S6)
+- HECHO: se creó por MCP `WF-002 Notificación de cambio de estado — JuanCarlos Muñoz` (12 nodos, ruta `jcmunoz-citas-status`, Header Auth `X-Citas-Token`). En la ejecución 385, un evento real `SPECIALIZED_APPROVED` llegó desde la API por la URL de test → Gmail → 200.
+- HECHO: el control de permisos del agente bloquea activar workflows por MCP. La activación la hace el estudiante en la interfaz.
+- HECHO: para probar con la URL de test, la API se lanzó con `N8N_WEBHOOK_URL` como variable de proceso, que tiene prioridad sobre el `.env`. El `.env` quedó con la URL de producción, cambiando solo esa línea y sin leer ni mostrar el resto.
+- HECHO: CA-02 en vivo. Con el webhook inactivo, la cita 7 queda `REJECTED` y la API registra solo el `404` con el id y el tipo del evento.
+- DECISIÓN (usuario): los 4 envíos restantes se dan por confirmados con las pruebas de backend y la prueba offline de las plantillas, sin repetirlos en vivo.
+- PÁGINAS afectadas: HU-024, EP-008.

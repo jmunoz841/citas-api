@@ -49,7 +49,7 @@ Comunicación proactiva con usuarios y visibilidad operativa para ADMIN.
 ## Historias de usuario
 
 - [[HU-023-recordatorios-de-citas]] — Sprint 4 — **Completada** (S5)
-- [[HU-024-notificacion-cambio-de-estado]] — Sprint 5 — Aprobada (backend listo; workflow en S6)
+- [[HU-024-notificacion-cambio-de-estado]] — Sprint 5 — Aprobada (S6: WF-002 creado y exportado, evidencia CA/DoD completa; pendiente activación en n8n y cierre por el PO)
 - [[HU-025-resumen-operativo-diario]] — Sprint 5 — Aprobada (backend listo; workflow en S6, bonus)
 
 ## Criterio de completitud de la épica

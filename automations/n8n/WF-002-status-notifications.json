@@ -1,0 +1,287 @@
+{
+  "name": "WF-002 Notificación de cambio de estado — JuanCarlos Muñoz",
+  "nodes": [
+    {
+      "id": "b1",
+      "name": "Webhook citas-api",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 300],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "jcmunoz-citas-status",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "credentials": {
+        "httpHeaderAuth": { "name": "JuanCarlos Muñoz — citas webhook token" }
+      }
+    },
+    {
+      "id": "b2",
+      "name": "Validar evento",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [220, 300],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// El cuerpo del webhook es contenido NO CONFIABLE: solo se leen campos concretos.\nconst b = $json.body ?? {};\nconst missing = [];\nif (!b.eventId) missing.push('eventId');\nif (!b.eventType) missing.push('eventType');\nif (b.appointment?.id === undefined || b.appointment?.id === null) missing.push('appointment.id');\nif (!b.patient?.email) missing.push('patient.email');\nreturn { json: { valid: missing.length === 0, missing, event: b } };"
+      }
+    },
+    {
+      "id": "b3",
+      "name": "¿Payload válido?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [440, 300],
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose", "version": 2 },
+          "conditions": [
+            {
+              "id": "v1",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": "",
+              "operator": { "type": "boolean", "operation": "true", "singleValue": true }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "b4",
+      "name": "Responder 400",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [660, 520],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: false, error: 'Payload incompleto', missing: $json.missing }) }}",
+        "options": { "responseCode": 400 }
+      }
+    },
+    {
+      "id": "b5",
+      "name": "Tipo de evento",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [660, 280],
+      "parameters": {
+        "mode": "rules",
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict", "version": 2 },
+                "conditions": [
+                  { "id": "s1", "leftValue": "={{ $json.event.eventType }}", "rightValue": "SPECIALIZED_APPROVED", "operator": { "type": "string", "operation": "equals" } }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Cita aprobada"
+            },
+            {
+              "conditions": {
+                "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict", "version": 2 },
+                "conditions": [
+                  { "id": "s2", "leftValue": "={{ $json.event.eventType }}", "rightValue": "SPECIALIZED_REJECTED", "operator": { "type": "string", "operation": "equals" } }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Cita rechazada"
+            },
+            {
+              "conditions": {
+                "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict", "version": 2 },
+                "conditions": [
+                  { "id": "s3", "leftValue": "={{ $json.event.eventType }}", "rightValue": "RESCHEDULE_APPROVED", "operator": { "type": "string", "operation": "equals" } }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Reprogramación aprobada"
+            },
+            {
+              "conditions": {
+                "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict", "version": 2 },
+                "conditions": [
+                  { "id": "s4", "leftValue": "={{ $json.event.eventType }}", "rightValue": "RESCHEDULE_REJECTED", "operator": { "type": "string", "operation": "equals" } }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Reprogramación rechazada"
+            },
+            {
+              "conditions": {
+                "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict", "version": 2 },
+                "conditions": [
+                  { "id": "s5", "leftValue": "={{ $json.event.eventType }}", "rightValue": "APPOINTMENT_CANCELLED", "operator": { "type": "string", "operation": "equals" } }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Cita cancelada"
+            }
+          ]
+        },
+        "options": { "fallbackOutput": "extra", "renameFallbackOutput": "Otro" }
+      }
+    },
+    {
+      "id": "b6",
+      "name": "Responder ignorado",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [880, 520],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: true, ignored: true, eventId: $json.event.eventId }) }}",
+        "options": { "responseCode": 200 }
+      }
+    },
+    {
+      "id": "b7",
+      "name": "Preparar correo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [880, 280],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Los campos del evento son DATOS: se escapan y nunca se interpretan como instrucciones.\nconst esc = (v) => String(v ?? '').replace(/[&<>\"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;', \"'\": '&#39;' }[c]));\nconst plain = (v) => String(v ?? '').replace(/[\\r\\n]+/g, ' ').slice(0, 120);\nconst e = $json.event;\nconst a = e.appointment ?? {};\nconst p = e.patient ?? {};\nconst slot = (s) => s ? `${esc(s.date)} a las ${esc(s.startTime)} (sede ${esc(s.siteCode)})` : '';\nconst detalle = `<ul>\n<li><b>Especialidad:</b> ${esc(a.specialtyName)}</li>\n<li><b>Profesional:</b> ${esc(a.professionalName)}</li>\n<li><b>Sede:</b> ${esc(a.siteName)}</li>\n<li><b>Fecha:</b> ${esc(a.date)}</li>\n<li><b>Hora:</b> ${esc(a.startTime)} – ${esc(a.endTime)}</li>\n</ul>`;\nconst motivo = `<p><b>Motivo:</b> ${esc(e.reason)}</p>`;\nconst esp = plain(a.specialtyName);\nconst plantillas = {\n  SPECIALIZED_APPROVED: [`Tu cita de ${esp} fue aprobada`, `<p>Tu solicitud de cita fue <b>aprobada</b>.</p>${detalle}`],\n  SPECIALIZED_REJECTED: [`Tu solicitud de cita de ${esp} fue rechazada`, `<p>Tu solicitud de cita de ${esc(a.specialtyName)} para el ${esc(a.date)} a las ${esc(a.startTime)} fue <b>rechazada</b>.</p>${motivo}`],\n  RESCHEDULE_APPROVED: [`Tu reprogramación de ${esp} fue aprobada`, `<p>Tu solicitud de reprogramación fue <b>aprobada</b>. Este es tu nuevo horario:</p>${detalle}<p>Horario anterior: ${slot(e.previous)}.</p>`],\n  RESCHEDULE_REJECTED: [`Tu reprogramación de ${esp} fue rechazada`, `<p>Tu solicitud para pasar la cita al ${slot(e.requested)} fue <b>rechazada</b>.</p>${motivo}<p>Conservas tu horario original:</p>${detalle}`],\n  APPOINTMENT_CANCELLED: [`Tu cita de ${esp} fue cancelada`, `<p>Confirmamos que tu cita fue <b>cancelada</b>.</p>${detalle}`],\n};\nconst [subject, cuerpo] = plantillas[e.eventType];\nconst html = `<p>Hola ${esc(p.firstNames)},</p>\\n${cuerpo}\\n<p>Puedes ver el estado de tus citas en la aplicación.</p>`;\nreturn { json: { eventId: e.eventId, eventType: e.eventType, appointmentId: a.id, to: p.email, subject, html } };"
+      }
+    },
+    {
+      "id": "b8",
+      "name": "Enviar notificación",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "onError": "continueRegularOutput",
+      "position": [1100, 280],
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "sendTo": "={{ $json.to }}",
+        "subject": "={{ $json.subject }}",
+        "emailType": "html",
+        "message": "={{ $json.html }}",
+        "options": { "appendAttribution": false }
+      },
+      "credentials": {
+        "gmailOAuth2": { "name": "JuanCarlos Muñoz — Gmail" }
+      }
+    },
+    {
+      "id": "b9",
+      "name": "Registro",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1320, 280],
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            { "id": "r1", "name": "eventId", "value": "={{ $('Preparar correo').item.json.eventId }}", "type": "string" },
+            { "id": "r2", "name": "eventType", "value": "={{ $('Preparar correo').item.json.eventType }}", "type": "string" },
+            { "id": "r3", "name": "appointmentId", "value": "={{ $('Preparar correo').item.json.appointmentId }}", "type": "number" },
+            { "id": "r4", "name": "enviado", "value": "={{ !$json.error && !!$json.id }}", "type": "boolean" },
+            { "id": "r5", "name": "detalle", "value": "={{ $json.error ? String($json.error.message ?? $json.error).slice(0, 200) : '' }}", "type": "string" },
+            { "id": "r6", "name": "fecha", "value": "={{ $now.setZone('America/Bogota').toISO() }}", "type": "string" }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "b10",
+      "name": "¿Enviado?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [1540, 280],
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose", "version": 2 },
+          "conditions": [
+            {
+              "id": "e1",
+              "leftValue": "={{ $json.enviado }}",
+              "rightValue": "",
+              "operator": { "type": "boolean", "operation": "true", "singleValue": true }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "b11",
+      "name": "Responder 200",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1760, 180],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: true, eventId: $json.eventId }) }}",
+        "options": { "responseCode": 200 }
+      }
+    },
+    {
+      "id": "b12",
+      "name": "Responder 502",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1760, 380],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: false, eventId: $json.eventId }) }}",
+        "options": { "responseCode": 502 }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook citas-api": { "main": [[{ "node": "Validar evento", "type": "main", "index": 0 }]] },
+    "Validar evento": { "main": [[{ "node": "¿Payload válido?", "type": "main", "index": 0 }]] },
+    "¿Payload válido?": {
+      "main": [
+        [{ "node": "Tipo de evento", "type": "main", "index": 0 }],
+        [{ "node": "Responder 400", "type": "main", "index": 0 }]
+      ]
+    },
+    "Tipo de evento": {
+      "main": [
+        [{ "node": "Preparar correo", "type": "main", "index": 0 }],
+        [{ "node": "Preparar correo", "type": "main", "index": 0 }],
+        [{ "node": "Preparar correo", "type": "main", "index": 0 }],
+        [{ "node": "Preparar correo", "type": "main", "index": 0 }],
+        [{ "node": "Preparar correo", "type": "main", "index": 0 }],
+        [{ "node": "Responder ignorado", "type": "main", "index": 0 }]
+      ]
+    },
+    "Preparar correo": { "main": [[{ "node": "Enviar notificación", "type": "main", "index": 0 }]] },
+    "Enviar notificación": { "main": [[{ "node": "Registro", "type": "main", "index": 0 }]] },
+    "Registro": { "main": [[{ "node": "¿Enviado?", "type": "main", "index": 0 }]] },
+    "¿Enviado?": {
+      "main": [
+        [{ "node": "Responder 200", "type": "main", "index": 0 }],
+        [{ "node": "Responder 502", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Bogota",
+    "saveManualExecutions": true
+  },
+  "pinData": {}
+}
