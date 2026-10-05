@@ -229,3 +229,8 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 - HECHO: CA-02 en vivo. Con el webhook inactivo, la cita 7 queda `REJECTED` y la API registra solo el `404` con el id y el tipo del evento.
 - DECISIÓN (usuario): los 4 envíos restantes se dan por confirmados con las pruebas de backend y la prueba offline de las plantillas, sin repetirlos en vivo.
 - PÁGINAS afectadas: HU-024, EP-008.
+
+## 2026-10-04 — LEARN — WF-003 por MCP (S6, bonus)
+- HECHO: se creó por MCP `WF-003 Resumen operativo diario — JuanCarlos Muñoz` (9 nodos, diario a las 06:30). La ejecución 386, con fecha fijada en 2026-10-05, envió al ADMIN un resumen que coincide con las 5 citas sintéticas de ese día. La ejecución 387, con el túnel cortado, envió el aviso "Resumen no disponible".
+- DECISIÓN: el `adminEmail` de prueba es el buzón del estudiante. En el JSON exportado quedan marcadores para la URL y el correo, y `date` vacío.
+- PÁGINAS afectadas: HU-025, EP-008.

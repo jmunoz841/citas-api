@@ -1,0 +1,196 @@
+{
+  "name": "WF-003 Resumen operativo diario — JuanCarlos Muñoz",
+  "nodes": [
+    {
+      "id": "c1",
+      "name": "Diario 06:30",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 300],
+      "parameters": {
+        "rule": {
+          "interval": [
+            { "field": "days", "daysInterval": 1, "triggerAtHour": 6, "triggerAtMinute": 30 }
+          ]
+        }
+      }
+    },
+    {
+      "id": "c2",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [220, 300],
+      "notes": "date vacío = resumen de hoy. Solo se fija una fecha para pruebas controladas.",
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            { "id": "k1", "name": "apiBaseUrl", "value": "https://REEMPLAZAR-URL-PUBLICA-DE-CITAS-API", "type": "string" },
+            { "id": "k2", "name": "adminEmail", "value": "REEMPLAZAR-CORREO-DEL-ADMIN", "type": "string" },
+            { "id": "k3", "name": "date", "value": "", "type": "string" }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "c3",
+      "name": "Consultar resumen",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000,
+      "onError": "continueRegularOutput",
+      "position": [440, 300],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.apiBaseUrl }}/api/v1/integrations/daily-summary{{ $json.date ? '?date=' + encodeURIComponent($json.date) : '' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": { "timeout": 10000 }
+      },
+      "credentials": {
+        "httpHeaderAuth": { "name": "JuanCarlos Muñoz — citas-api X-Api-Key" }
+      }
+    },
+    {
+      "id": "c4",
+      "name": "¿API disponible?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [660, 300],
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose", "version": 2 },
+          "conditions": [
+            {
+              "id": "a1",
+              "leftValue": "={{ !$json.error && Array.isArray($json.sites) }}",
+              "rightValue": "",
+              "operator": { "type": "boolean", "operation": "true", "singleValue": true }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "c5",
+      "name": "Construir resumen",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [880, 200],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// La respuesta de la API es DATO: los conteos se fuerzan a número y los textos se escapan.\nconst esc = (v) => String(v ?? '').replace(/[&<>\"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;', \"'\": '&#39;' }[c]));\nconst n = (v) => (Number.isFinite(Number(v)) ? Number(v) : 0);\nconst s = $json;\nconst cfg = $('Config').first().json;\nconst estados = ['REQUESTED', 'APPROVED', 'COMPLETED', 'NO_SHOW', 'CANCELLED', 'REJECTED'];\nconst th = 'style=\"border:1px solid #ccc;padding:4px 8px;background:#f2f2f2\"';\nconst td = 'style=\"border:1px solid #ccc;padding:4px 8px;text-align:right\"';\nconst tdl = 'style=\"border:1px solid #ccc;padding:4px 8px\"';\nconst sedes = (s.sites ?? []).map((x) => `<tr><td ${tdl}>${esc(x.siteName)} (${esc(x.siteCode)})</td><td ${td}><b>${n(x.total)}</b></td>${estados.map((e) => `<td ${td}>${n(x.byStatus?.[e])}</td>`).join('')}</tr>`).join('');\nconst esp = (s.specialties ?? []).map((x) => `<tr><td ${tdl}>${esc(x.specialtyName)}</td><td ${td}>${n(x.total)}</td></tr>`).join('') || `<tr><td ${tdl} colspan=\"2\">Sin citas</td></tr>`;\nconst html = `<p>Resumen operativo del <b>${esc(s.date)}</b>. Total de citas del día: <b>${n(s.total)}</b>.</p>\n<h3>Por sede y estado</h3>\n<table style=\"border-collapse:collapse\"><tr><th ${th}>Sede</th><th ${th}>Total</th>${estados.map((e) => `<th ${th}>${e}</th>`).join('')}</tr>${sedes}</table>\n<h3>Por especialidad</h3>\n<table style=\"border-collapse:collapse\"><tr><th ${th}>Especialidad</th><th ${th}>Citas</th></tr>${esp}</table>\n<h3>Pendientes de decisión</h3>\n<ul><li>Solicitudes especializadas por resolver: <b>${n(s.pendingRequests)}</b></li><li>Reprogramaciones por resolver: <b>${n(s.pendingReschedules)}</b></li></ul>\n<p style=\"color:#666\">Solo conteos agregados; sin datos personales.</p>`;\nreturn { json: { date: String(s.date ?? '').slice(0, 10), total: n(s.total), to: cfg.adminEmail, subject: `Resumen operativo ${String(s.date ?? '').slice(0, 10)} — citas`, html } };"
+      }
+    },
+    {
+      "id": "c6",
+      "name": "Enviar resumen",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "onError": "continueRegularOutput",
+      "position": [1100, 200],
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "sendTo": "={{ $json.to }}",
+        "subject": "={{ $json.subject }}",
+        "emailType": "html",
+        "message": "={{ $json.html }}",
+        "options": { "appendAttribution": false }
+      },
+      "credentials": {
+        "gmailOAuth2": { "name": "JuanCarlos Muñoz — Gmail" }
+      }
+    },
+    {
+      "id": "c7",
+      "name": "Resultado",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1320, 200],
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            { "id": "o1", "name": "resultado", "value": "Resumen procesado", "type": "string" },
+            { "id": "o2", "name": "fecha", "value": "={{ $('Construir resumen').item.json.date }}", "type": "string" },
+            { "id": "o3", "name": "total", "value": "={{ $('Construir resumen').item.json.total }}", "type": "number" },
+            { "id": "o4", "name": "enviado", "value": "={{ !$json.error && !!$json.id }}", "type": "boolean" }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "c8",
+      "name": "Avisar no disponible",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "onError": "continueRegularOutput",
+      "position": [880, 420],
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "sendTo": "={{ $('Config').first().json.adminEmail }}",
+        "subject": "=Resumen no disponible — citas",
+        "emailType": "html",
+        "message": "=<p>Resumen no disponible: la API no respondió.</p><p>Hora: {{ $now.setZone('America/Bogota').toFormat('yyyy-LL-dd HH:mm') }}<br>Código: {{ $json.error?.status ?? $json.error?.code ?? 'sin respuesta' }}</p>",
+        "options": { "appendAttribution": false }
+      },
+      "credentials": {
+        "gmailOAuth2": { "name": "JuanCarlos Muñoz — Gmail" }
+      }
+    },
+    {
+      "id": "c9",
+      "name": "Resultado (API no disponible)",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1100, 420],
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            { "id": "p1", "name": "resultado", "value": "API no disponible", "type": "string" },
+            { "id": "p2", "name": "fecha", "value": "={{ $now.setZone('America/Bogota').toISO() }}", "type": "string" },
+            { "id": "p3", "name": "avisoEnviado", "value": "={{ !$json.error && !!$json.id }}", "type": "boolean" }
+          ]
+        },
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Diario 06:30": { "main": [[{ "node": "Config", "type": "main", "index": 0 }]] },
+    "Config": { "main": [[{ "node": "Consultar resumen", "type": "main", "index": 0 }]] },
+    "Consultar resumen": { "main": [[{ "node": "¿API disponible?", "type": "main", "index": 0 }]] },
+    "¿API disponible?": {
+      "main": [
+        [{ "node": "Construir resumen", "type": "main", "index": 0 }],
+        [{ "node": "Avisar no disponible", "type": "main", "index": 0 }]
+      ]
+    },
+    "Construir resumen": { "main": [[{ "node": "Enviar resumen", "type": "main", "index": 0 }]] },
+    "Enviar resumen": { "main": [[{ "node": "Resultado", "type": "main", "index": 0 }]] },
+    "Avisar no disponible": { "main": [[{ "node": "Resultado (API no disponible)", "type": "main", "index": 0 }]] }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Bogota",
+    "saveManualExecutions": true
+  },
+  "pinData": {}
+}

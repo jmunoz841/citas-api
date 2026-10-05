@@ -58,9 +58,9 @@ PRD §10, automatización 3. Opcional/bonus en S6. Flujo: Schedule → API resum
 - [x] **T-01 — Consulta agregada del día**  
   Dificultad: Medio  
   Descripción: conteos por sede y estado. `GET /api/v1/integrations/daily-summary`; `IntegrationApiIntegrationTest.hu025_*`.
-- [ ] **T-02 — Workflow n8n y exportación**  
+- [x] **T-02 — Workflow n8n y exportación**  
   Dificultad: Medio  
-  Descripción: trigger programado, formato y envío.
+  Descripción: trigger programado, formato y envío. Creado por MCP: `WF-003 Resumen operativo diario — JuanCarlos Muñoz` (9 nodos, diario 06:30 America/Bogota); `automations/n8n/WF-003-daily-operational-summary.json`.
 
 ## Criterios de aceptación
 
@@ -78,23 +78,25 @@ PRD §10, automatización 3. Opcional/bonus en S6. Flujo: Schedule → API resum
 
 ## Definition of Done
 
-- [ ] Todos los criterios de aceptación obligatorios están validados con evidencia.
-- [ ] JSON exportado en `automations/n8n/`.
-- [ ] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
+- [x] Todos los criterios de aceptación obligatorios están validados con evidencia.
+- [x] JSON exportado en `automations/n8n/`.
+- [x] La trazabilidad de esta HU y su épica está actualizada en `docs/wiki/scrum/`.
 
 ## Evidencia de validación
 
 | Elemento | Resultado | Evidencia | Observación |
 |---|---|---|---|
-| CA-01 | Pendiente | — | — |
-| CA-02 | Pendiente | — | — |
-| DoD | Pendiente | — | — |
+| CA-01 | Cumple | Ejecución manual n8n 386 (fecha fijada 2026-10-05); `hu025_ca01_ca02_elResumenCuentaPorSedeEstadoYEspecialidadSinDatosPersonales` | Correo enviado al ADMIN con total 5; HIC: REQUESTED 1, APPROVED 2, CANCELLED 1, REJECTED 1; ICV 0; Smoke Cardio 3, Medicina General 2; pendientes 1/0. Coincide con las citas sintéticas del día (ids 2, 3, 4, 6, 7) |
+| CA-02 | Cumple | Ejecución 386; contrato `integraciones.md` § Resumen diario | El correo solo lleva conteos y nombres de sede/especialidad; el endpoint no expone datos de pacientes y el nodo `Construir resumen` fuerza los conteos a número y escapa los textos |
+| Fallo de API | Cumple | Ejecución 387 | Túnel cortado (530): rama "Avisar no disponible", correo "Resumen no disponible — citas" enviado y registrado; no se envía resumen |
+| DoD | Cumple | `WF-003-daily-operational-summary.json` | JSON sin IDs de credencial, `webhookId`, URL del túnel ni correo del ADMIN (marcadores en `Config`); `date` vacío para que la ejecución programada resuma el día actual |
 
 ## Historial de validación
 
 - 2026-09-16 (S2) — HU creada en estado `Borrador`.
 
 - 2026-10-04 (S5) — HU `Aprobada` explícitamente por el Product Owner como bonus de S6.
+- 2026-10-04 (S6) — WF-003 creado por MCP y validado con las ejecuciones manuales 386 (resumen) y 387 (API caída). JSON exportado y revisado. El ADMIN de prueba recibe el correo en el buzón del estudiante.
 
 ## Notas y decisiones
 
