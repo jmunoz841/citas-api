@@ -13,6 +13,7 @@ import com.citas.api.domain.model.appointment.RescheduleRequest;
 import com.citas.api.domain.model.appointment.RescheduleSummary;
 import com.citas.api.domain.model.appointment.StatusChange;
 import com.citas.api.domain.model.appointment.StatusChange.Source;
+import com.citas.api.domain.model.integration.StatusNotification.Type;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
@@ -31,12 +32,14 @@ public class RescheduleResolutionService implements ResolveRescheduleUseCase {
 
     private final RescheduleRepositoryPort reschedules;
     private final AppointmentRepositoryPort appointments;
+    private final StatusNotifier notifier;
     private final Clock clock;
 
     public RescheduleResolutionService(RescheduleRepositoryPort reschedules, AppointmentRepositoryPort appointments,
-                                       Clock clock) {
+                                       StatusNotifier notifier, Clock clock) {
         this.reschedules = reschedules;
         this.appointments = appointments;
+        this.notifier = notifier;
         this.clock = clock;
     }
 
@@ -66,6 +69,8 @@ public class RescheduleResolutionService implements ResolveRescheduleUseCase {
         appointments.recordStatus(new StatusChange(appointment.getId(), AppointmentStatus.APPROVED, Source.ADMIN,
                 adminUserId, "Reprogramada del " + describe(current.originalStartAt(), current.originalSiteCode())
                 + " al " + describe(current.requestedStartAt(), current.requestedSiteCode()), requestId));
+        notifier.notify(Type.RESCHEDULE_APPROVED, appointment.getId(), null, null, null,
+                current.originalStartAt(), current.originalSiteCode());
         return approved;
     }
 
@@ -75,6 +80,8 @@ public class RescheduleResolutionService implements ResolveRescheduleUseCase {
         RescheduleRequest rejected = require(requestId).reject(adminUserId, reason, LocalDateTime.now(clock));
         reschedules.decide(rejected);
         reschedules.releaseHeldSlots(requestId);
+        notifier.notify(Type.RESCHEDULE_REJECTED, rejected.appointmentId(), rejected.decisionReason(),
+                rejected.requestedStartAt(), rejected.requestedSiteCode(), null, null);
         return rejected;
     }
 

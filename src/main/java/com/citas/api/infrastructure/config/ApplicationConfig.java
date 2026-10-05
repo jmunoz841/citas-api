@@ -15,6 +15,10 @@ import com.citas.api.application.port.out.TokenProviderPort;
 import com.citas.api.application.port.out.UserRepositoryPort;
 import com.citas.api.application.port.out.InsuranceCatalogRepositoryPort;
 import com.citas.api.application.port.out.RescheduleRepositoryPort;
+import com.citas.api.application.port.out.IntegrationQueryPort;
+import com.citas.api.application.port.out.StatusNotificationPort;
+import com.citas.api.application.service.IntegrationService;
+import com.citas.api.application.service.StatusNotifier;
 import com.citas.api.application.service.RescheduleRequestService;
 import com.citas.api.application.service.RescheduleResolutionService;
 import com.citas.api.application.service.AppointmentBookingService;
@@ -108,8 +112,21 @@ class ApplicationConfig {
     }
 
     @Bean
-    AppointmentRequestService appointmentRequestService(AppointmentRepositoryPort appointments) {
-        return new AppointmentRequestService(appointments);
+    StatusNotifier statusNotifier(IntegrationQueryPort integration, StatusNotificationPort notifications,
+                                  Clock clock) {
+        return new StatusNotifier(integration, notifications, clock);
+    }
+
+    @Bean
+    IntegrationService integrationService(IntegrationQueryPort integration, AppointmentRepositoryPort appointments,
+                                          Clock clock) {
+        return new IntegrationService(integration, appointments, clock);
+    }
+
+    @Bean
+    AppointmentRequestService appointmentRequestService(AppointmentRepositoryPort appointments,
+                                                        StatusNotifier notifier) {
+        return new AppointmentRequestService(appointments, notifier);
     }
 
     @Bean
@@ -119,8 +136,9 @@ class ApplicationConfig {
 
     @Bean
     AppointmentCancellationService appointmentCancellationService(AppointmentRepositoryPort appointments,
-                                                                  RescheduleRepositoryPort reschedules, Clock clock) {
-        return new AppointmentCancellationService(appointments, reschedules, clock);
+                                                                  RescheduleRepositoryPort reschedules,
+                                                                  StatusNotifier notifier, Clock clock) {
+        return new AppointmentCancellationService(appointments, reschedules, notifier, clock);
     }
 
     @Bean
@@ -132,8 +150,9 @@ class ApplicationConfig {
 
     @Bean
     RescheduleResolutionService rescheduleResolutionService(RescheduleRepositoryPort reschedules,
-                                                            AppointmentRepositoryPort appointments, Clock clock) {
-        return new RescheduleResolutionService(reschedules, appointments, clock);
+                                                            AppointmentRepositoryPort appointments,
+                                                            StatusNotifier notifier, Clock clock) {
+        return new RescheduleResolutionService(reschedules, appointments, notifier, clock);
     }
     @Bean ProfessionalAgendaService professionalAgendaService(AppointmentRepositoryPort appointments) { return new ProfessionalAgendaService(appointments); }
     @Bean ProfessionalAppointmentClosureService professionalAppointmentClosureService(AppointmentRepositoryPort appointments, RescheduleRepositoryPort reschedules, Clock clock) { return new ProfessionalAppointmentClosureService(appointments, reschedules, clock); }
