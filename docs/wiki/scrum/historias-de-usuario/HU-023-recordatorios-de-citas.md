@@ -2,7 +2,7 @@
 id: HU-023
 tipo: historia-de-usuario
 titulo: "Recordatorios de citas próximas"
-estado: Aprobada
+estado: Completada
 epica: "[[EP-008-automatizaciones-n8n]]"
 esfuerzo: "Medio"
 sprint_sugerido: "Sprint 4"
@@ -102,7 +102,7 @@ PRD §10, automatización 1 (S5). Flujo: Schedule Trigger → API de citas `APPR
 | CA-02 | Cumple | Ejecuciones 378 y 379 | Citas REQUESTED, CANCELLED y APPROVED a 72 h no aparecen en la consulta; la segunda corrida devuelve `items: []` → "Sin recordatorios" (sin duplicados) |
 | CA-03 | Cumple | `automations/n8n/WF-001-appointment-reminders.json` | JSON válido; sin IDs de credencial (solo nombres), URL del túnel (placeholder en `Config.apiBaseUrl`), emails, claves ni tokens |
 | Fallo de API | Cumple | Ejecución 380 | Túnel cortado: 3 intentos, rama "API no disponible", ningún correo ni marcado |
-| DoD | Cumple | `automations/n8n/SEGURIDAD_S5.md`, EP-008 | Riesgos residuales R-01 a R-08; demo de issue envenenado y prueba de dato envenenado contra el nodo "Preparar correo". Estado `Completada` pendiente de confirmación del Product Owner |
+| DoD | Cumple | `automations/n8n/SEGURIDAD_S5.md`, EP-008 | Riesgos residuales R-01 a R-08; demo de issue envenenado y prueba de dato envenenado contra el nodo "Preparar correo"; `mvnw clean test` 210/210 |
 
 ## Historial de validación
 
@@ -110,6 +110,7 @@ PRD §10, automatización 1 (S5). Flujo: Schedule Trigger → API de citas `APPR
 
 - 2026-10-04 (S5) — HU `Aprobada` explícitamente por el Product Owner. Decisiones D-040 a D-043 (ver `automations/n8n/PLAN_S5_S6.md`): ventana por defecto de 24 h, sin duplicados por cita y horario, acceso de n8n con `X-Api-Key` de rol `INTEGRATION`.
 - 2026-10-04 (S5) — WF-001 creado por MCP y validado con ejecuciones manuales 378, 379 y 380 (envío, no duplicado, API caída). JSON exportado y revisado. Riesgos residuales y demo de contenido no confiable en `SEGURIDAD_S5.md`.
+- 2026-10-04 (S5) — HU `Completada`: cierre confirmado explícitamente por el Product Owner, con la evidencia de cada CA y del DoD (commits `ecdc491` y `44d05d5`).
 
 ## Notas y decisiones
 

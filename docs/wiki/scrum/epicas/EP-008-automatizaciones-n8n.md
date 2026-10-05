@@ -2,7 +2,7 @@
 id: EP-008
 tipo: epica
 titulo: "Automatizaciones n8n"
-estado: Borrador
+estado: En desarrollo
 historias:
   - "[[HU-023-recordatorios-de-citas]]"
   - "[[HU-024-notificacion-cambio-de-estado]]"
@@ -48,7 +48,7 @@ Comunicación proactiva con usuarios y visibilidad operativa para ADMIN.
 
 ## Historias de usuario
 
-- [[HU-023-recordatorios-de-citas]] — Sprint 4 — Aprobada (S5: evidencia CA/DoD completa, pendiente de cierre por el Product Owner)
+- [[HU-023-recordatorios-de-citas]] — Sprint 4 — **Completada** (S5)
 - [[HU-024-notificacion-cambio-de-estado]] — Sprint 5 — Aprobada (backend listo; workflow en S6)
 - [[HU-025-resumen-operativo-diario]] — Sprint 5 — Aprobada (backend listo; workflow en S6, bonus)
 

@@ -216,3 +216,8 @@ Registro append-only. Formato definido en `schema/SCHEMA.md`.
 - DECISIÓN (usuario): el destinatario de prueba es `jmunoz841@unab.edu.co` y no un alias de Gmail. Las citas y el profesional siguen siendo sintéticos.
 - HECHO: el análisis de contenido no confiable, la demo de issue envenenado y los riesgos residuales R-01 a R-08 están en `automations/n8n/SEGURIDAD_S5.md`.
 - PÁGINAS afectadas: HU-023, EP-008.
+
+## 2026-10-04 — INGEST — Cierre de HU-023 y merge S5
+- DECISIÓN (usuario): el Product Owner confirma el cierre de HU-023 (`Completada`) y el merge de S5 a `main` con el tag `s5`.
+- HECHO: EP-008 pasa a `En desarrollo`. HU-024 y HU-025 siguen `Aprobada`, con el backend listo y los workflows pendientes para S6.
+- PÁGINAS afectadas: HU-023, EP-008, [[scrum/README]].
